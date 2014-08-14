@@ -1,0 +1,10 @@
+# IDE and Gradle temp dirs
+/nbproject/
+/.gradle/
+/.nb-gradle/
+/.nb-gradle-properties
+/eclipse/
+/build/
+
+# Other
+/private/

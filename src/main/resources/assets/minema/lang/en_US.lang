@@ -1,0 +1,64 @@
+# messages
+minema.error.label=Video capture error:
+
+# keys
+key.categories.minema=Minema
+key.minema.capture=Start/stop video capture
+
+# commands
+commands.minema.usage=/minema <enable|disable>
+
+# config categories
+minema.config.encoding=Encoding
+minema.config.encoding.tooltip=Settings for video encoding.
+
+minema.config.capturing=Capturing
+minema.config.capturing.tooltip=Settings for video capturing.
+
+minema.config.engine=Engine Overrides
+minema.config.engine.tooltip=Advanced engine override settings used during capture.
+
+# config encoding
+minema.config.useVideoEncoder=Use Video Encoder
+minema.config.useVideoEncoder.tooltip=If set to true, a video encoding program is used that will receive uncompressed RGB frames from Minema via the standard input pipe.
+
+minema.config.videoEncoderPath=Encoder Path
+minema.config.videoEncoderPath.tooltip=Path to the video encoding executable. The encoder's working directory is the generated movie folder. Ignored if the video encoder is disabled.
+
+minema.config.videoEncoderParams=Encoder Arguments
+minema.config.videoEncoderParams.tooltip=Arguments for the video encoding program. Placeholders: %%WIDTH%% - frame width, %%HEIGHT%% - frame height, %%FPS%% - frame rate. Ignored if the video encoder is disabled.
+
+minema.config.imageFormat=Image Format
+minema.config.imageFormat.tooltip=Image format to use if the video encoder is disabled. Use tga for best speed and quality at cost of large files.
+
+# config capturing
+minema.config.frameWidth=Frame Width
+minema.config.frameWidth.tooltip=Width of every captured frame in pixels. Set to 0 to use the current window/display width. Non-zero values require framebuffer support and are bound to the maximum texture resolution of your GPU.
+
+minema.config.frameHeight=Frame Height
+minema.config.frameHeight.tooltip=Height of every captured frame in pixels. Set to 0 to use the current window/display height. Non-zero values require framebuffer support and are bound to the maximum texture resolution of your GPU.
+
+minema.config.frameRate=Frame Rate
+minema.config.frameRate.tooltip=Recording frame rate, sets the amount of frames recorded per in-game second. Floating point values are allowed, e.g. 23.976 for 24p NTSC. Because Minecraft operates at 20 ticks per second, frame rates with multiples of 20 are recommended for best smoothness.
+
+minema.config.frameLimit=Frame Limit
+minema.config.frameLimit.tooltip=Number of frames to capture before stopping automatically. Set to -1 for no limit.
+
+minema.config.capturePath=Capture Path
+minema.config.capturePath.tooltip=Path were the captured videos are stored. If no absolute path is used, it's relative to the Minecraft working directory.
+
+minema.config.showOverlay=Show Overlay
+minema.config.showOverlay.tooltip=If set to true, show additional capturing information on the overlay. Note that these information are visible in the video, too.
+
+# config engine
+minema.config.engineSpeed=Engine Speed
+minema.config.engineSpeed.tooltip=Speed modifier for the game clock. The default is 1.0, which equals 20 ticks per second. Lower or higher values will speed up or slow down the game time. 2.5, for example, results in two and a half of the normal speed. Useful for slow motion or time lapse effects. Ignored if the capturing is unsynchronized.
+
+minema.config.particleLimit=Particle Limit
+minema.config.particleLimit.tooltip=Sets the maximum amount of visible particles for one texture before the oldest particles are removed. In vanilla, this limit is hard-coded to 4000. Some scenes, such as mass TNT explosions, generate enormous amounts of particles and may require higher limits to prevent disappearing particles. Set to -1 for no limit.
+
+minema.config.syncEngine=Synchronize
+minema.config.syncEngine.tooltip=If set to true, the local server and client runs synchronously to the video capturing frame rate. This effectively turns Minecraft into an offline renderer and allows rendering and capturing of extremely complex scenes. If set to false, the video capture is live and lags on the server or client may cause dropped frames. Is always false when capturing on a dedicated servers.
+
+minema.config.preloadChunks=Preload Chunks
+minema.config.preloadChunks.tooltip=If set to true, Minema will force the game to freeze until all visible chunks are fully loaded. Camera Studio or similar mods are highly recommended for this option, since smooth camera movements are almost impossible without.

@@ -1,0 +1,99 @@
+/*
+ ** 2013 April 09
+ **
+ ** The author disclaims copyright to this source code.  In place of
+ ** a legal notice, here is a blessing:
+ **    May you do good and not evil.
+ **    May you find forgiveness for yourself and forgive others.
+ **    May you share freely, never taking more than you give.
+ */
+package info.ata4.minecraft.minema;
+
+import cpw.mods.fml.client.event.ConfigChangedEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import info.ata4.minecraft.minema.client.KeyHandler;
+import info.ata4.minecraft.minema.client.cmd.CommandMinema;
+import info.ata4.minecraft.minema.client.config.MinemaConfig;
+import info.ata4.minecraft.minema.client.modules.CaptureSession;
+import java.io.File;
+import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.common.config.Configuration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+/**
+ * Main control class for Forge.
+ * 
+ * @author Nico Bergemann <barracuda415 at yahoo.de>
+ */
+@Mod(
+    modid = Minema.ID,
+    name = Minema.NAME,
+    version = Minema.VERSION,
+    useMetadata = true,
+    guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory"
+)
+public class Minema {
+    
+    @Instance("Minema")
+    public static Minema instance;
+    
+    public static final Logger L = LogManager.getLogger();
+
+    public static final String ID = "Minema";
+    public static final String AID = ID.toLowerCase();
+    public static final String NAME = "Minema";
+    public static final String VERSION = "3.0";
+
+    private MinemaConfig config;
+    private CaptureSession session;
+    
+    public MinemaConfig getConfig() {
+        return config;
+    }
+    
+    public void enable() {
+        config.load();
+        config.sync();
+        
+        session = new CaptureSession(config);
+        session.enable();
+    }
+    
+    public void disable() {
+        if (isEnabled()) {
+            session.disable();
+        }
+        session = null;
+    }
+    
+    public boolean isEnabled() {
+        return session != null && session.isEnabled();
+    }
+    
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+        if (eventArgs.modID.equals(ID)) {
+            config.sync();
+        }
+    }
+
+    @EventHandler
+    public void onPreInit(FMLPreInitializationEvent evt) {
+        File file = evt.getSuggestedConfigurationFile();
+        config = new MinemaConfig(new Configuration(file));
+    }
+    
+    @EventHandler
+    public void onInit(FMLInitializationEvent evt) {
+        ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
+        FMLCommonHandler.instance().bus().register(new KeyHandler(this));
+        FMLCommonHandler.instance().bus().register(this);
+    }
+}
