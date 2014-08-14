@@ -142,7 +142,7 @@ public class ConfigContainer {
     }
     
     protected void register(ConfigValue configValue, String propName, String catName) {
-        Object value = configValue.get();
+        Object value = configValue.getDefault();
         
         // TODO
         if (value instanceof List) {
@@ -213,9 +213,9 @@ public class ConfigContainer {
         
         // using insertion order for properties
         List<String> propertyOrder = new ArrayList<String>();
-        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> category : propMap.entrySet()) {
-            if (category.getKey().getLeft().equals(catName)) {
-                propertyOrder.add(category.getKey().getRight());
+        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> propEntry : propMap.entrySet()) {
+            if (propEntry.getKey().getLeft().equals(catName)) {
+                propertyOrder.add(propEntry.getKey().getRight());
             }
         }
         cat.setPropertyOrder(propertyOrder);
