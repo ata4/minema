@@ -38,7 +38,7 @@ public class ConfigContainer {
     private static final Logger L = LogManager.getLogger();
     
     private final Configuration config;
-    private final Map<Pair<String, String>, Pair<ConfigValue, Property>> categories = new LinkedHashMap<Pair<String, String>, Pair<ConfigValue, Property>>();
+    private final Map<Pair<String, String>, Pair<ConfigValue, Property>> propMap = new LinkedHashMap<Pair<String, String>, Pair<ConfigValue, Property>>();
     private String langKeyPrefix = "";
     
     public ConfigContainer(Configuration config) {
@@ -74,6 +74,19 @@ public class ConfigContainer {
         } catch (Exception ex) {
             L.warn("Can't load config", ex);
         }
+        
+        // properties lose their mins/maxs/defaults/langkeys and whatsoever after
+        // using Configuration.load(), so re-register all ConfigValues to fix that
+        Map<Pair<String, String>, Pair<ConfigValue, Property>> propMapCopy = new LinkedHashMap<Pair<String, String>, Pair<ConfigValue, Property>>(propMap);
+        propMap.clear();
+        
+        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> propEntry : propMapCopy.entrySet()) {
+            String catName = propEntry.getKey().getLeft();
+            String propName = propEntry.getKey().getRight();
+            ConfigValue configValue = propEntry.getValue().getLeft();
+            
+            register(configValue, propName, catName);
+        }
     }
     
     public void save() {
@@ -89,12 +102,12 @@ public class ConfigContainer {
     
     public void sync() {
         L.debug("Syncing config");
-        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> category : categories.entrySet()) {
-            String catName = category.getKey().getLeft();
-            String propName = category.getKey().getRight();
+        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> propEntry : propMap.entrySet()) {
+            String catName = propEntry.getKey().getLeft();
+            String propName = propEntry.getKey().getRight();
             
-            ConfigValue configValue = category.getValue().getLeft();
-            Property prop = category.getValue().getRight();
+            ConfigValue configValue = propEntry.getValue().getLeft();
+            Property prop = propEntry.getValue().getRight();
             
             // TODO
             if (prop.isList()) {
@@ -196,11 +209,11 @@ public class ConfigContainer {
         // add to internal category map
         Pair<String, String> mapKey = new ImmutablePair<String, String>(catName, propName);
         Pair<ConfigValue, Property> mapValue = new ImmutablePair<ConfigValue, Property>(configValue, prop);
-        categories.put(mapKey, mapValue);
+        propMap.put(mapKey, mapValue);
         
         // using insertion order for properties
         List<String> propertyOrder = new ArrayList<String>();
-        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> category : categories.entrySet()) {
+        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> category : propMap.entrySet()) {
             if (category.getKey().getLeft().equals(catName)) {
                 propertyOrder.add(category.getKey().getRight());
             }
