@@ -1,7 +1,11 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ ** 2013 April 10
+ **
+ ** The author disclaims copyright to this source code.  In place of
+ ** a legal notice, here is a blessing:
+ **    May you do good and not evil.
+ **    May you find forgiveness for yourself and forgive others.
+ **    May you share freely, never taking more than you give.
  */
 
 package info.ata4.minecraft.minema.client;
