@@ -14,6 +14,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.ModMetadata;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -24,8 +25,6 @@ import info.ata4.minecraft.minema.client.modules.CaptureSession;
 import java.io.File;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.config.Configuration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Main control class for Forge.
@@ -35,27 +34,28 @@ import org.apache.logging.log4j.Logger;
 @Mod(
     modid = Minema.ID,
     name = Minema.NAME,
-    version = Minema.VERSION,
     useMetadata = true,
     guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory"
 )
 public class Minema {
     
-    @Instance("Minema")
+    public static final String NAME = "Minema";
+    public static final String ID = NAME;
+    public static final String AID = NAME.toLowerCase();
+    
+    @Instance(ID)
     public static Minema instance;
     
-    public static final Logger L = LogManager.getLogger();
-
-    public static final String ID = "Minema";
-    public static final String AID = ID.toLowerCase();
-    public static final String NAME = "Minema";
-    public static final String VERSION = "3.0";
-
+    private ModMetadata metadata;
     private MinemaConfig config;
     private CaptureSession session;
     
     public MinemaConfig getConfig() {
         return config;
+    }
+
+    public ModMetadata getMetadata() {
+        return metadata;
     }
     
     public void enable() {
@@ -88,6 +88,7 @@ public class Minema {
     public void onPreInit(FMLPreInitializationEvent evt) {
         File file = evt.getSuggestedConfigurationFile();
         config = new MinemaConfig(new Configuration(file));
+        metadata = evt.getModMetadata();
     }
     
     @EventHandler
