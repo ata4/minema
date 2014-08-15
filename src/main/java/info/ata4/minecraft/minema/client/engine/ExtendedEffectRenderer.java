@@ -10,7 +10,7 @@
 package info.ata4.minecraft.minema.client.engine;
 
 import cpw.mods.fml.relauncher.ReflectionHelper;
-import info.ata4.minecraft.minema.util.PrivateFields;
+import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import java.util.List;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;

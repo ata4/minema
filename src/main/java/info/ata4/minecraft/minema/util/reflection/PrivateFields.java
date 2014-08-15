@@ -8,7 +8,7 @@
  **    May you share freely, never taking more than you give.
  */
 
-package info.ata4.minecraft.minema.util;
+package info.ata4.minecraft.minema.util.reflection;
 
 /**
  *

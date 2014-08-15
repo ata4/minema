@@ -12,7 +12,7 @@ package info.ata4.minecraft.minema.client.modules;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.engine.FixedTimer;
-import info.ata4.minecraft.minema.util.PrivateFields;
+import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Timer;
 import org.apache.logging.log4j.LogManager;

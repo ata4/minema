@@ -15,7 +15,7 @@ import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.util.PrivateFields;
+import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.WorldRenderer;

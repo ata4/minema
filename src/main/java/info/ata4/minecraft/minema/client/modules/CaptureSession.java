@@ -21,7 +21,7 @@ import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import info.ata4.minecraft.minema.client.util.ChatUtils;
-import info.ata4.minecraft.minema.util.PrivateFields;
+import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
