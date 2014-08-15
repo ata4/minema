@@ -36,7 +36,7 @@ def getVersionName = { ->
 
 version = getVersionName()
 group= "info.ata4.minema" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "minema"
+archivesBaseName = "Minema"
 
 dependencies {
     // you may put jars on which you depend on in ./libs
