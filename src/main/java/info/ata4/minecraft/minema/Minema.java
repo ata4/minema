@@ -60,7 +60,6 @@ public class Minema {
     
     public void enable() {
         config.load();
-        config.sync();
         
         session = new CaptureSession(config);
         session.enable();
@@ -80,7 +79,7 @@ public class Minema {
     @SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
         if (eventArgs.modID.equals(ID)) {
-            config.sync();
+            config.update(false);
         }
     }
 

@@ -9,11 +9,13 @@
  */
 package info.ata4.minecraft.minema.util.config;
 
+import net.minecraftforge.common.config.Property;
+
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class ConfigValue<T> {
+public abstract class ConfigValue<T> {
     
     private T value;
     private final T valueDefault;
@@ -38,4 +40,10 @@ public class ConfigValue<T> {
     public void reset() {
         set(getDefault());
     }
+   
+    public abstract Property.Type getPropType();
+    
+    public abstract void importProp(Property prop);
+    
+    public abstract void exportProp(Property prop);
 }

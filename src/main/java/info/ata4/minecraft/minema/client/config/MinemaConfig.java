@@ -9,9 +9,13 @@
  */
 package info.ata4.minecraft.minema.client.config;
 
+import info.ata4.minecraft.minema.util.config.ConfigBoolean;
 import info.ata4.minecraft.minema.util.config.ConfigContainer;
+import info.ata4.minecraft.minema.util.config.ConfigDouble;
 import info.ata4.minecraft.minema.util.config.ConfigEnum;
+import info.ata4.minecraft.minema.util.config.ConfigInteger;
 import info.ata4.minecraft.minema.util.config.ConfigNumber;
+import info.ata4.minecraft.minema.util.config.ConfigString;
 import info.ata4.minecraft.minema.util.config.ConfigValue;
 import java.io.File;
 import java.util.HashSet;
@@ -52,21 +56,21 @@ public class MinemaConfig extends ConfigContainer {
     }
     
     public final ConfigEnum imageFormat = new ConfigEnum("tga", getImageFormats());
-    public final ConfigValue<Boolean> useVideoEncoder = new ConfigValue<Boolean>(false);
-    public final ConfigValue<String> videoEncoderPath = new ConfigValue<String>("");
-    public final ConfigValue<String> videoEncoderParams = new ConfigValue<String>("");
+    public final ConfigBoolean useVideoEncoder = new ConfigBoolean(false);
+    public final ConfigString videoEncoderPath = new ConfigString("");
+    public final ConfigString videoEncoderParams = new ConfigString("");
     
-    public final ConfigNumber<Integer> frameWidth = new ConfigNumber<Integer>(0, 0, MAX_TEXTURE_SIZE);
-    public final ConfigNumber<Integer> frameHeight = new ConfigNumber<Integer>(0, 0, MAX_TEXTURE_SIZE);
-    public final ConfigNumber<Double> frameRate = new ConfigNumber<Double>(30.0, 0.01, 1000.0);
-    public final ConfigNumber<Integer> frameLimit = new ConfigNumber<Integer>(-1, -1);
-    public final ConfigValue<String> capturePath = new ConfigValue<String>("movies");
-    public final ConfigValue<Boolean> showOverlay = new ConfigValue<Boolean>(false);
+    public final ConfigInteger frameWidth = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);
+    public final ConfigInteger frameHeight = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);
+    public final ConfigDouble frameRate = new ConfigDouble(30.0, 0.01, 1000.0);
+    public final ConfigInteger frameLimit = new ConfigInteger(-1, -1);
+    public final ConfigString capturePath = new ConfigString("movies");
+    public final ConfigBoolean showOverlay = new ConfigBoolean(false);
     
-    public final ConfigNumber<Double> engineSpeed = new ConfigNumber<Double>(1.0, 0.01);
-    public final ConfigNumber<Integer> particleLimit = new ConfigNumber<Integer>(64000, -1);
-    public final ConfigValue<Boolean> syncEngine = new ConfigValue<Boolean>(true);
-    public final ConfigValue<Boolean> preloadChunks = new ConfigValue<Boolean>(false);
+    public final ConfigDouble engineSpeed = new ConfigDouble(1.0, 0.01);
+    public final ConfigInteger particleLimit = new ConfigInteger(64000, -1);
+    public final ConfigBoolean syncEngine = new ConfigBoolean(true);
+    public final ConfigBoolean preloadChunks = new ConfigBoolean(false);
     
     private File movieDir;
     
@@ -91,8 +95,6 @@ public class MinemaConfig extends ConfigContainer {
         register(particleLimit, "particleLimit", CATEGORY_ENGINE);
         register(syncEngine, "syncEngine", CATEGORY_ENGINE);
         register(preloadChunks, "preloadChunks", CATEGORY_ENGINE);
-        
-        sync();
     }
     
     public int getFrameWidth() {

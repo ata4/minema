@@ -11,13 +11,14 @@ package info.ata4.minecraft.minema.util.config;
 
 import java.util.Collections;
 import java.util.Set;
+import net.minecraftforge.common.config.Property;
 import org.apache.commons.lang3.Validate;
 
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class ConfigEnum extends ConfigValue<String> {
+public class ConfigEnum extends ConfigString {
 
     private final Set<String> choices;
     
@@ -38,11 +39,22 @@ public class ConfigEnum extends ConfigValue<String> {
     }
     
     @Override
+    public Property.Type getPropType() {
+        return Property.Type.STRING;
+    }
+    
+    @Override
     public void set(String value) {
         if (!choices.contains(value)) {
             super.set(getDefault());
         } else {
             super.set(value);
         }
+    }
+    
+    @Override
+    public void exportProp(Property prop) {
+        super.exportProp(prop);
+        prop.setValidValues(getChoices().toArray(new String[]{}));
     }
 }

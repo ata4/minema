@@ -13,7 +13,7 @@ package info.ata4.minecraft.minema.util.config;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class ConfigNumber<T extends Number & Comparable<T>> extends ConfigValue<T> {
+public abstract class ConfigNumber<T extends Number & Comparable<T>> extends ConfigValue<T> {
     
     private final T min;
     private final T max;
@@ -26,10 +26,6 @@ public class ConfigNumber<T extends Number & Comparable<T>> extends ConfigValue<
     
     public ConfigNumber(T value, T min) {
         this(value, min, null);
-    }
-    
-    public ConfigNumber(String name, T value) {
-        this(value, null, null);
     }
 
     @Override

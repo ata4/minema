@@ -62,8 +62,21 @@ public class ConfigContainer {
         List<IConfigElement> list = new ArrayList<IConfigElement>();
         Set<String> names = config.getCategoryNames();
         for (String catName : names) {
+            if (catName.equals(Configuration.CATEGORY_GENERAL)) {
+                continue;
+            }
             list.add(new ConfigElement(config.getCategory(catName)));
         }
+
+        // add props in category CATEGORY_GENERAL directly to the root of the list
+        if (config.hasCategory(Configuration.CATEGORY_GENERAL)) {
+            ConfigCategory catGeneral = config.getCategory(Configuration.CATEGORY_GENERAL);
+            List<Property> props = catGeneral.getOrderedValues();
+            for (Property prop : props) {
+                list.add(new ConfigElement(prop));
+            }
+        }
+        
         return list;
     }
     
@@ -100,41 +113,16 @@ public class ConfigContainer {
         }
     }
     
-    public void sync() {
+    public void update(boolean export) {
         L.debug("Syncing config");
-        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> propEntry : propMap.entrySet()) {
-            String catName = propEntry.getKey().getLeft();
-            String propName = propEntry.getKey().getRight();
+        for (Pair<ConfigValue, Property> propEntry : propMap.values()) {
+            ConfigValue configValue = propEntry.getLeft();
+            Property prop = propEntry.getRight();
             
-            ConfigValue configValue = propEntry.getValue().getLeft();
-            Property prop = propEntry.getValue().getRight();
-            
-            // TODO
-            if (prop.isList()) {
-                L.warn("Prop {}.{} is a list, which isn't supported yet", catName, propName);
-                continue;
-            }
-            
-            // set value by property type
-            switch (prop.getType()) {
-                case INTEGER:
-                    configValue.set(prop.getInt());
-                    break;
-                    
-                case DOUBLE:
-                    configValue.set(prop.getDouble());
-                    break;
-                    
-                case BOOLEAN:
-                    configValue.set(prop.getBoolean());
-                    break;
-                    
-                case STRING:
-                    configValue.set(prop.getString());
-                    break;
-                    
-                default:
-                    L.warn("Unsupported prop type {} for {}.{}", prop.getType(), catName, propName);
+            if (export) {
+                configValue.exportProp(prop);
+            } else {
+                configValue.importProp(prop);
             }
         }
         
@@ -142,21 +130,6 @@ public class ConfigContainer {
     }
     
     protected void register(ConfigValue configValue, String propName, String catName) {
-        Object value = configValue.getDefault();
-        
-        // TODO
-        if (value instanceof List) {
-            L.warn("Prop {}.{} is a list, which isn't supported yet", catName, propName);
-            return;
-        }
-        
-        // get property type from object type
-        Property.Type type = getPropertyType(value);
-        if (type == null) {
-            L.warn("Unsupported prop type {} for {}.{}", value.getClass().getSimpleName(), catName, propName);
-            return;
-        }
-        
         // set category language key and description
         String catLangKey = langKeyPrefix + "." + catName;
         String catDesc = WordUtils.wrap(I18n.format(catLangKey + ".tooltip"), 128);
@@ -171,40 +144,14 @@ public class ConfigContainer {
         String propDesc = WordUtils.wrap(I18n.format(propLangKey + ".tooltip"), 128);
         
         // get or create prop and configure it
-        Property prop = config.get(catName, propName, String.valueOf(value), propDesc, type);
+        String propDefault = String.valueOf(configValue.getDefault());
+        Property.Type propType = configValue.getPropType();
+        Property prop = config.get(catName, propName, propDefault, propDesc, propType);
         prop.setLanguageKey(propLangKey);
         
-        if (configValue instanceof ConfigNumber) {
-            // set min/max number values
-            ConfigNumber configNum = (ConfigNumber) configValue;
-            Number min = configNum.getMin();
-            Number max = configNum.getMax();
-            
-            // only integer and double are supported, although short/byte/float
-            // could theoretically work, too
-            if (value instanceof Integer) {
-                if (min != null) {
-                    prop.setMinValue(min.intValue());
-                }
-                if (max != null) {
-                    prop.setMaxValue(max.intValue());
-                }
-            } else if (value instanceof Double) {
-                if (min != null) {
-                    prop.setMinValue(min.doubleValue());
-                }
-                if (max != null) {
-                    prop.setMaxValue(max.doubleValue());
-                }
-            } else {
-                L.warn("Unsupported number type {} for {}.{}",
-                        value.getClass().getSimpleName(), propName, catName);
-            }
-        } else if (configValue instanceof ConfigEnum) {
-            // set valid values for enums
-            ConfigEnum configEnum = (ConfigEnum) configValue;
-            prop.setValidValues(configEnum.getChoices().toArray(new String[]{}));
-        }
+        // import and export prop to sync settings and values 
+        configValue.importProp(prop);
+        configValue.exportProp(prop);
         
         // add to internal category map
         Pair<String, String> mapKey = new ImmutablePair<String, String>(catName, propName);
@@ -213,29 +160,13 @@ public class ConfigContainer {
         
         // using insertion order for properties
         List<String> propertyOrder = new ArrayList<String>();
-        for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> propEntry : propMap.entrySet()) {
-            if (propEntry.getKey().getLeft().equals(catName)) {
-                propertyOrder.add(propEntry.getKey().getRight());
+        for (Pair<String, String> propEntry : propMap.keySet()) {
+            if (propEntry.getLeft().equals(catName)) {
+                propertyOrder.add(propEntry.getRight());
             }
         }
         cat.setPropertyOrder(propertyOrder);
         
-        L.debug("Registered prop {}.{} of type {}", catName, propName, type);
-    }
-    
-    private Property.Type getPropertyType(Object obj) {
-        if (obj instanceof Integer) {
-            return Property.Type.INTEGER;
-        }
-        if (obj instanceof Double) {
-            return Property.Type.DOUBLE;
-        }
-        if (obj instanceof Boolean) {
-            return Property.Type.BOOLEAN;
-        }
-        if (obj instanceof String) {
-            return Property.Type.STRING;
-        }
-        return null;
+        L.debug("Registered prop {}.{} of type {}", catName, propName, propType);
     }
 }
