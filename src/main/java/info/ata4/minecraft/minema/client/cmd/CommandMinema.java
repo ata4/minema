@@ -12,11 +12,9 @@ package info.ata4.minecraft.minema.client.cmd;
 
 import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.client.modules.DisplaySizeModifier;
-import info.ata4.minecraft.minema.client.util.ChatUtils;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -69,7 +67,7 @@ public class CommandMinema extends CommandBase {
                     try {
                         Display.setDisplayMode(new DisplayMode(width, height));
                     } catch (LWJGLException ex) {
-                        ChatUtils.print("Can't resize LWJGL display: %s", EnumChatFormatting.RED, ex.getMessage());
+                        throw new RuntimeException("Can't resize LWJGL display", ex);
                     }
                     break;
                 
