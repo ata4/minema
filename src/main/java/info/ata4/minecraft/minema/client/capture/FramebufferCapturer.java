@@ -55,14 +55,13 @@ public class FramebufferCapturer {
     public boolean isFlipLines() {
         return flipLines;
     }
+
+    public int getBytesPerPixel() {
+        return BPP;
+    }
     
     public ByteBuffer getByteBuffer() {
-        if (bb == null) {
-            return bb;
-        }
-        
         bb.rewind();
-        
         return bb.duplicate();
     }
     
