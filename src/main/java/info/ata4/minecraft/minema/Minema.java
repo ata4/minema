@@ -34,6 +34,7 @@ import net.minecraftforge.common.config.Configuration;
 @Mod(
     modid = Minema.ID,
     name = Minema.NAME,
+    version = Minema.VERSION,
     useMetadata = true,
     guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory"
 )
@@ -42,6 +43,7 @@ public class Minema {
     public static final String NAME = "Minema";
     public static final String ID = NAME;
     public static final String AID = NAME.toLowerCase();
+    public static final String VERSION = "@VERSION@";
     
     @Instance(ID)
     public static Minema instance;
