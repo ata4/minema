@@ -15,6 +15,7 @@ import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import info.ata4.minecraft.minema.util.reflection.PrivateMethods;
 import java.lang.reflect.Method;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,19 +30,29 @@ public class DisplaySizeModifier extends CaptureModule {
     private static final Logger L = LogManager.getLogger();
     private static final Minecraft MC = Minecraft.getMinecraft();
     
+    private int originalWidth;
+    private int originalHeight;
+    
     public DisplaySizeModifier(MinemaConfig cfg) {
         super(cfg);
     }
 
     @Override
     protected void doEnable() {
+        originalWidth = Display.getWidth();
+        originalHeight = Display.getHeight();
+        
         resize(cfg.getFrameWidth(), cfg.getFrameHeight());
-        setFramebufferTextureSize(Display.getWidth(), Display.getHeight());
+        
+        // render framebuffer texture in original size
+        if (OpenGlHelper.isFramebufferEnabled()) {
+            setFramebufferTextureSize(originalWidth, originalHeight);
+        }
     }
 
     @Override
     protected void doDisable() {
-        resize(Display.getWidth(), Display.getHeight());
+        resize(originalWidth, originalHeight);
     }
     
     public void resize(int width, int height) {
