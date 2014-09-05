@@ -15,6 +15,8 @@ import info.ata4.minecraft.minema.client.modules.DisplaySizeModifier;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.util.ChatComponentText;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -54,11 +56,32 @@ public class CommandMinema extends CommandBase {
         } else if (cmd.equals("disable")) {
             minema.disable();
         } else if (cmd.equals("resize")) {
+        	//Usage: /minema resize 720p   or   /minema resize 1280x720     
             DisplaySizeModifier modifier = new DisplaySizeModifier(minema.getConfig());
             
-            int width = Integer.parseInt(args[1]);
-            int height = Integer.parseInt(args[2]);
-            int mode = args.length == 4 ? Integer.parseInt(args[3]) : 0;
+            int width, height, mode = 0;
+            switch(args.length){
+            case 3:
+            	mode = Integer.parseInt(args[2]);
+            case 2:
+            	String res = args[1];
+            	if(res.endsWith("p")){
+            		res = res.substring(0,res.length()-1);
+            		int p = Integer.parseInt(res);
+            		height = p;
+            		width = (int) (p*16.0/9.0);
+            		// eg. for 480p height becomes 853, so it rounds it up to multiple of 2
+            		if((height & 1) == 1) height++;
+            	}else{
+            		String[] d = res.split("x");
+            		width = Integer.parseInt(d[0]);
+            		height = Integer.parseInt(d[1]);
+            	}
+            	break;
+            default:
+            	throw new WrongUsageException(getCommandUsage(sender));
+            }
+            
             
             modifier.resize(width, height);
             
