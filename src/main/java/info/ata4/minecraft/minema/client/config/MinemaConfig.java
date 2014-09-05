@@ -95,6 +95,8 @@ public class MinemaConfig extends ConfigContainer {
         register(particleLimit, "particleLimit", CATEGORY_ENGINE);
         register(syncEngine, "syncEngine", CATEGORY_ENGINE);
         register(preloadChunks, "preloadChunks", CATEGORY_ENGINE);
+        
+        update(true);
     }
     
     public int getFrameWidth() {
