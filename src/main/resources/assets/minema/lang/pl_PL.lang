@@ -2,7 +2,7 @@
 minema.error.label=Błąd nagrywania:
 
 # keys
-key.categories.minema=Minema
+key.categories.minema=Nagrywanie Minema
 key.minema.capture=Rozpocznij/zakończ nagrywanie
 
 # commands
@@ -10,20 +10,20 @@ commands.minema.usage=/minema <enable|disable>
 
 # config categories
 minema.config.encoding=Kodowanie
-minema.config.encoding.tooltip=Ustawienia kodera.
+minema.config.encoding.tooltip=Ustaw typ zapisywanych plików.
 
 minema.config.capturing=Nagrywanie
 minema.config.capturing.tooltip=Ustawienia nagrywania.
 
 minema.config.engine=Podmiana silnika
-minema.config.engine.tooltip=Zaawansowane opcje zmiany silnika gry.
+minema.config.engine.tooltip=Zaawansowane opcje modyfikacji silnika gry.
 
 # config encoding
 minema.config.useVideoEncoder=Używaj kodera
-minema.config.useVideoEncoder.tooltip=Jeżeli tak, koder będzie dostawał strumieniowo dane RGB na standardowe wejście.
+minema.config.useVideoEncoder.tooltip=Jeżeli tak, mod będzie zapisywał dane wideo do jednego pliku przez podany lub automatycznie znaleziony koder. Koder będzie dostawał strumieniowo dane RGB na standardowe wejście.
 
 minema.config.videoEncoderPath=Ścieżka do pliku kodera
-minema.config.videoEncoderPath.tooltip=Ścieżka do pliku wykonywalnego kodera (exe). Folder enkodera jest głównym folderem na pliki wyjściowe. Ignorowane, jeżeli koder jest wyłączony.
+minema.config.videoEncoderPath.tooltip=Ścieżka do pliku wykonywalnego kodera (exe). Folder kodera jest głównym folderem na pliki wyjściowe. Ignorowane, jeżeli koder jest wyłączony.
 
 minema.config.videoEncoderParams=Parametry kodera
 minema.config.videoEncoderParams.tooltip=Argumenty dla programu kodera. Zmienne: %%WIDTH%% - szerokość klatki, %%HEIGHT%% - wysokość, %%FPS%% - klatki na sekundę. Ignorowane, jeżeli koder jest wyłączony.
