@@ -15,6 +15,7 @@ import info.ata4.minecraft.minema.util.config.ConfigDouble;
 import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import info.ata4.minecraft.minema.util.config.ConfigInteger;
 import info.ata4.minecraft.minema.util.config.ConfigString;
+import info.ata4.minecraft.minema.util.config.ConfigStringEnum;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
@@ -52,11 +53,11 @@ public class MinemaConfig extends ConfigContainer {
         return formats;
     }
     
-    public final ConfigEnum imageFormat = new ConfigEnum("tga", getImageFormats());
+    public final ConfigStringEnum imageFormat = new ConfigStringEnum("tga", getImageFormats());
     public final ConfigBoolean useVideoEncoder = new ConfigBoolean(false);
     public final ConfigString videoEncoderPath = new ConfigString("");
     public final ConfigString videoEncoderParams = new ConfigString("");
-    public final ConfigEnum snapResolution = new ConfigEnum("mod2", "mod2", "mod4", "mod8", "mod16");
+    public final ConfigEnum<SnapResolution> snapResolution = new ConfigEnum<SnapResolution>(SnapResolution.MOD2);
     
     public final ConfigInteger frameWidth = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);
     public final ConfigInteger frameHeight = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);
@@ -108,7 +109,7 @@ public class MinemaConfig extends ConfigContainer {
         }
         
         if (useVideoEncoder.get()) {
-            width -= width % getSnapResolution();
+            width = snapResolution.get().snap(width);
         }
         
         return width;
@@ -124,14 +125,10 @@ public class MinemaConfig extends ConfigContainer {
         }
         
         if (useVideoEncoder.get()) {
-            height -= height % getSnapResolution();
+            height = snapResolution.get().snap(height);
         }
         
         return height;
-    }
-    
-    public int getSnapResolution() {
-        return Integer.parseInt(snapResolution.get().replace("mod", ""));
     }
 
     public boolean useFrameSize() {
