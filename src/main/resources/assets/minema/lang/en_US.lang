@@ -31,6 +31,9 @@ minema.config.videoEncoderParams.tooltip=Arguments for the video encoding progra
 minema.config.imageFormat=Image Format
 minema.config.imageFormat.tooltip=Image format to use if the video encoder is disabled. Use tga for best speed and quality at cost of large files.
 
+minema.config.snapResolution=Snap Resolution
+minema.config.snapResolution.tooltip=Automatically snap the resolution for compatibility. Most video encoders enforce a mod2 resolution, mod16 is recommended.
+
 # config capturing
 minema.config.frameWidth=Frame Width
 minema.config.frameWidth.tooltip=Width of every captured frame in pixels. Set to 0 to use the current window/display width. Non-zero values require framebuffer support and are bound to the maximum texture resolution of your GPU.

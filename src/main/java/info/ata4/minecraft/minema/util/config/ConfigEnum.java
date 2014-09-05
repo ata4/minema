@@ -10,9 +10,11 @@
 package info.ata4.minecraft.minema.util.config;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import net.minecraftforge.common.config.Property;
 import org.apache.commons.lang3.Validate;
+import scala.actors.threadpool.Arrays;
 
 /**
  *
@@ -32,6 +34,10 @@ public class ConfigEnum extends ConfigString {
         }
         
         this.choices = Collections.unmodifiableSet(choices);
+    }
+    
+    public ConfigEnum(String value, String... choices) {
+        this(value, new HashSet<String>(Arrays.asList(choices)));
     }
     
     public Set<String> getChoices() {
