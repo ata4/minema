@@ -1,0 +1,64 @@
+﻿# messages
+minema.error.label=Błąd nagrywania:
+
+# keys
+key.categories.minema=Nagrywanie Minema
+key.minema.capture=Rozpocznij/zakończ nagrywanie
+
+# commands
+commands.minema.usage=/minema <enable|disable>
+
+# config categories
+minema.config.encoding=Kodowanie
+minema.config.encoding.tooltip=Ustaw typ zapisywanych plików.
+
+minema.config.capturing=Nagrywanie
+minema.config.capturing.tooltip=Ustawienia nagrywania.
+
+minema.config.engine=Podmiana silnika
+minema.config.engine.tooltip=Zaawansowane opcje modyfikacji silnika gry.
+
+# config encoding
+minema.config.useVideoEncoder=Używaj kodera
+minema.config.useVideoEncoder.tooltip=Jeżeli tak, mod będzie zapisywał dane wideo do jednego pliku przez podany lub automatycznie znaleziony koder. Koder będzie dostawał strumieniowo dane RGB na standardowe wejście.
+
+minema.config.videoEncoderPath=Ścieżka do pliku kodera
+minema.config.videoEncoderPath.tooltip=Ścieżka do pliku wykonywalnego kodera (exe). Folder kodera jest głównym folderem na pliki wyjściowe. Ignorowane, jeżeli koder jest wyłączony.
+
+minema.config.videoEncoderParams=Parametry kodera
+minema.config.videoEncoderParams.tooltip=Argumenty dla programu kodera. Zmienne: %%WIDTH%% - szerokość klatki, %%HEIGHT%% - wysokość, %%FPS%% - klatki na sekundę. Ignorowane, jeżeli koder jest wyłączony.
+
+minema.config.imageFormat=Format zdjęć
+minema.config.imageFormat.tooltip=Format plików obrazkowych do użycia, gdy koder jest wyłączony. Użyj tga, dla lepszej jakości i szybkości, ale na koszt dużych plików.
+
+# config capturing
+minema.config.frameWidth=Szerokość klatki
+minema.config.frameWidth.tooltip=Szerokość klatki w pikselach. Ustaw na 0, aby użyć aktualnych wymiarów okna. Nie-zerowe wartości wymagają framebuffer-a i są ograniczone do maksymalnej rozdzielczości ekranu w twoim GPU.
+
+minema.config.frameHeight=Wysokość klatki
+minema.config.frameHeight.tooltip=Wysokość klatki w pikselach. Ustaw na 0, aby użyć aktualnych wymiarów okna. Nie-zerowe wartości wymagają framebuffer-a i są ograniczone do maksymalnej rozdzielczości ekranu w twoim GPU.
+
+minema.config.frameRate=Klatki na sekundę
+minema.config.frameRate.tooltip=Szybkość rejestrowania klatek, ustala ilość klatek nagranych w czasie jednej sekundy w grze. Liczby zmiennoprzecinkowe są dozwolone, np. 23.976 dla 24p NTSC. Ponieważ Minecraft działa w 20 tickach na sekundę, wielokrotności liczby 20 są rekomendowane dla najlepszej płynności.
+
+minema.config.frameLimit=Limit klatek
+minema.config.frameLimit.tooltip=Liczba klatek do zarejestrowania przed automatycznym zatrzymaniem nagrywania. Ustaw na -1, aby znieść limit.
+
+minema.config.capturePath=Ścieżka do nagrań
+minema.config.capturePath.tooltip=Folder, w którym pojawią się nowe nagrania. Jeżeli nie została użyta absolutna ścieżka, będzie ona relatywna do głównego folderu.
+
+minema.config.showOverlay=Pokaż GUI
+minema.config.showOverlay.tooltip=Jeżeli tak, pokażuje dodatkowe informacje na nakładce. Uwaga: Nakładka będzie widoczna również na nagraniu.
+
+# config engine
+minema.config.engineSpeed=Szybkość gry
+minema.config.engineSpeed.tooltip=Modyfikator prędkości. Domyślnie 1.0, co odpowiada 20 tickom na sekundę. Mniejsze lub większe wartości spowolnią lub przyśpieszą grę. Na przykład: 2.5 przyśpieszy grę dwa i pół razy. Użyteczne dla efekty slow motion lub timelapse. Ignorowane, jeżeli nagrywanie nie jest zsynchronizowane.
+
+minema.config.particleLimit=Limit cząsteczek
+minema.config.particleLimit.tooltip=Ustala maksymalną liczbę cząsteczek, zanim najstarsze zostaną usunięte. Domyślnie jest ograniczone do 4000. Niektóre sceny, jak na przykład wielki wybuch TNT generuje ogromne ilości cząsteczek i może wymagać większych limitów, aby cząsteczki nie znikały. Ustaw na -1, aby znieść limit.
+
+minema.config.syncEngine=Synchronizuj
+minema.config.syncEngine.tooltip=Jeżeli tak, kilent i lokalny serwer będzie działać odpowiednio szybko do prędkości nagrywania. Pozwala to na zmianę Minecrafta w program do renderowania i nagrywania bardzo wymagających scen w trybie offline. Jeżeli ustawiono na nie, nagrywanie jest rejestrowane na żywo i laguje serwer oraz klienta oraz może spowodować spowolnienie gry. Na serwerach multiplayer domyślnie ustawione na nie.
+
+minema.config.preloadChunks=Przed-ładowanie chunków
+minema.config.preloadChunks.tooltip=Jeżeli tak, Minema zatrzyma grę, dopóki nie zostaną załadowane wszystkie chunki. Camera Studio i inne mody są rekomendowane dla tej opcji, ponieważ płynne poruszanie się kamery jest prawie niemożliwe bez tego.
