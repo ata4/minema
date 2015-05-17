@@ -9,16 +9,19 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.util.reflection.PrivateFields;
+import java.util.Iterator;
+import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
+import net.minecraft.client.renderer.chunk.RenderChunk;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 /**
  *
@@ -28,7 +31,8 @@ public class ChunkPreloader extends CaptureModule {
     
     private static final Minecraft MC = Minecraft.getMinecraft();
     
-    private WorldRenderer[] worldRenderers;
+    private Set<RenderChunk> chunksToUpdate;
+    private ChunkRenderDispatcher renderDispatcher;
 
     public ChunkPreloader(MinemaConfig cfg) {
         super(cfg);
@@ -40,23 +44,33 @@ public class ChunkPreloader extends CaptureModule {
             return;
         }
         
-        if (worldRenderers == null) {
+        if (chunksToUpdate == null || renderDispatcher == null) {
             return;
         }
         
-        for (WorldRenderer worldRenderer : worldRenderers) {
-            if (worldRenderer.isInFrustum && worldRenderer.needsUpdate) {
-                worldRenderer.updateRenderer(MC.renderViewEntity);
-            }
+        // TODO: this only loads local client chunks and doesn't load missing
+        // chunks from the server
+        Iterator<RenderChunk> iterator = chunksToUpdate.iterator();
+        while (iterator.hasNext()) {
+            RenderChunk renderChunk = iterator.next();
+            renderDispatcher.updateChunkNow(renderChunk);
+            renderChunk.setNeedsUpdate(false);
+            iterator.remove();
         }
     }
 
     @Override
     protected void doEnable() throws Exception {
         try {
-            worldRenderers = ReflectionHelper.getPrivateValue(RenderGlobal.class, MC.renderGlobal, PrivateFields.RENDERGLOBAL_WORLDRENDERERS);
+            chunksToUpdate = ReflectionHelper.getPrivateValue(RenderGlobal.class, MC.renderGlobal, PrivateFields.RENDERGLOBAL_CHUNKSTOUPDATE);
         } catch (Exception ex) {
-            throw new RuntimeException("Can't get worldRenderers field", ex);
+            throw new RuntimeException("Can't get chunksToUpdate field", ex);
+        }
+        
+        try {
+            renderDispatcher = ReflectionHelper.getPrivateValue(RenderGlobal.class, MC.renderGlobal, PrivateFields.RENDERGLOBAL_RENDERDISPATCHER);
+        } catch (Exception ex) {
+            throw new RuntimeException("Can't get renderDispatcher field", ex);
         }
         
         FMLCommonHandler.instance().bus().register(this);

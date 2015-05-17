@@ -9,10 +9,9 @@
  */
 package info.ata4.minecraft.minema.client.config;
 
-import cpw.mods.fml.client.IModGuiFactory;
 import java.util.Set;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.client.IModGuiFactory;
 
 /**
  *
@@ -29,7 +28,7 @@ public class MinemaConfigGuiFactory implements IModGuiFactory {
     }
 
     @Override
-    public Class<? extends GuiScreen> mainConfigGuiClass() {
+    public Class<MinemaConfigGui> mainConfigGuiClass() {
         return MinemaConfigGui.class;
     }
 

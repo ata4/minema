@@ -9,7 +9,7 @@
  */
 package info.ata4.minecraft.minema.client.event;
 
-import cpw.mods.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  *

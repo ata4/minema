@@ -9,13 +9,13 @@
  */
 package info.ata4.minecraft.minema.client.engine;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import java.util.List;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +28,7 @@ public class ExtendedEffectRenderer extends EffectRenderer {
     
     private static final Logger L = LogManager.getLogger();
     
-    private List<EntityFX>[] fxLayers;
+    private List<EntityFX>[][] fxLayers;
     private int particleLimit = 4000;
 
     public ExtendedEffectRenderer(World world, TextureManager textureManager) {
@@ -43,17 +43,25 @@ public class ExtendedEffectRenderer extends EffectRenderer {
 
     @Override
     public void addEffect(EntityFX fx) {
+        //Forge: Prevent modders from being bad and adding nulls causing untraceable NPEs.
+        if (fx == null) {
+            return;
+        }
+        
         if (particleLimit == 0) {
             return;
         }
         
         int i = fx.getFXLayer();
+        int j = fx.func_174838_j() != 1 ? 0 : 1;
+        
+        List<EntityFX> fxLayer = fxLayers[i][j];
 
-        if (particleLimit > 0 && fxLayers[i].size() >= particleLimit) {
-            fxLayers[i].remove(0);
+        if (particleLimit > 0 && fxLayer.size() >= particleLimit) {
+            fxLayer.remove(0);
         }
 
-        fxLayers[i].add(fx);
+        fxLayer.add(fx);
     }
 
     public int getParticleLimit() {

@@ -37,9 +37,8 @@ public class CaptureStream extends NullStream {
         return session.isEnabled();
     }
 
-    // getIsPaused
     @Override
-    public boolean func_152919_o() {
+    public boolean isPaused() {
         return session.isPaused();
     }
 

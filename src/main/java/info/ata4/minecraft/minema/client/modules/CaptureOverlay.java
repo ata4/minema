@@ -9,13 +9,13 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Minema information screen overlay.
@@ -46,7 +46,7 @@ public class CaptureOverlay extends CaptureModule {
         String frame = String.valueOf(time.getNumFrames());
         left.add("Frame: " + frame);
         
-        String fps = MC.debug.isEmpty() ? MC.debug : MC.debug.substring(0, MC.debug.indexOf(','));
+        String fps = Minecraft.getDebugFPS() + " fps";
         left.add("Rate: " + fps);
         
         String avg = (int) time.getAverageFPS() + " fps";

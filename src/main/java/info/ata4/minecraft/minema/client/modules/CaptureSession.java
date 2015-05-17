@@ -10,9 +10,6 @@
 
 package info.ata4.minecraft.minema.client.modules;
 
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.eventhandler.EventBus;
-import cpw.mods.fml.relauncher.ReflectionHelper;
 import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.CapturePausedEvent;
@@ -30,6 +27,9 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.stream.IStream;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -112,7 +112,7 @@ public class CaptureSession extends CaptureModule {
         exporter.configureCapturer(fbc);
         
         // backup original (Twitch-)IStream object and replace it with own version
-        defaultStream = MC.func_152346_Z();
+        defaultStream = MC.getTwitchStream();
         setStream(new CaptureStream(this));
         
         // play a sound

@@ -13,6 +13,7 @@ package info.ata4.minecraft.minema.client.cmd;
 import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.client.modules.DisplaySizeModifier;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import org.lwjgl.LWJGLException;
@@ -32,7 +33,7 @@ public class CommandMinema extends CommandBase {
     }
     
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "minema";
     }
 
@@ -42,7 +43,7 @@ public class CommandMinema extends CommandBase {
     }
     
     @Override
-    public void processCommand(ICommandSender sender, String[] args) {
+    public void execute(ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
             throw new WrongUsageException(getCommandUsage(sender));
         }

@@ -94,7 +94,9 @@ public class MinemaConfig extends ConfigContainer {
         register(engineSpeed, "engineSpeed", CATEGORY_ENGINE);
         register(particleLimit, "particleLimit", CATEGORY_ENGINE);
         register(syncEngine, "syncEngine", CATEGORY_ENGINE);
-        register(preloadChunks, "preloadChunks", CATEGORY_ENGINE);
+        
+        // TODO: fix chunk preloading
+        // register(preloadChunks, "preloadChunks", CATEGORY_ENGINE);
         
         update(true);
     }

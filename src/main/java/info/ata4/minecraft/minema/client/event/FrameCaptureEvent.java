@@ -9,8 +9,8 @@
  */
 package info.ata4.minecraft.minema.client.event;
 
-import cpw.mods.fml.common.eventhandler.Cancelable;
 import java.nio.ByteBuffer;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import org.lwjgl.util.Dimension;
 
 /**
