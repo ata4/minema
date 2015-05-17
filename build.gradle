@@ -35,7 +35,7 @@ minecraft {
 }
 
 version =  "${getGitTag()}-${minecraft.version}"
-group= "info.ata4.minema"
+group= "info.ata4.minecraft.minema"
 archivesBaseName = "Minema"
 
 // replace version placeholder in the main mod class
