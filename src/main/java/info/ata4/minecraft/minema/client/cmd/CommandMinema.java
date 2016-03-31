@@ -16,6 +16,8 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.server.MinecraftServer;
+
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
@@ -33,7 +35,7 @@ public class CommandMinema extends CommandBase {
     }
     
     @Override
-    public String getName() {
+    public String getCommandName() {
         return "minema";
     }
 
@@ -43,7 +45,7 @@ public class CommandMinema extends CommandBase {
     }
     
     @Override
-    public void execute(ICommandSender sender, String[] args) throws CommandException {
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length == 0) {
             throw new WrongUsageException(getCommandUsage(sender));
         }
