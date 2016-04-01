@@ -9,15 +9,16 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
-import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import java.util.Iterator;
 import java.util.Set;
+
+import info.ata4.minecraft.minema.client.config.MinemaConfig;
+import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.chunk.RenderChunk;
-import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
@@ -73,12 +74,12 @@ public class ChunkPreloader extends CaptureModule {
             throw new RuntimeException("Can't get renderDispatcher field", ex);
         }
         
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
     protected void doDisable() throws Exception {
-        FMLCommonHandler.instance().bus().unregister(this);
+    	MinecraftForge.EVENT_BUS.unregister(this);
     }
     
 }

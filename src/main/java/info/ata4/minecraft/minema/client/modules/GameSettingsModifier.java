@@ -12,7 +12,6 @@ package info.ata4.minecraft.minema.client.modules;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
-import org.lwjgl.opengl.Display;
 
 /**
  *

@@ -9,17 +9,17 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
+import java.lang.reflect.Method;
+
+import org.lwjgl.opengl.Display;
+
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import info.ata4.minecraft.minema.util.reflection.PrivateMethods;
-import java.lang.reflect.Method;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.Display;
 
 /**
  *
@@ -27,7 +27,6 @@ import org.lwjgl.opengl.Display;
  */
 public class DisplaySizeModifier extends CaptureModule {
     
-    private static final Logger L = LogManager.getLogger();
     private static final Minecraft MC = Minecraft.getMinecraft();
     
     private int originalWidth;
