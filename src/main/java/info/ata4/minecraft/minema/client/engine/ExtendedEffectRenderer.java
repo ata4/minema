@@ -9,7 +9,7 @@
  */
 package info.ata4.minecraft.minema.client.engine;
 
-import java.util.List;
+import java.util.ArrayDeque;
 
 import info.ata4.minecraft.minema.util.reflection.PrivateFields;
 import net.minecraft.client.particle.EffectRenderer;
@@ -25,8 +25,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
  */
 public class ExtendedEffectRenderer extends EffectRenderer {
 
-	// TODO: This is pretty much a very old derivative from original MC code (works though)
-	private List<EntityFX>[][] fxLayers;
+	private final ArrayDeque<EntityFX>[][] fxLayers;
 	private int particleLimit = 4000;
 
 	public ExtendedEffectRenderer(World world, TextureManager textureManager) {
@@ -55,7 +54,7 @@ public class ExtendedEffectRenderer extends EffectRenderer {
 		int i = fx.getFXLayer();
 		int k = fx.func_187111_c() ? 0 : 1;
 
-		List<EntityFX> fxLayer = fxLayers[i][k];
+		ArrayDeque<EntityFX> fxLayer = fxLayers[i][k];
 
 		if (particleLimit > 0 && fxLayer.size() >= particleLimit) {
 			fxLayer.remove(0);
