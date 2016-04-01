@@ -80,8 +80,6 @@ public class CaptureSession extends CaptureModule {
 			modules.add(new DisplaySizeModifier(cfg));
 		}
 
-		modules.add(new EffectRendererModifier(cfg));
-
 		FrameExporter exporter;
 		if (cfg.useVideoEncoder.get()) {
 			exporter = new PipeFrameExporter(cfg);
