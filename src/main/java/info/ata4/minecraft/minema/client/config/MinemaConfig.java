@@ -67,7 +67,7 @@ public class MinemaConfig extends ConfigContainer {
 	public final ConfigBoolean showOverlay = new ConfigBoolean(false);
 
 	public final ConfigDouble engineSpeed = new ConfigDouble(1.0, 0.01);
-	public final ConfigInteger particleLimit = new ConfigInteger(64000, -1);
+	//public final ConfigInteger particleLimit = new ConfigInteger(64000, -1);
 	public final ConfigBoolean syncEngine = new ConfigBoolean(true);
 	public final ConfigBoolean preloadChunks = new ConfigBoolean(false);
 
