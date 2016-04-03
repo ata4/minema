@@ -32,12 +32,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  * 
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-@Mod(modid = Minema.ID, name = Minema.NAME, version = Minema.VERSION, useMetadata = true, guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory")
-public class Minema {
+@Mod(modid = Minema.ID, name = Minema.NAME, version = Minema.VERSION, guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory")
+public final class Minema {
 
 	public static final String NAME = "Minema";
 	public static final String ID = NAME;
-	public static final String AID = NAME.toLowerCase();
 	public static final String VERSION = "1.9";
 
 	@Instance(ID)
@@ -46,6 +45,20 @@ public class Minema {
 	private ModMetadata metadata;
 	private MinemaConfig config;
 	private CaptureSession session;
+
+	@EventHandler
+	public void onPreInit(FMLPreInitializationEvent evt) {
+		File file = evt.getSuggestedConfigurationFile();
+		config = new MinemaConfig(new Configuration(file));
+		metadata = evt.getModMetadata();
+	}
+
+	@EventHandler
+	public void onInit(FMLInitializationEvent evt) {
+		ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
+		MinecraftForge.EVENT_BUS.register(new KeyHandler(this));
+		MinecraftForge.EVENT_BUS.register(this);
+	}
 
 	public MinemaConfig getConfig() {
 		return config;
@@ -80,17 +93,4 @@ public class Minema {
 		}
 	}
 
-	@EventHandler
-	public void onPreInit(FMLPreInitializationEvent evt) {
-		File file = evt.getSuggestedConfigurationFile();
-		config = new MinemaConfig(new Configuration(file));
-		metadata = evt.getModMetadata();
-	}
-
-	@EventHandler
-	public void onInit(FMLInitializationEvent evt) {
-		ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
-		MinecraftForge.EVENT_BUS.register(new KeyHandler(this));
-		MinecraftForge.EVENT_BUS.register(this);
-	}
 }
