@@ -134,6 +134,7 @@ public class CaptureSession extends CaptureModule {
 				// notice that and throws NPEs...
 			}
 		}
+		MinecraftForge.EVENT_BUS.unregister(this);
 
 		modules.clear();
 
