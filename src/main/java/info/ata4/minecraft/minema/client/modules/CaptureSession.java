@@ -27,7 +27,6 @@ import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import info.ata4.minecraft.minema.client.util.ChatUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -41,7 +40,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
  */
 public class CaptureSession extends ACaptureModule {
 
-	private static final Minecraft MC = Minecraft.getMinecraft();
 	private static final Logger L = LogManager.getLogger();
 
 	private final List<ACaptureModule> modules = new ArrayList<ACaptureModule>();
@@ -105,9 +103,6 @@ public class CaptureSession extends ACaptureModule {
 		// configure framebuffer capturer
 		this.fbc = new FramebufferCapturer();
 		exporter.configureCapturer(this.fbc);
-
-		// play a sound
-		playSound();
 	}
 
 	@Override
@@ -232,18 +227,5 @@ public class CaptureSession extends ACaptureModule {
 
 	public CaptureTime getCaptureTime() {
 		return this.time;
-	}
-
-	private void playSound() {
-		try {
-			if (MC.theWorld != null && MC.thePlayer != null) {
-				// MC.theWorld.playSound(MC.thePlayer.posX, MC.thePlayer.posY,
-				// MC.thePlayer.posZ,
-				// new SoundEvent(new ResourceLocation("mob.chicken.plop")),
-				// SoundCategory.NEUTRAL, 1, 1, false);
-			}
-		} catch (final Exception ex) {
-			L.warn("Can't play capture sound", ex);
-		}
 	}
 }
