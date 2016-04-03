@@ -18,14 +18,14 @@ import info.ata4.minecraft.minema.client.config.MinemaConfig;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public abstract class CaptureModule {
+public abstract class ACaptureModule {
 
 	private static final Logger L = LogManager.getLogger();
 
 	protected final MinemaConfig cfg;
 	private boolean enabled;
 
-	public CaptureModule(final MinemaConfig cfg) {
+	public ACaptureModule(final MinemaConfig cfg) {
 		this.cfg = cfg;
 	}
 

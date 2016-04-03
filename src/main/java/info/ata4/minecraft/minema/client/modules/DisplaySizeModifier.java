@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class DisplaySizeModifier extends CaptureModule {
+public class DisplaySizeModifier extends ACaptureModule {
 
 	private static final Minecraft MC = Minecraft.getMinecraft();
 

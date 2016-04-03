@@ -23,7 +23,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class TimerModifier extends CaptureModule {
+public class TimerModifier extends ACaptureModule {
 
 	private static final Logger L = LogManager.getLogger();
 	private static final Minecraft MC = Minecraft.getMinecraft();

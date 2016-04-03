@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public abstract class FrameExporter extends CaptureModule {
+public abstract class FrameExporter extends ACaptureModule {
 
 	private static final Logger L = LogManager.getLogger();
 

@@ -39,12 +39,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class CaptureSession extends CaptureModule {
+public class CaptureSession extends ACaptureModule {
 
 	private static final Minecraft MC = Minecraft.getMinecraft();
 	private static final Logger L = LogManager.getLogger();
 
-	private final List<CaptureModule> modules = new ArrayList<CaptureModule>();
+	private final List<ACaptureModule> modules = new ArrayList<ACaptureModule>();
 	private final EventBus eventBus = new EventBus();
 
 	private CaptureTime time;
@@ -93,7 +93,7 @@ public class CaptureSession extends CaptureModule {
 		}
 
 		// enable and register modules
-		for (final CaptureModule module : this.modules) {
+		for (final ACaptureModule module : this.modules) {
 			module.enable();
 			this.eventBus.register(module);
 		}
@@ -113,7 +113,7 @@ public class CaptureSession extends CaptureModule {
 	@Override
 	protected void doDisable() {
 		// disable and unregister modules
-		for (final CaptureModule module : this.modules) {
+		for (final ACaptureModule module : this.modules) {
 			try {
 				if (module.isEnabled()) {
 					module.disable();
