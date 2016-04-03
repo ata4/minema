@@ -9,7 +9,7 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
@@ -36,10 +36,10 @@ public class CaptureOverlay extends ACaptureModule {
 
 	@SubscribeEvent
 	public void onRenderGameOverlay(final RenderGameOverlayEvent.Text evt) {
-		final List<String> left = evt.left;
+		final ArrayList<String> left = evt.left;
 
 		if (MC.gameSettings.showDebugInfo) {
-			left.add(null);
+			left.add("");
 		}
 
 		final CaptureTime time = this.session.getCaptureTime();
