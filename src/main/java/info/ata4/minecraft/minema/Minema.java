@@ -87,7 +87,7 @@ public final class Minema {
 	}
 
 	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
+	public void onConfigChanged(ConfigChangedEvent eventArgs) {
 		if (eventArgs.modID.equals(ID)) {
 			config.update(false);
 		}
