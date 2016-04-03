@@ -16,8 +16,4 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class CapturePausedEvent extends Event {
-    
-    public CapturePausedEvent() {
-        super();
-    }
 }

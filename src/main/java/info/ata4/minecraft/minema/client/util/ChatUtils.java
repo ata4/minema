@@ -28,32 +28,29 @@ public class ChatUtils {
 
 	private static final Minecraft MC = Minecraft.getMinecraft();
 
-	private ChatUtils() {
-	}
-
-	public static void print(String msg, TextFormatting format, Object... args) {
+	public static void print(final String msg, final TextFormatting format, final Object... args) {
 		if (MC.ingameGUI == null) {
 			return;
 		}
 
-		GuiNewChat chat = MC.ingameGUI.getChatGUI();
-		TextComponentTranslation ret = new TextComponentTranslation(msg, args);
+		final GuiNewChat chat = MC.ingameGUI.getChatGUI();
+		final TextComponentTranslation ret = new TextComponentTranslation(msg, args);
 		ret.getChatStyle().setColor(format);
 
 		chat.printChatMessage(ret);
 	}
 
-	public static void print(String msg, Object... args) {
+	public static void print(final String msg, final Object... args) {
 		print(msg, null, args);
 	}
 
-	public static void printFileLink(String msg, File file) {
-		TextComponentString text = new TextComponentString(file.getName());
+	public static void printFileLink(final String msg, final File file) {
+		final TextComponentString text = new TextComponentString(file.getName());
 		String path;
 
 		try {
 			path = file.getAbsoluteFile().getCanonicalPath();
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			path = file.getAbsolutePath();
 		}
 

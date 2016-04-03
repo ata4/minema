@@ -9,6 +9,14 @@
  */
 package info.ata4.minecraft.minema.client.config;
 
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.imageio.ImageIO;
+
+import org.lwjgl.opengl.Display;
+
 import info.ata4.minecraft.minema.util.config.ConfigBoolean;
 import info.ata4.minecraft.minema.util.config.ConfigContainer;
 import info.ata4.minecraft.minema.util.config.ConfigDouble;
@@ -16,13 +24,8 @@ import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import info.ata4.minecraft.minema.util.config.ConfigInteger;
 import info.ata4.minecraft.minema.util.config.ConfigString;
 import info.ata4.minecraft.minema.util.config.ConfigStringEnum;
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
-import org.lwjgl.opengl.Display;
 
 /**
  *
@@ -37,10 +40,10 @@ public class MinemaConfig extends ConfigContainer {
 	public static final String CATEGORY_ENGINE = "engine";
 
 	private static Set<String> getImageFormats() {
-		Set<String> formats = new HashSet<String>();
+		final Set<String> formats = new HashSet<String>();
 
 		// add all writer format names and convert them to lower case
-		for (String formatName : ImageIO.getWriterFormatNames()) {
+		for (final String formatName : ImageIO.getWriterFormatNames()) {
 			formats.add(formatName.toLowerCase());
 		}
 
@@ -73,30 +76,27 @@ public class MinemaConfig extends ConfigContainer {
 
 	private File movieDir;
 
-	public MinemaConfig(Configuration config) {
+	public MinemaConfig(final Configuration config) {
 		super(config);
 
 		setLangKeyPrefix("minema.config");
 
-		register(imageFormat, "imageFormat", CATEGORY_ENCODING);
-		register(useVideoEncoder, "useVideoEncoder", CATEGORY_ENCODING);
-		register(videoEncoderPath, "videoEncoderPath", CATEGORY_ENCODING);
-		register(videoEncoderParams, "videoEncoderParams", CATEGORY_ENCODING);
-		register(snapResolution, "snapResolution", CATEGORY_ENCODING);
+		register(this.imageFormat, "imageFormat", CATEGORY_ENCODING);
+		register(this.useVideoEncoder, "useVideoEncoder", CATEGORY_ENCODING);
+		register(this.videoEncoderPath, "videoEncoderPath", CATEGORY_ENCODING);
+		register(this.videoEncoderParams, "videoEncoderParams", CATEGORY_ENCODING);
+		register(this.snapResolution, "snapResolution", CATEGORY_ENCODING);
 
-		register(frameWidth, "frameWidth", CATEGORY_CAPTURING);
-		register(frameHeight, "frameHeight", CATEGORY_CAPTURING);
-		register(frameRate, "frameRate", CATEGORY_CAPTURING);
-		register(frameLimit, "frameLimit", CATEGORY_CAPTURING);
-		register(capturePath, "capturePath", CATEGORY_CAPTURING);
-		register(showOverlay, "showOverlay", CATEGORY_CAPTURING);
+		register(this.frameWidth, "frameWidth", CATEGORY_CAPTURING);
+		register(this.frameHeight, "frameHeight", CATEGORY_CAPTURING);
+		register(this.frameRate, "frameRate", CATEGORY_CAPTURING);
+		register(this.frameLimit, "frameLimit", CATEGORY_CAPTURING);
+		register(this.capturePath, "capturePath", CATEGORY_CAPTURING);
+		register(this.showOverlay, "showOverlay", CATEGORY_CAPTURING);
 
-		register(engineSpeed, "engineSpeed", CATEGORY_ENGINE);
+		register(this.engineSpeed, "engineSpeed", CATEGORY_ENGINE);
 		// register(particleLimit, "particleLimit", CATEGORY_ENGINE);
-		register(syncEngine, "syncEngine", CATEGORY_ENGINE);
-
-		// TODO: fix chunk preloading
-		// register(preloadChunks, "preloadChunks", CATEGORY_ENGINE);
+		register(this.syncEngine, "syncEngine", CATEGORY_ENGINE);
 
 		update(true);
 	}
@@ -104,14 +104,14 @@ public class MinemaConfig extends ConfigContainer {
 	public int getFrameWidth() {
 		int width;
 
-		if (frameWidth.get() == 0) {
+		if (this.frameWidth.get() == 0) {
 			width = Display.getWidth();
 		} else {
-			width = frameWidth.get();
+			width = this.frameWidth.get();
 		}
 
-		if (useVideoEncoder.get()) {
-			width = snapResolution.get().snap(width);
+		if (this.useVideoEncoder.get()) {
+			width = this.snapResolution.get().snap(width);
 		}
 
 		return width;
@@ -120,14 +120,14 @@ public class MinemaConfig extends ConfigContainer {
 	public int getFrameHeight() {
 		int height;
 
-		if (frameHeight.get() == 0) {
+		if (this.frameHeight.get() == 0) {
 			height = Display.getHeight();
 		} else {
-			height = frameHeight.get();
+			height = this.frameHeight.get();
 		}
 
-		if (useVideoEncoder.get()) {
-			height = snapResolution.get().snap(height);
+		if (this.useVideoEncoder.get()) {
+			height = this.snapResolution.get().snap(height);
 		}
 
 		return height;
@@ -138,14 +138,14 @@ public class MinemaConfig extends ConfigContainer {
 	}
 
 	public boolean isSyncEngine() {
-		return Minecraft.getMinecraft().isSingleplayer() && syncEngine.get();
+		return Minecraft.getMinecraft().isSingleplayer() && this.syncEngine.get();
 	}
 
 	public File getMovieDir() {
-		return movieDir;
+		return this.movieDir;
 	}
 
-	public void setMovieDir(File movieDir) {
+	public void setMovieDir(final File movieDir) {
 		this.movieDir = movieDir;
 	}
 }

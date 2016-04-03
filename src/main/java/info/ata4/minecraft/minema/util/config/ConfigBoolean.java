@@ -17,24 +17,24 @@ import net.minecraftforge.common.config.Property;
  */
 public class ConfigBoolean extends ConfigValue<Boolean> {
 
-    public ConfigBoolean(Boolean value) {
-        super(value);
-    }
+	public ConfigBoolean(final Boolean value) {
+		super(value);
+	}
 
-    @Override
-    public Property.Type getPropType() {
-        return Property.Type.BOOLEAN;
-    }
+	@Override
+	public Property.Type getPropType() {
+		return Property.Type.BOOLEAN;
+	}
 
-    @Override
-    public void importProp(Property prop) {
-        set(prop.getBoolean());
-    }
+	@Override
+	public void importProp(final Property prop) {
+		set(prop.getBoolean());
+	}
 
-    @Override
-    public void exportProp(Property prop) {
-        prop.set(get());
-        prop.setDefaultValue(getDefault());
-    }
-    
+	@Override
+	public void exportProp(final Property prop) {
+		prop.set(get());
+		prop.setDefaultValue(getDefault());
+	}
+
 }

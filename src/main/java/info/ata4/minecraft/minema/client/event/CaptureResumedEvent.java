@@ -16,8 +16,4 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class CaptureResumedEvent extends Event {
-
-    public CaptureResumedEvent() {
-        super();
-    }
 }

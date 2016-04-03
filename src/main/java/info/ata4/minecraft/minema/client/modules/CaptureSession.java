@@ -53,58 +53,58 @@ public class CaptureSession extends CaptureModule {
 	private File movieDir;
 	private boolean paused;
 
-	public CaptureSession(MinemaConfig cfg) {
+	public CaptureSession(final MinemaConfig cfg) {
 		super(cfg);
 	}
 
 	@Override
 	protected void doEnable() {
 		// create and set movie dir
-		File captureDir = new File(cfg.capturePath.get());
-		String movieName = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date());
-		movieDir = new File(captureDir, movieName);
-		if (!movieDir.exists()) {
-			movieDir.mkdirs();
+		final File captureDir = new File(this.cfg.capturePath.get());
+		final String movieName = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date());
+		this.movieDir = new File(captureDir, movieName);
+		if (!this.movieDir.exists()) {
+			this.movieDir.mkdirs();
 		}
-		cfg.setMovieDir(movieDir);
+		this.cfg.setMovieDir(this.movieDir);
 
 		// init modules
-		modules.add(new GameSettingsModifier(cfg));
+		this.modules.add(new GameSettingsModifier(this.cfg));
 
-		if (cfg.isSyncEngine()) {
-			modules.add(new TimerModifier(cfg));
-			modules.add(new TickSynchronizer(cfg));
+		if (this.cfg.isSyncEngine()) {
+			this.modules.add(new TimerModifier(this.cfg));
+			this.modules.add(new TickSynchronizer(this.cfg));
 		}
 
-		if (cfg.useFrameSize()) {
-			modules.add(new DisplaySizeModifier(cfg));
+		if (this.cfg.useFrameSize()) {
+			this.modules.add(new DisplaySizeModifier(this.cfg));
 		}
 
 		FrameExporter exporter;
-		if (cfg.useVideoEncoder.get()) {
-			exporter = new PipeFrameExporter(cfg);
+		if (this.cfg.useVideoEncoder.get()) {
+			exporter = new PipeFrameExporter(this.cfg);
 		} else {
-			exporter = new ImageFrameExporter(cfg);
+			exporter = new ImageFrameExporter(this.cfg);
 		}
-		modules.add(exporter);
+		this.modules.add(exporter);
 
-		if (cfg.showOverlay.get()) {
-			modules.add(new CaptureOverlay(cfg, this));
+		if (this.cfg.showOverlay.get()) {
+			this.modules.add(new CaptureOverlay(this.cfg, this));
 		}
 
 		// enable and register modules
-		for (CaptureModule module : modules) {
+		for (final CaptureModule module : this.modules) {
 			module.enable();
-			eventBus.register(module);
+			this.eventBus.register(module);
 		}
 		MinecraftForge.EVENT_BUS.register(this);
 
 		// reset capturing stats
-		time = new CaptureTime(cfg);
+		this.time = new CaptureTime(this.cfg);
 
 		// configure framebuffer capturer
-		fbc = new FramebufferCapturer();
-		exporter.configureCapturer(fbc);
+		this.fbc = new FramebufferCapturer();
+		exporter.configureCapturer(this.fbc);
 
 		// play a sound
 		playSound();
@@ -113,18 +113,18 @@ public class CaptureSession extends CaptureModule {
 	@Override
 	protected void doDisable() {
 		// disable and unregister modules
-		for (CaptureModule module : modules) {
+		for (final CaptureModule module : this.modules) {
 			try {
 				if (module.isEnabled()) {
 					module.disable();
 				}
-			} catch (Throwable t) {
+			} catch (final Throwable t) {
 				L.error("Can't disable module {}", module.getName(), t);
 			}
 
 			try {
-				eventBus.unregister(module);
-			} catch (NullPointerException ex) {
+				this.eventBus.unregister(module);
+			} catch (final NullPointerException ex) {
 				// module doesn't have any event methods or wasn't registered.
 				// unfortunately, the unregister method isn't smart enough to
 				// notice that and throws NPEs...
@@ -132,13 +132,13 @@ public class CaptureSession extends CaptureModule {
 		}
 		MinecraftForge.EVENT_BUS.unregister(this);
 
-		modules.clear();
+		this.modules.clear();
 
 		// delete empty movie dir
-		if (movieDir != null && movieDir.exists() && movieDir.list().length == 0) {
-			movieDir.delete();
+		if (this.movieDir != null && this.movieDir.exists() && this.movieDir.list().length == 0) {
+			this.movieDir.delete();
 		}
-		cfg.setMovieDir(null);
+		this.cfg.setMovieDir(null);
 
 	}
 
@@ -147,14 +147,14 @@ public class CaptureSession extends CaptureModule {
 		ChatUtils.print("minema.error.label", TextFormatting.RED);
 
 		// get list of throwables and their causes
-		List<Throwable> throwables = new ArrayList<Throwable>();
+		final List<Throwable> throwables = new ArrayList<Throwable>();
 		do {
 			throwables.add(t);
 			t = t.getCause();
 		} while (t != null);
 
-		for (Throwable throwable : throwables) {
-			String message = throwable.getMessage();
+		for (final Throwable throwable : throwables) {
+			final String message = throwable.getMessage();
 
 			// skip wrapped exceptions
 			if (message == null) {
@@ -162,7 +162,7 @@ public class CaptureSession extends CaptureModule {
 			}
 
 			// skip wrapped exceptions with generated messages
-			Throwable cause = throwable.getCause();
+			final Throwable cause = throwable.getCause();
 			if (cause != null && message.equals(cause.toString())) {
 				continue;
 			}
@@ -172,36 +172,37 @@ public class CaptureSession extends CaptureModule {
 	}
 
 	@SubscribeEvent
-	public void captureFrame(RenderTickEvent e) {
+	public void captureFrame(final RenderTickEvent e) {
 		if (!isEnabled() || isPaused()) {
 			return;
 		}
 
 		// skip frames if the capturing framerate is not synchronized with the
 		// rendering framerate
-		if (!cfg.isSyncEngine() && !time.isNextFrame()) {
+		if (!this.cfg.isSyncEngine() && !this.time.isNextFrame()) {
 			// not yet!
 			return;
 		}
 
 		try {
-			if (eventBus.post(new FramePreCaptureEvent(time.getNumFrames(), fbc.getCaptureDimension()))) {
-				throw new RuntimeException("Frame capturing cancelled at frame " + time.getNumFrames());
+			if (this.eventBus
+					.post(new FramePreCaptureEvent(this.time.getNumFrames(), this.fbc.getCaptureDimension()))) {
+				throw new RuntimeException("Frame capturing cancelled at frame " + this.time.getNumFrames());
 			}
 
-			fbc.capture();
+			this.fbc.capture();
 
-			if (eventBus
-					.post(new FrameCaptureEvent(time.getNumFrames(), fbc.getCaptureDimension(), fbc.getByteBuffer()))) {
-				throw new RuntimeException("Frame capturing cancelled at frame " + time.getNumFrames());
+			if (this.eventBus.post(new FrameCaptureEvent(this.time.getNumFrames(), this.fbc.getCaptureDimension(),
+					this.fbc.getByteBuffer()))) {
+				throw new RuntimeException("Frame capturing cancelled at frame " + this.time.getNumFrames());
 			}
 
-			time.nextFrame();
+			this.time.nextFrame();
 
-			if (time.isAtFrameLimit()) {
+			if (this.time.isAtFrameLimit()) {
 				disable();
 			}
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 			L.error("Frame capturing error", t);
 			handleError(t);
 			disable();
@@ -209,10 +210,10 @@ public class CaptureSession extends CaptureModule {
 	}
 
 	public boolean isPaused() {
-		return paused;
+		return this.paused;
 	}
 
-	public void setPaused(boolean paused) {
+	public void setPaused(final boolean paused) {
 		// prepare event if the paused status changed
 		Event evt = null;
 		if (paused && !this.paused) {
@@ -225,12 +226,12 @@ public class CaptureSession extends CaptureModule {
 
 		// send event to notify modules
 		if (evt != null) {
-			eventBus.post(evt);
+			this.eventBus.post(evt);
 		}
 	}
 
 	public CaptureTime getCaptureTime() {
-		return time;
+		return this.time;
 	}
 
 	private void playSound() {
@@ -241,7 +242,7 @@ public class CaptureSession extends CaptureModule {
 				// new SoundEvent(new ResourceLocation("mob.chicken.plop")),
 				// SoundCategory.NEUTRAL, 1, 1, false);
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			L.warn("Can't play capture sound", ex);
 		}
 	}

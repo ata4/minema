@@ -28,7 +28,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Main control class for Forge.
- * 
+ *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 @Mod(modid = Minema.ID, name = Minema.NAME, version = Minema.VERSION, guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory")
@@ -46,49 +46,49 @@ public final class Minema {
 	private CaptureSession session;
 
 	@EventHandler
-	public void onPreInit(FMLPreInitializationEvent evt) {
-		File file = evt.getSuggestedConfigurationFile();
-		config = new MinemaConfig(new Configuration(file));
-		metadata = evt.getModMetadata();
+	public void onPreInit(final FMLPreInitializationEvent evt) {
+		final File file = evt.getSuggestedConfigurationFile();
+		this.config = new MinemaConfig(new Configuration(file));
+		this.metadata = evt.getModMetadata();
 	}
 
 	@EventHandler
-	public void onInit(FMLInitializationEvent evt) {
+	public void onInit(final FMLInitializationEvent evt) {
 		ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
 		MinecraftForge.EVENT_BUS.register(new KeyHandler(this));
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	public MinemaConfig getConfig() {
-		return config;
+		return this.config;
 	}
 
 	public ModMetadata getMetadata() {
-		return metadata;
+		return this.metadata;
 	}
 
 	public void enable() {
-		config.load();
+		this.config.load();
 
-		session = new CaptureSession(config);
-		session.enable();
+		this.session = new CaptureSession(this.config);
+		this.session.enable();
 	}
 
 	public void disable() {
 		if (isEnabled()) {
-			session.disable();
+			this.session.disable();
 		}
-		session = null;
+		this.session = null;
 	}
 
 	public boolean isEnabled() {
-		return session != null && session.isEnabled();
+		return this.session != null && this.session.isEnabled();
 	}
 
 	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent eventArgs) {
+	public void onConfigChanged(final ConfigChangedEvent eventArgs) {
 		if (eventArgs.modID.equals(ID)) {
-			config.update(false);
+			this.config.update(false);
 		}
 	}
 

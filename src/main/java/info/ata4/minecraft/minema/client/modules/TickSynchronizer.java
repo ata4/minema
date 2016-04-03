@@ -34,7 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
  * Tick synchronizer that virtually works like the escapement device of a clock
  * where the "wheel" is the global tick counter and the "anchor" being the local
  * server and client thread.
- * 
+ *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class TickSynchronizer extends CaptureModule {
@@ -53,28 +53,28 @@ public class TickSynchronizer extends CaptureModule {
 
 	// concurrency helpers
 	private final Lock lock = new ReentrantLock();
-	private final Condition serverAhead = lock.newCondition();
-	private final Condition clientAhead = lock.newCondition();
+	private final Condition serverAhead = this.lock.newCondition();
+	private final Condition clientAhead = this.lock.newCondition();
 
-	public TickSynchronizer(MinemaConfig cfg) {
+	public TickSynchronizer(final MinemaConfig cfg) {
 		super(cfg);
 	}
 
 	@SubscribeEvent
-	public void onClientTick(ClientTickEvent evt) {
+	public void onClientTick(final ClientTickEvent evt) {
 		if (!isEnabled() || evt.phase != Phase.START) {
 			return;
 		}
 
 		// client is ready now
-		if (!clientReady.get()) {
+		if (!this.clientReady.get()) {
 			L.info("Client tick sync ready");
-			clientReady.set(true);
-			clientTick.set(0);
+			this.clientReady.set(true);
+			this.clientTick.set(0);
 		}
 
 		// wait for server side
-		if (!serverReady.get()) {
+		if (!this.serverReady.get()) {
 			return;
 		}
 
@@ -84,40 +84,40 @@ public class TickSynchronizer extends CaptureModule {
 		}
 
 		// now sync with the server
-		waitFor(evt.side, clientTick, serverTick, clientAhead, serverAhead);
+		waitFor(evt.side, this.clientTick, this.serverTick, this.clientAhead, this.serverAhead);
 	}
 
 	@SubscribeEvent
-	public void onServerTick(ServerTickEvent evt) {
+	public void onServerTick(final ServerTickEvent evt) {
 		if (!isEnabled() || evt.phase != Phase.START) {
 			return;
 		}
 
 		// server is ready now
-		if (!serverReady.get()) {
+		if (!this.serverReady.get()) {
 			L.info("Server tick sync ready");
-			serverReady.set(true);
-			serverTick.set(0);
+			this.serverReady.set(true);
+			this.serverTick.set(0);
 		}
 
 		// wait for client side
-		if (!clientReady.get()) {
+		if (!this.clientReady.get()) {
 			return;
 		}
 
 		// now sync with the client
-		waitFor(evt.side, serverTick, clientTick, serverAhead, clientAhead);
+		waitFor(evt.side, this.serverTick, this.clientTick, this.serverAhead, this.clientAhead);
 	}
 
-	private void waitFor(Side side, AtomicInteger actual, AtomicInteger target, Condition waitCon,
-			Condition signalCon) {
-		lock.lock();
+	private void waitFor(final Side side, final AtomicInteger actual, final AtomicInteger target,
+			final Condition waitCon, final Condition signalCon) {
+		this.lock.lock();
 
 		try {
 			while (target.get() < actual.get()) {
 				if (L.isDebugEnabled()) {
-					int behind = actual.get() - target.get();
-					Side otherSide = side == Side.CLIENT ? Side.SERVER : Side.CLIENT;
+					final int behind = actual.get() - target.get();
+					final Side otherSide = side == Side.CLIENT ? Side.SERVER : Side.CLIENT;
 					L.debug("{} waiting, {} {} ticks behind", side, otherSide, behind);
 				}
 
@@ -126,7 +126,7 @@ public class TickSynchronizer extends CaptureModule {
 				checkServer();
 
 				// break loop if any side isn't ready or if the sync is disabled
-				if (!isEnabled() || !serverReady.get() || !clientReady.get()) {
+				if (!isEnabled() || !this.serverReady.get() || !this.clientReady.get()) {
 					return;
 				}
 			}
@@ -138,10 +138,10 @@ public class TickSynchronizer extends CaptureModule {
 			}
 
 			signalCon.signal();
-		} catch (InterruptedException ex) {
+		} catch (final InterruptedException ex) {
 			disable();
 		} finally {
-			lock.unlock();
+			this.lock.unlock();
 		}
 	}
 
@@ -150,9 +150,9 @@ public class TickSynchronizer extends CaptureModule {
 		// server shutdowns may not be noticed by the ServerStopped event while
 		// the client is waiting for the server to continue, so do a continuous
 		// check instead
-		MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+		final MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
 		if (server == null || !server.isServerRunning() || server.isServerStopped()) {
-			serverReady.set(false);
+			this.serverReady.set(false);
 		}
 	}
 
@@ -163,8 +163,8 @@ public class TickSynchronizer extends CaptureModule {
 
 	@Override
 	protected void doDisable() throws Exception {
-		clientReady.set(false);
-		serverReady.set(false);
+		this.clientReady.set(false);
+		this.serverReady.set(false);
 		MinecraftForge.EVENT_BUS.unregister(this);
 	}
 

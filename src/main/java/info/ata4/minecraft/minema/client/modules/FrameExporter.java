@@ -35,41 +35,41 @@ public abstract class FrameExporter extends CaptureModule {
 	protected ExecutorService exportService;
 	protected Future<?> exportFuture;
 
-	public FrameExporter(MinemaConfig cfg) {
+	public FrameExporter(final MinemaConfig cfg) {
 		super(cfg);
 	}
 
 	@Override
 	protected void doEnable() throws Exception {
-		exportService = Executors.newSingleThreadExecutor();
+		this.exportService = Executors.newSingleThreadExecutor();
 	}
 
 	@Override
 	protected void doDisable() throws Exception {
-		exportService.shutdown();
+		this.exportService.shutdown();
 
 		try {
-			if (!exportService.awaitTermination(3, TimeUnit.SECONDS)) {
+			if (!this.exportService.awaitTermination(3, TimeUnit.SECONDS)) {
 				L.warn("Frame export service termination timeout");
-				exportService.shutdownNow();
+				this.exportService.shutdownNow();
 			}
-		} catch (InterruptedException ex) {
+		} catch (final InterruptedException ex) {
 			L.warn("Frame export service termination interrupted", ex);
 		}
 	}
 
 	@SubscribeEvent
-	public void onFramePreCapture(FramePreCaptureEvent evt) throws ExecutionException {
+	public void onFramePreCapture(final FramePreCaptureEvent evt) throws ExecutionException {
 		if (!isEnabled()) {
 			return;
 		}
 
-		if (exportFuture != null) {
+		if (this.exportFuture != null) {
 			// wait for the previous task to complete before sending the next
 			// one
 			try {
-				exportFuture.get();
-			} catch (InterruptedException ex) {
+				this.exportFuture.get();
+			} catch (final InterruptedException ex) {
 				// catch uncritical interruption exception
 				L.warn("Frame export task interrupted", ex);
 			}
@@ -85,7 +85,7 @@ public abstract class FrameExporter extends CaptureModule {
 		// export frame in the background so that the next frame can be
 		// rendered
 		// in the meantime
-		exportFuture = exportService.submit(new Runnable() {
+		this.exportFuture = this.exportService.submit(new Runnable() {
 			@Override
 			public void run() {
 				exportFrame(evt);
@@ -93,10 +93,10 @@ public abstract class FrameExporter extends CaptureModule {
 		});
 	}
 
-	private void exportFrame(FrameCaptureEvent evt) {
+	private void exportFrame(final FrameCaptureEvent evt) {
 		try {
 			doExportFrame(evt);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			throw new RuntimeException("Can't export frame " + evt.frameNum, ex);
 		}
 	}

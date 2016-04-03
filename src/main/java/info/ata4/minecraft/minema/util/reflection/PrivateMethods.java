@@ -14,6 +14,6 @@ package info.ata4.minecraft.minema.util.reflection;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public interface PrivateMethods {
-    
-    public static final String[] MINECRAFT_RESIZE = new String[] {"resize", "func_71370_a"};
+
+	public static final String[] MINECRAFT_RESIZE = new String[] { "resize", "func_71370_a" };
 }

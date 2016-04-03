@@ -28,19 +28,19 @@ public final class KeyHandler {
 
 	private final Minema minema;
 
-	public KeyHandler(Minema minema) {
+	public KeyHandler(final Minema minema) {
 		this.minema = minema;
 
 		ClientRegistry.registerKeyBinding(KEY_CAPTURE);
 	}
 
 	@SubscribeEvent
-	public void onKeyInput(KeyInputEvent event) {
+	public void onKeyInput(final KeyInputEvent event) {
 		if (KEY_CAPTURE.isPressed()) {
-			if (minema.isEnabled()) {
-				minema.disable();
+			if (this.minema.isEnabled()) {
+				this.minema.disable();
 			} else {
-				minema.enable();
+				this.minema.enable();
 			}
 		}
 	}
