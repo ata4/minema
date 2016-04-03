@@ -171,7 +171,7 @@ public class CaptureSession extends ACaptureModule {
 		// skip frames if the capturing framerate is not synchronized with the
 		// rendering framerate
 		if (!this.cfg.isSyncEngine() && !this.time.isNextFrame()) {
-			// not yet!
+			// Game renders faster than necessary for recording?
 			return;
 		}
 
