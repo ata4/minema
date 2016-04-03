@@ -21,15 +21,12 @@ import org.apache.logging.log4j.Logger;
 
 import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.client.event.CapturePausedEvent;
-import info.ata4.minecraft.minema.client.event.CaptureResumedEvent;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import info.ata4.minecraft.minema.client.util.ChatUtils;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
@@ -42,14 +39,13 @@ public class CaptureSession extends ACaptureModule {
 
 	private static final Logger L = LogManager.getLogger();
 
-	private final List<ACaptureModule> modules = new ArrayList<ACaptureModule>();
+	private final ArrayList<ACaptureModule> modules = new ArrayList<ACaptureModule>();
 	private final EventBus eventBus = new EventBus();
 
 	private CaptureTime time;
 	private FramebufferCapturer fbc;
 
 	private File movieDir;
-	private boolean paused;
 
 	public CaptureSession(final MinemaConfig cfg) {
 		super(cfg);
@@ -168,7 +164,7 @@ public class CaptureSession extends ACaptureModule {
 
 	@SubscribeEvent
 	public void captureFrame(final RenderTickEvent e) {
-		if (!isEnabled() || isPaused()) {
+		if (!isEnabled()) {
 			return;
 		}
 
@@ -201,27 +197,6 @@ public class CaptureSession extends ACaptureModule {
 			L.error("Frame capturing error", t);
 			handleError(t);
 			disable();
-		}
-	}
-
-	public boolean isPaused() {
-		return this.paused;
-	}
-
-	public void setPaused(final boolean paused) {
-		// prepare event if the paused status changed
-		Event evt = null;
-		if (paused && !this.paused) {
-			evt = new CapturePausedEvent();
-		} else if (!paused && this.paused) {
-			evt = new CaptureResumedEvent();
-		}
-
-		this.paused = paused;
-
-		// send event to notify modules
-		if (evt != null) {
-			this.eventBus.post(evt);
 		}
 	}
 
