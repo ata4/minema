@@ -21,7 +21,8 @@ public class GameSettingsModifier extends ACaptureModule {
 
 	private static final Minecraft MC = Minecraft.getMinecraft();
 
-	private int limitFramerate;
+	private int framerateLimit;
+	private boolean vSync;
 	private boolean pauseOnLostFocus;
 
 	public GameSettingsModifier(final MinemaConfig cfg) {
@@ -33,8 +34,12 @@ public class GameSettingsModifier extends ACaptureModule {
 		final GameSettings gs = MC.gameSettings;
 
 		// disable build-in framerate limit
-		this.limitFramerate = gs.limitFramerate;
+		this.framerateLimit = gs.limitFramerate;
 		gs.limitFramerate = Integer.MAX_VALUE;
+
+		// disable vSync
+		this.vSync = gs.enableVsync;
+		gs.enableVsync = false;
 
 		// don't pause when losing focus
 		this.pauseOnLostFocus = gs.pauseOnLostFocus;
@@ -44,10 +49,11 @@ public class GameSettingsModifier extends ACaptureModule {
 
 	@Override
 	protected void doDisable() throws Exception {
-		// restore game settings
+		// restore everything
 		final GameSettings gs = MC.gameSettings;
-		gs.limitFramerate = this.limitFramerate;
+		gs.limitFramerate = this.framerateLimit;
 		gs.pauseOnLostFocus = this.pauseOnLostFocus;
+		gs.enableVsync = this.vSync;
 	}
 
 }
