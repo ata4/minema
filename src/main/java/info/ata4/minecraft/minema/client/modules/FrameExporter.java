@@ -33,7 +33,7 @@ public abstract class FrameExporter extends CaptureModule {
 	private static final Logger L = LogManager.getLogger();
 
 	protected ExecutorService exportService;
-	protected Future exportFuture;
+	protected Future<?> exportFuture;
 
 	public FrameExporter(MinemaConfig cfg) {
 		super(cfg);

@@ -28,12 +28,12 @@ import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import info.ata4.minecraft.minema.client.util.ChatUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 /**
  *
@@ -101,6 +101,7 @@ public class CaptureSession extends CaptureModule {
 			module.enable();
 			eventBus.register(module);
 		}
+		MinecraftForge.EVENT_BUS.register(this);
 
 		// reset capturing stats
 		time = new CaptureTime(cfg);
@@ -173,7 +174,8 @@ public class CaptureSession extends CaptureModule {
 		}
 	}
 
-	public void captureFrame() {
+	@SubscribeEvent
+	public void captureFrame(RenderTickEvent e) {
 		if (!isEnabled() || isPaused()) {
 			return;
 		}
@@ -237,8 +239,10 @@ public class CaptureSession extends CaptureModule {
 	private void playSound() {
 		try {
 			if (MC.theWorld != null && MC.thePlayer != null) {
-				MC.theWorld.playSound(MC.thePlayer.posX, MC.thePlayer.posY, MC.thePlayer.posZ,
-						new SoundEvent(new ResourceLocation("mob.chicken.plop")), SoundCategory.NEUTRAL, 1, 1, false);
+				// MC.theWorld.playSound(MC.thePlayer.posX, MC.thePlayer.posY,
+				// MC.thePlayer.posZ,
+				// new SoundEvent(new ResourceLocation("mob.chicken.plop")),
+				// SoundCategory.NEUTRAL, 1, 1, false);
 			}
 		} catch (Exception ex) {
 			L.warn("Can't play capture sound", ex);
