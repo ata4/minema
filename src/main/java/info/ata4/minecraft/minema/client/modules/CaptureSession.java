@@ -88,10 +88,6 @@ public class CaptureSession extends CaptureModule {
 		}
 		modules.add(exporter);
 
-		if (cfg.preloadChunks.get()) {
-			modules.add(new ChunkPreloader(cfg));
-		}
-
 		if (cfg.showOverlay.get()) {
 			modules.add(new CaptureOverlay(cfg, this));
 		}
