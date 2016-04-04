@@ -10,12 +10,7 @@
 
 package info.ata4.minecraft.minema.client.cmd;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
-
 import info.ata4.minecraft.minema.Minema;
-import info.ata4.minecraft.minema.client.modules.DisplaySizeModifier;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -57,29 +52,6 @@ public class CommandMinema extends CommandBase {
 			this.minema.enable();
 		} else if (cmd.equals("disable")) {
 			this.minema.disable();
-		} else if (cmd.equals("resize")) {
-			final DisplaySizeModifier modifier = new DisplaySizeModifier(this.minema.getConfig());
-
-			final int width = Integer.parseInt(args[1]);
-			final int height = Integer.parseInt(args[2]);
-			final int mode = args.length == 4 ? Integer.parseInt(args[3]) : 0;
-
-			modifier.resize(width, height);
-
-			switch (mode) {
-			case 0:
-				try {
-					Display.setDisplayMode(new DisplayMode(width, height));
-				} catch (final LWJGLException ex) {
-					throw new RuntimeException("Can't resize LWJGL display", ex);
-				}
-				break;
-
-			case 1:
-				modifier.setFramebufferTextureSize(Math.max(width, Display.getWidth()),
-						Math.max(height, Display.getHeight()));
-				break;
-			}
 		} else {
 			throw new WrongUsageException(getCommandUsage(sender));
 		}

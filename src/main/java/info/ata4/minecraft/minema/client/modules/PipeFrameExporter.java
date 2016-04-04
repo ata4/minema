@@ -22,6 +22,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.Display;
 
 import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
@@ -50,8 +51,8 @@ public class PipeFrameExporter extends FrameExporter {
 		super.doEnable();
 
 		String params = this.cfg.videoEncoderParams.get();
-		params = params.replace("%WIDTH%", String.valueOf(this.cfg.getFrameWidth()));
-		params = params.replace("%HEIGHT%", String.valueOf(this.cfg.getFrameHeight()));
+		params = params.replace("%WIDTH%", String.valueOf(Display.getWidth()));
+		params = params.replace("%HEIGHT%", String.valueOf(Display.getHeight()));
 		params = params.replace("%FPS%", String.valueOf(this.cfg.frameRate.get()));
 
 		final List<String> cmds = new ArrayList<String>();

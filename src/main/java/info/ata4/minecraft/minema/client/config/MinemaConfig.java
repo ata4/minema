@@ -15,8 +15,6 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-import org.lwjgl.opengl.Display;
-
 import info.ata4.minecraft.minema.util.config.ConfigBoolean;
 import info.ata4.minecraft.minema.util.config.ConfigContainer;
 import info.ata4.minecraft.minema.util.config.ConfigDouble;
@@ -32,8 +30,6 @@ import net.minecraftforge.common.config.Configuration;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class MinemaConfig extends ConfigContainer {
-
-	private static final int MAX_TEXTURE_SIZE = Minecraft.getGLMaximumTextureSize();
 
 	public static final String CATEGORY_ENCODING = "encoding";
 	public static final String CATEGORY_CAPTURING = "capturing";
@@ -62,8 +58,6 @@ public class MinemaConfig extends ConfigContainer {
 	public final ConfigString videoEncoderParams = new ConfigString("");
 	public final ConfigEnum<SnapResolution> snapResolution = new ConfigEnum<SnapResolution>(SnapResolution.MOD2);
 
-	public final ConfigInteger frameWidth = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);
-	public final ConfigInteger frameHeight = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);
 	public final ConfigDouble frameRate = new ConfigDouble(30.0, 0.01, 1000.0);
 	public final ConfigInteger frameLimit = new ConfigInteger(-1, -1);
 	public final ConfigString capturePath = new ConfigString("movies");
@@ -87,8 +81,6 @@ public class MinemaConfig extends ConfigContainer {
 		register(this.videoEncoderParams, "videoEncoderParams", CATEGORY_ENCODING);
 		register(this.snapResolution, "snapResolution", CATEGORY_ENCODING);
 
-		register(this.frameWidth, "frameWidth", CATEGORY_CAPTURING);
-		register(this.frameHeight, "frameHeight", CATEGORY_CAPTURING);
 		register(this.frameRate, "frameRate", CATEGORY_CAPTURING);
 		register(this.frameLimit, "frameLimit", CATEGORY_CAPTURING);
 		register(this.capturePath, "capturePath", CATEGORY_CAPTURING);
@@ -99,42 +91,6 @@ public class MinemaConfig extends ConfigContainer {
 		register(this.syncEngine, "syncEngine", CATEGORY_ENGINE);
 
 		update(true);
-	}
-
-	public int getFrameWidth() {
-		int width;
-
-		if (this.frameWidth.get() == 0) {
-			width = Display.getWidth();
-		} else {
-			width = this.frameWidth.get();
-		}
-
-		if (this.useVideoEncoder.get()) {
-			width = this.snapResolution.get().snap(width);
-		}
-
-		return width;
-	}
-
-	public int getFrameHeight() {
-		int height;
-
-		if (this.frameHeight.get() == 0) {
-			height = Display.getHeight();
-		} else {
-			height = this.frameHeight.get();
-		}
-
-		if (this.useVideoEncoder.get()) {
-			height = this.snapResolution.get().snap(height);
-		}
-
-		return height;
-	}
-
-	public boolean useFrameSize() {
-		return getFrameWidth() != Display.getWidth() || getFrameHeight() != Display.getHeight();
 	}
 
 	public boolean isSyncEngine() {
