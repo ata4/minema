@@ -39,10 +39,6 @@ public class ConfigStringEnum extends ConfigString {
 		this.validValues = choices.toArray(new String[] {});
 	}
 
-	public Set<String> getChoices() {
-		return this.choices;
-	}
-
 	@Override
 	public Property.Type getPropType() {
 		return Property.Type.STRING;
