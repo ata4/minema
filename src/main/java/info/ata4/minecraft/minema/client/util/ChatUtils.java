@@ -9,16 +9,10 @@
  */
 package info.ata4.minecraft.minema.client.util;
 
-import java.io.File;
-import java.io.IOException;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiNewChat;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.util.text.event.ClickEvent.Action;
 
 /**
  *
@@ -40,19 +34,4 @@ public class ChatUtils {
 		chat.printChatMessage(ret);
 	}
 
-	public static void printFileLink(final String msg, final File file) {
-		final TextComponentString text = new TextComponentString(file.getName());
-		String path;
-
-		try {
-			path = file.getAbsoluteFile().getCanonicalPath();
-		} catch (final IOException ex) {
-			path = file.getAbsolutePath();
-		}
-
-		text.getChatStyle().setChatClickEvent(new ClickEvent(Action.OPEN_FILE, path));
-		text.getChatStyle().setUnderlined(true);
-
-		print(msg, TextFormatting.BLUE, text);
-	}
 }
