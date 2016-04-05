@@ -50,10 +50,10 @@ public class ConfigStringEnum extends ConfigString {
 
 	@Override
 	public void set(final String value) {
-		if (!this.choices.contains(value)) {
-			super.set(getDefault());
-		} else {
+		if (this.choices.contains(value)) {
 			super.set(value);
+		} else {
+			super.set(getDefault());
 		}
 	}
 
