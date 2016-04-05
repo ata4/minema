@@ -40,10 +40,6 @@ public class ChatUtils {
 		chat.printChatMessage(ret);
 	}
 
-	public static void print(final String msg, final Object... args) {
-		print(msg, null, args);
-	}
-
 	public static void printFileLink(final String msg, final File file) {
 		final TextComponentString text = new TextComponentString(file.getName());
 		String path;
@@ -57,6 +53,6 @@ public class ChatUtils {
 		text.getChatStyle().setChatClickEvent(new ClickEvent(Action.OPEN_FILE, path));
 		text.getChatStyle().setUnderlined(true);
 
-		print(msg, text);
+		print(msg, TextFormatting.BLUE, text);
 	}
 }
