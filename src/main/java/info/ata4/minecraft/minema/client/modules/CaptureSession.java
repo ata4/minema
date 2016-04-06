@@ -70,6 +70,10 @@ public class CaptureSession extends ACaptureModule {
 			this.modules.add(new TickSynchronizer(this.cfg));
 		}
 
+		if (this.cfg.useFrameSize()) {
+			this.modules.add(new DisplaySizeModifier(this.cfg));
+		}
+
 		FrameExporter exporter;
 		if (this.cfg.useVideoEncoder.get()) {
 			exporter = new PipeFrameExporter(this.cfg);

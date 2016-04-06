@@ -39,6 +39,7 @@ public class CaptureOverlay extends ACaptureModule {
 		final ArrayList<String> left = evt.left;
 
 		if (MC.gameSettings.showDebugInfo) {
+			// F3 menu is open -> add spacer
 			left.add("");
 		}
 
