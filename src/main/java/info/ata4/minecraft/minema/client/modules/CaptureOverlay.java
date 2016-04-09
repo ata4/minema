@@ -36,7 +36,7 @@ public class CaptureOverlay extends ACaptureModule {
 
 	@SubscribeEvent
 	public void onRenderGameOverlay(final RenderGameOverlayEvent.Text evt) {
-		final ArrayList<String> left = evt.left;
+		final ArrayList<String> left = evt.getLeft();
 
 		if (MC.gameSettings.showDebugInfo) {
 			// F3 menu is open -> add spacer

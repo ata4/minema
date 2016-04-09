@@ -87,10 +87,9 @@ public final class Minema {
 
 	@SubscribeEvent
 	public void onConfigChanged(final ConfigChangedEvent eventArgs) {
-		// TODO: When forge bug is fixed, activate this again
-		// if (eventArgs.modID.equals(ID)) {
-		this.config.update(false);
-		// }
+		if (ID.equals(eventArgs.getModID())) {
+			this.config.update(false);
+		}
 	}
 
 }
