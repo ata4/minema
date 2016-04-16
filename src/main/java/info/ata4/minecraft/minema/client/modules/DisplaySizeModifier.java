@@ -1,76 +1,48 @@
-/*
- ** 2014 July 28
- **
- ** The author disclaims copyright to this source code.  In place of
- ** a legal notice, here is a blessing:
- **    May you do good and not evil.
- **    May you find forgiveness for yourself and forgive others.
- **    May you share freely, never taking more than you give.
- */
 package info.ata4.minecraft.minema.client.modules;
 
+import org.lwjgl.opengl.Display;
+
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.util.reflection.PrivateFields;
-import info.ata4.minecraft.minema.util.reflection.PrivateMethods;
-import java.lang.reflect.Method;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.lwjgl.opengl.Display;
 
-/**
- *
- * @author Nico Bergemann <barracuda415 at yahoo.de>
- */
-public class DisplaySizeModifier extends CaptureModule {
-    
-    private static final Logger L = LogManager.getLogger();
-    private static final Minecraft MC = Minecraft.getMinecraft();
-    
-    private int originalWidth;
-    private int originalHeight;
-    
-    public DisplaySizeModifier(MinemaConfig cfg) {
-        super(cfg);
-    }
+public class DisplaySizeModifier extends ACaptureModule {
 
-    @Override
-    protected void doEnable() {
-        originalWidth = Display.getWidth();
-        originalHeight = Display.getHeight();
-        
-        resize(cfg.getFrameWidth(), cfg.getFrameHeight());
-        
-        // render framebuffer texture in original size
-        if (OpenGlHelper.isFramebufferEnabled()) {
-            setFramebufferTextureSize(originalWidth, originalHeight);
-        }
-    }
+	private static final Minecraft MC = Minecraft.getMinecraft();
 
-    @Override
-    protected void doDisable() {
-        resize(originalWidth, originalHeight);
-    }
-    
-    public void resize(int width, int height) {
-        try {
-            Method resize = ReflectionHelper.findMethod(Minecraft.class, MC, PrivateMethods.MINECRAFT_RESIZE, Integer.TYPE, Integer.TYPE);
-            resize.invoke(MC, width, height);
-        } catch (Exception ex) {
-            throw new RuntimeException("Can't resize display", ex);
-        }
-    }
-    
-    public void setFramebufferTextureSize(int width, int height) {
-        try {
-            Framebuffer fb = MC.getFramebuffer();
-            ReflectionHelper.setPrivateValue(Framebuffer.class, fb, width, PrivateFields.FRAMEBUFFER_FRAMEBUFFERTEXTUREWIDTH);
-            ReflectionHelper.setPrivateValue(Framebuffer.class, fb, height, PrivateFields.FRAMEBUFFER_FRAMEBUFFERTEXTUREHEIGHT);
-        } catch (Exception ex) {
-            throw new RuntimeException("Can't set framebuffer texture size", ex);
-        }
-    }
+	private int originalWidth;
+	private int originalHeight;
+
+	public DisplaySizeModifier(final MinemaConfig cfg) {
+		super(cfg);
+	}
+
+	@Override
+	protected void doEnable() {
+		this.originalWidth = Display.getWidth();
+		this.originalHeight = Display.getHeight();
+
+		resize(this.cfg.getFrameWidth(), this.cfg.getFrameHeight());
+
+		// render framebuffer texture in original size
+		if (OpenGlHelper.isFramebufferEnabled()) {
+			setFramebufferTextureSize(this.originalWidth, this.originalHeight);
+		}
+	}
+
+	@Override
+	protected void doDisable() {
+		resize(this.originalWidth, this.originalHeight);
+	}
+
+	public void resize(final int width, final int height) {
+		MC.resize(width, height);
+	}
+
+	public void setFramebufferTextureSize(final int width, final int height) {
+		final Framebuffer fb = MC.getFramebuffer();
+		fb.framebufferTextureWidth = width;
+		fb.framebufferTextureHeight = height;
+	}
 }

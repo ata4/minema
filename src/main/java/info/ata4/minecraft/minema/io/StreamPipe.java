@@ -12,6 +12,7 @@ package info.ata4.minecraft.minema.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -19,22 +20,22 @@ import org.apache.commons.io.IOUtils;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class StreamPipe extends Thread {
-    
-    private final InputStream is;
-    private final OutputStream os;
-    
-    public StreamPipe(InputStream is, OutputStream os) {
-        super("StreamPipe");
-        this.is = is;
-        this.os = os;
-    }
 
-    @Override
-    public void run() {
-        try {
-            IOUtils.copy(is, os);
-        } catch (IOException ex) {
-            // probably one of the streams was closed, ignore
-        }
-    }
+	private final InputStream is;
+	private final OutputStream os;
+
+	public StreamPipe(final InputStream is, final OutputStream os) {
+		super("StreamPipe");
+		this.is = is;
+		this.os = os;
+	}
+
+	@Override
+	public void run() {
+		try {
+			IOUtils.copy(this.is, this.os);
+		} catch (final IOException ex) {
+			// probably one of the streams was closed, ignore
+		}
+	}
 }

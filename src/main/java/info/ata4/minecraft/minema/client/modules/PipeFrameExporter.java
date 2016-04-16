@@ -9,10 +9,6 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
-import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
-import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
-import info.ata4.minecraft.minema.io.StreamPipe;
 import java.io.File;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
@@ -20,85 +16,91 @@ import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
+import info.ata4.minecraft.minema.client.config.MinemaConfig;
+import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
+import info.ata4.minecraft.minema.io.StreamPipe;
+
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class PipeFrameExporter extends FrameExporter {
-    
-    private static final Logger L = LogManager.getLogger();
-    
-    private Process proc;
-    private WritableByteChannel pipe;
 
-    private OutputStream log;
+	private static final Logger L = LogManager.getLogger();
 
-    public PipeFrameExporter(MinemaConfig cfg) {
-        super(cfg);
-    }
+	private Process proc;
+	private WritableByteChannel pipe;
 
-    @Override
-    protected void doEnable() throws Exception {
-        super.doEnable();
-        
-        String params = cfg.videoEncoderParams.get();
-        params = params.replace("%WIDTH%", String.valueOf(cfg.getFrameWidth()));
-        params = params.replace("%HEIGHT%", String.valueOf(cfg.getFrameHeight()));
-        params = params.replace("%FPS%", String.valueOf(cfg.frameRate.get()));
-        
-        List<String> cmds = new ArrayList<String>();
-        cmds.add(cfg.videoEncoderPath.get());
-        cmds.addAll(Arrays.asList(StringUtils.split(params, ' ')));
-        
-        // build encoder process
-        ProcessBuilder pb = new ProcessBuilder(cmds);
-        pb.directory(cfg.getMovieDir());
-        proc = pb.start();
-                
-        // Java 1.6 doesn't know redirectOutput/redirectError and these
-        // streams need to be emptied to avoid blocking
-        log = FileUtils.openOutputStream(new File(cfg.getMovieDir(), "encoder.log"));
-        new StreamPipe(proc.getInputStream(), log).start();
-        new StreamPipe(proc.getErrorStream(), log).start();
-        
-        // create channel from output stream
-        pipe = Channels.newChannel(proc.getOutputStream());
-    }
+	private OutputStream log;
 
-    @Override
-    protected void doDisable() throws Exception {
-        super.doDisable();
-        
-        IOUtils.closeQuietly(pipe);
-        IOUtils.closeQuietly(log);
-        
-        if (proc != null) {
-            try {
-                proc.waitFor();
-            } catch (InterruptedException ex) {
-                L.warn("Pipe program termination interrupted", ex);
-            }
+	public PipeFrameExporter(final MinemaConfig cfg) {
+		super(cfg);
+	}
 
-            proc.destroy();
-        }
-    }
+	@Override
+	protected void doEnable() throws Exception {
+		super.doEnable();
 
-    @Override
-    public void configureCapturer(FramebufferCapturer fbc) {
-        fbc.setFlipColors(false);
-        fbc.setFlipLines(true);
-    }
+		String params = this.cfg.videoEncoderParams.get();
+		params = params.replace("%WIDTH%", String.valueOf(this.cfg.getFrameWidth()));
+		params = params.replace("%HEIGHT%", String.valueOf(this.cfg.getFrameHeight()));
+		params = params.replace("%FPS%", String.valueOf(this.cfg.frameRate.get()));
 
-    @Override
-    protected void doExportFrame(FrameCaptureEvent evt) throws Exception {
-        if (pipe.isOpen()) {
-            pipe.write(evt.frameBuffer);
-        }
-    }
+		final List<String> cmds = new ArrayList<String>();
+		cmds.add(this.cfg.videoEncoderPath.get());
+		cmds.addAll(Arrays.asList(StringUtils.split(params, ' ')));
+
+		// build encoder process
+		final ProcessBuilder pb = new ProcessBuilder(cmds);
+		pb.directory(this.cfg.getMovieDir());
+		this.proc = pb.start();
+
+		// Java 1.6 doesn't know redirectOutput/redirectError and these
+		// streams need to be emptied to avoid blocking
+		this.log = FileUtils.openOutputStream(new File(this.cfg.getMovieDir(), "encoder.log"));
+		new StreamPipe(this.proc.getInputStream(), this.log).start();
+		new StreamPipe(this.proc.getErrorStream(), this.log).start();
+
+		// create channel from output stream
+		this.pipe = Channels.newChannel(this.proc.getOutputStream());
+	}
+
+	@Override
+	protected void doDisable() throws Exception {
+		super.doDisable();
+
+		IOUtils.closeQuietly(this.pipe);
+		IOUtils.closeQuietly(this.log);
+
+		if (this.proc != null) {
+			try {
+				this.proc.waitFor();
+			} catch (final InterruptedException ex) {
+				L.warn("Pipe program termination interrupted", ex);
+			}
+
+			this.proc.destroy();
+		}
+	}
+
+	@Override
+	public void configureCapturer(final FramebufferCapturer fbc) {
+		fbc.setFlipColors(false);
+		fbc.setFlipLines(true);
+	}
+
+	@Override
+	protected void doExportFrame(final FrameCaptureEvent evt) throws Exception {
+		if (this.pipe.isOpen()) {
+			this.pipe.write(evt.frameBuffer);
+		}
+	}
 }

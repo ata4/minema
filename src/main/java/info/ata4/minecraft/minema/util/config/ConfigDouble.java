@@ -16,35 +16,35 @@ import net.minecraftforge.common.config.Property;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class ConfigDouble extends ConfigNumber<Double> {
-    
-    public ConfigDouble(Double value, Double min, Double max) {
-        super(value, min, max);
-    }
-    
-    public ConfigDouble(Double value, Double min) {
-        super(value, min);
-    }
-    
-    @Override
-    public Property.Type getPropType() {
-        return Property.Type.DOUBLE;
-    }
 
-    @Override
-    public void importProp(Property prop) {
-        set(prop.getDouble());
-    }
+	public ConfigDouble(final Double value, final Double min, final Double max) {
+		super(value, min, max);
+	}
 
-    @Override
-    public void exportProp(Property prop) {
-        if (getMin() != null) {
-            prop.setMinValue(getMin());
-        }
-        if (getMax() != null) {
-            prop.setMaxValue(getMax());
-        }
-        prop.set(get());
-        prop.setDefaultValue(getDefault());
-    }
-    
+	public ConfigDouble(final Double value, final Double min) {
+		super(value, min);
+	}
+
+	@Override
+	public Property.Type getPropType() {
+		return Property.Type.DOUBLE;
+	}
+
+	@Override
+	public void importProp(final Property prop) {
+		set(prop.getDouble());
+	}
+
+	@Override
+	public void exportProp(final Property prop) {
+		if (getMin() != null) {
+			prop.setMinValue(getMin());
+		}
+		if (getMax() != null) {
+			prop.setMaxValue(getMax());
+		}
+		prop.set(get());
+		prop.setDefaultValue(getDefault());
+	}
+
 }

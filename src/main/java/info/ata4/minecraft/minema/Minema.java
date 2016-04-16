@@ -9,15 +9,15 @@
  */
 package info.ata4.minecraft.minema;
 
-import info.ata4.minecraft.minema.client.KeyHandler;
+import java.io.File;
+
 import info.ata4.minecraft.minema.client.cmd.CommandMinema;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.modules.CaptureSession;
-import java.io.File;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -28,74 +28,68 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Main control class for Forge.
- * 
+ *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-@Mod(
-    modid = Minema.ID,
-    name = Minema.NAME,
-    version = Minema.VERSION,
-    useMetadata = true,
-    guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory"
-)
-public class Minema {
-    
-    public static final String NAME = "Minema";
-    public static final String ID = NAME;
-    public static final String AID = NAME.toLowerCase();
-    public static final String VERSION = "@VERSION@";
-    
-    @Instance(ID)
-    public static Minema instance;
-    
-    private ModMetadata metadata;
-    private MinemaConfig config;
-    private CaptureSession session;
-    
-    public MinemaConfig getConfig() {
-        return config;
-    }
+@Mod(modid = Minema.ID, name = Minema.NAME, version = Minema.VERSION, guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory")
+public final class Minema {
 
-    public ModMetadata getMetadata() {
-        return metadata;
-    }
-    
-    public void enable() {
-        config.load();
-        
-        session = new CaptureSession(config);
-        session.enable();
-    }
-    
-    public void disable() {
-        if (isEnabled()) {
-            session.disable();
-        }
-        session = null;
-    }
-    
-    public boolean isEnabled() {
-        return session != null && session.isEnabled();
-    }
-    
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent eventArgs) {
-        if (eventArgs.modID.equals(ID)) {
-            config.update(false);
-        }
-    }
+	public static final String NAME = "Minema";
+	public static final String ID = NAME;
+	public static final String VERSION = "1.9";
 
-    @EventHandler
-    public void onPreInit(FMLPreInitializationEvent evt) {
-        File file = evt.getSuggestedConfigurationFile();
-        config = new MinemaConfig(new Configuration(file));
-        metadata = evt.getModMetadata();
-    }
-    
-    @EventHandler
-    public void onInit(FMLInitializationEvent evt) {
-        ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
-        FMLCommonHandler.instance().bus().register(new KeyHandler(this));
-        FMLCommonHandler.instance().bus().register(this);
-    }
+	@Instance(ID)
+	public static Minema instance;
+
+	private ModMetadata metadata;
+	private MinemaConfig config;
+	private CaptureSession session;
+
+	@EventHandler
+	public void onPreInit(final FMLPreInitializationEvent evt) {
+		final File file = evt.getSuggestedConfigurationFile();
+		this.config = new MinemaConfig(new Configuration(file));
+		this.metadata = evt.getModMetadata();
+	}
+
+	@EventHandler
+	public void onInit(final FMLInitializationEvent evt) {
+		ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
+		MinecraftForge.EVENT_BUS.register(new KeyHandler(this));
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	public MinemaConfig getConfig() {
+		return this.config;
+	}
+
+	public ModMetadata getMetadata() {
+		return this.metadata;
+	}
+
+	public void enable() {
+		this.config.load();
+
+		this.session = new CaptureSession(this.config);
+		this.session.enable();
+	}
+
+	public void disable() {
+		if (isEnabled()) {
+			this.session.disable();
+		}
+		this.session = null;
+	}
+
+	public boolean isEnabled() {
+		return this.session != null && this.session.isEnabled();
+	}
+
+	@SubscribeEvent
+	public void onConfigChanged(final ConfigChangedEvent eventArgs) {
+		if (ID.equals(eventArgs.getModID())) {
+			this.config.update(false);
+		}
+	}
+
 }

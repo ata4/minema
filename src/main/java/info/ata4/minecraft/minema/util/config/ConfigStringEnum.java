@@ -10,11 +10,11 @@
 package info.ata4.minecraft.minema.util.config;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
-import net.minecraftforge.common.config.Property;
+
 import org.apache.commons.lang3.Validate;
-import scala.actors.threadpool.Arrays;
+
+import net.minecraftforge.common.config.Property;
 
 /**
  *
@@ -22,48 +22,40 @@ import scala.actors.threadpool.Arrays;
  */
 public class ConfigStringEnum extends ConfigString {
 
-    private final Set<String> choices;
-    private final String[] validValues;
-    
-    public ConfigStringEnum(String value, Set<String> choices) {
-        super(value);
-        
-        Validate.notEmpty(choices);
-        
-        if (!choices.contains(value)) {
-            throw new IllegalArgumentException();
-        }
-        
-        this.choices = Collections.unmodifiableSet(choices);
-        
-        validValues = choices.toArray(new String[]{});
-    }
-    
-    public ConfigStringEnum(String value, String... choices) {
-        this(value, new HashSet<String>(Arrays.asList(choices)));
-    }
-    
-    public Set<String> getChoices() {
-        return choices;
-    }
-    
-    @Override
-    public Property.Type getPropType() {
-        return Property.Type.STRING;
-    }
-    
-    @Override
-    public void set(String value) {
-        if (!choices.contains(value)) {
-            super.set(getDefault());
-        } else {
-            super.set(value);
-        }
-    }
-    
-    @Override
-    public void exportProp(Property prop) {
-        super.exportProp(prop);
-        prop.setValidValues(validValues);
-    }
+	private final Set<String> choices;
+	private final String[] validValues;
+
+	public ConfigStringEnum(final String value, final Set<String> choices) {
+		super(value);
+
+		Validate.notEmpty(choices);
+
+		if (!choices.contains(value)) {
+			throw new IllegalArgumentException();
+		}
+
+		this.choices = Collections.unmodifiableSet(choices);
+
+		this.validValues = choices.toArray(new String[] {});
+	}
+
+	@Override
+	public Property.Type getPropType() {
+		return Property.Type.STRING;
+	}
+
+	@Override
+	public void set(final String value) {
+		if (this.choices.contains(value)) {
+			super.set(value);
+		} else {
+			super.set(getDefault());
+		}
+	}
+
+	@Override
+	public void exportProp(final Property prop) {
+		super.exportProp(prop);
+		prop.setValidValues(this.validValues);
+	}
 }

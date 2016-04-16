@@ -14,36 +14,36 @@ package info.ata4.minecraft.minema.util.config;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public abstract class ConfigNumber<T extends Number & Comparable<T>> extends ConfigValue<T> {
-    
-    private final T min;
-    private final T max;
-        
-    public ConfigNumber(T value, T min, T max) {
-        super(value);
-        this.min = min;
-        this.max = max;
-    }
-    
-    public ConfigNumber(T value, T min) {
-        this(value, min, null);
-    }
 
-    @Override
-    public void set(T value) {
-        if (min != null && min.compareTo(value) > 0) {
-            super.set(min);
-        } else if (max != null && max.compareTo(value) < 0) {
-            super.set(max);
-        } else {
-            super.set(value);
-        }
-    }
+	private final T min;
+	private final T max;
 
-    public T getMin() {
-        return min;
-    }
+	public ConfigNumber(final T value, final T min, final T max) {
+		super(value);
+		this.min = min;
+		this.max = max;
+	}
 
-    public T getMax() {
-        return max;
-    }
+	public ConfigNumber(final T value, final T min) {
+		this(value, min, null);
+	}
+
+	@Override
+	public void set(final T value) {
+		if (this.min != null && this.min.compareTo(value) > 0) {
+			super.set(this.min);
+		} else if (this.max != null && this.max.compareTo(value) < 0) {
+			super.set(this.max);
+		} else {
+			super.set(value);
+		}
+	}
+
+	public T getMin() {
+		return this.min;
+	}
+
+	public T getMax() {
+		return this.max;
+	}
 }

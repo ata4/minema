@@ -10,8 +10,10 @@
 package info.ata4.minecraft.minema.client.event;
 
 import java.nio.ByteBuffer;
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
+
 import org.lwjgl.util.Dimension;
+
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
  *
@@ -19,11 +21,12 @@ import org.lwjgl.util.Dimension;
  */
 @Cancelable
 public class FrameCaptureEvent extends FramePreCaptureEvent {
-    
-    public final ByteBuffer frameBuffer;
 
-    public FrameCaptureEvent(int frameNum, Dimension frameDim, ByteBuffer frameBuffer) {
-        super(frameNum, frameDim);
-        this.frameBuffer = frameBuffer;
-    }
+	public final ByteBuffer frameBuffer;
+
+	public FrameCaptureEvent(final int frameNum, final Dimension frameDim, final ByteBuffer frameBuffer) {
+		super(frameNum, frameDim);
+		this.frameBuffer = frameBuffer;
+	}
+
 }

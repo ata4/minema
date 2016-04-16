@@ -9,9 +9,10 @@
  */
 package info.ata4.minecraft.minema.client.event;
 
+import org.lwjgl.util.Dimension;
+
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
-import org.lwjgl.util.Dimension;
 
 /**
  *
@@ -19,13 +20,14 @@ import org.lwjgl.util.Dimension;
  */
 @Cancelable
 public class FramePreCaptureEvent extends Event {
-    
-    public final int frameNum;
-    public final Dimension frameDim;
 
-    public FramePreCaptureEvent(int frameNum, Dimension frameDim) {
-        super();
-        this.frameNum = frameNum;
-        this.frameDim = frameDim;
-    }
+	public final int frameNum;
+	public final Dimension frameDim;
+
+	public FramePreCaptureEvent(final int frameNum, final Dimension frameDim) {
+		super();
+		this.frameNum = frameNum;
+		this.frameDim = frameDim;
+	}
+
 }

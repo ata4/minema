@@ -9,9 +9,10 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
+import java.util.ArrayList;
+
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
-import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,53 +20,54 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Minema information screen overlay.
- * 
+ *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class CaptureOverlay extends CaptureModule {
-    
-    private static final Minecraft MC = Minecraft.getMinecraft();
+public class CaptureOverlay extends ACaptureModule {
 
-    private final CaptureSession session;
+	private static final Minecraft MC = Minecraft.getMinecraft();
 
-    public CaptureOverlay(MinemaConfig cfg, CaptureSession session) {
-        super(cfg);
-        this.session = session;
-    }
-    
-    @SubscribeEvent
-    public void onRenderGameOverlay(RenderGameOverlayEvent.Text evt) {
-        List<String> left = evt.left;
-        
-        if (MC.gameSettings.showDebugInfo) {
-            left.add(null);
-        }
+	private final CaptureSession session;
 
-        CaptureTime time = session.getCaptureTime();
-        
-        String frame = String.valueOf(time.getNumFrames());
-        left.add("Frame: " + frame);
-        
-        String fps = Minecraft.getDebugFPS() + " fps";
-        left.add("Rate: " + fps);
-        
-        String avg = (int) time.getAverageFPS() + " fps";
-        left.add("Avg.: " + avg);
-        
-        String delay = CaptureTime.getTimeUnit(time.getPreviousCaptureTime());
-        left.add("Delay: " + delay);
-        
-        left.add("Time R: " + time.getRealTimeString());
-        left.add("Time V: " + time.getVideoTimeString());
-    }
-    
-    @Override
-    protected void doEnable() throws Exception {
-        MinecraftForge.EVENT_BUS.register(this);
-    }
+	public CaptureOverlay(final MinemaConfig cfg, final CaptureSession session) {
+		super(cfg);
+		this.session = session;
+	}
 
-    @Override
-    protected void doDisable() throws Exception {
-        MinecraftForge.EVENT_BUS.unregister(this);
-    }
+	@SubscribeEvent
+	public void onRenderGameOverlay(final RenderGameOverlayEvent.Text evt) {
+		final ArrayList<String> left = evt.getLeft();
+
+		if (MC.gameSettings.showDebugInfo) {
+			// F3 menu is open -> add spacer
+			left.add("");
+		}
+
+		final CaptureTime time = this.session.getCaptureTime();
+
+		final String frame = String.valueOf(time.getNumFrames());
+		left.add("Frame: " + frame);
+
+		final String fps = Minecraft.getDebugFPS() + " fps";
+		left.add("Rate: " + fps);
+
+		final String avg = (int) time.getAverageFPS() + " fps";
+		left.add("Avg.: " + avg);
+
+		final String delay = CaptureTime.getTimeUnit(time.getPreviousCaptureTime());
+		left.add("Delay: " + delay);
+
+		left.add("Time R: " + time.getRealTimeString());
+		left.add("Time V: " + time.getVideoTimeString());
+	}
+
+	@Override
+	protected void doEnable() throws Exception {
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@Override
+	protected void doDisable() throws Exception {
+		MinecraftForge.EVENT_BUS.unregister(this);
+	}
 }

@@ -12,43 +12,48 @@ package info.ata4.minecraft.minema.client.modules;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
-import org.lwjgl.opengl.Display;
 
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class GameSettingsModifier extends CaptureModule {
-    
-    private static final Minecraft MC = Minecraft.getMinecraft();
-    
-    private int limitFramerate;
-    private boolean pauseOnLostFocus;
-    
-    public GameSettingsModifier(MinemaConfig cfg) {
-        super(cfg);
-    }
+public class GameSettingsModifier extends ACaptureModule {
 
-    @Override
-    protected void doEnable() throws Exception {
-        GameSettings gs = MC.gameSettings;
-        
-        // disable build-in framerate limit
-        limitFramerate = gs.limitFramerate;
-        gs.limitFramerate = Integer.MAX_VALUE;
-        
-        // don't pause when losing focus
-        pauseOnLostFocus = gs.pauseOnLostFocus;
-        gs.pauseOnLostFocus = false;
-        
-    }
+	private static final Minecraft MC = Minecraft.getMinecraft();
 
-    @Override
-    protected void doDisable() throws Exception {
-        // restore game settings
-        GameSettings gs = MC.gameSettings;
-        gs.limitFramerate = limitFramerate;
-        gs.pauseOnLostFocus = pauseOnLostFocus;
-    }
-    
+	private int framerateLimit;
+	private boolean vSync;
+	private boolean pauseOnLostFocus;
+
+	public GameSettingsModifier(final MinemaConfig cfg) {
+		super(cfg);
+	}
+
+	@Override
+	protected void doEnable() throws Exception {
+		final GameSettings gs = MC.gameSettings;
+
+		// disable build-in framerate limit
+		this.framerateLimit = gs.limitFramerate;
+		gs.limitFramerate = Integer.MAX_VALUE;
+
+		// disable vSync
+		this.vSync = gs.enableVsync;
+		gs.enableVsync = false;
+
+		// don't pause when losing focus
+		this.pauseOnLostFocus = gs.pauseOnLostFocus;
+		gs.pauseOnLostFocus = false;
+
+	}
+
+	@Override
+	protected void doDisable() throws Exception {
+		// restore everything
+		final GameSettings gs = MC.gameSettings;
+		gs.limitFramerate = this.framerateLimit;
+		gs.pauseOnLostFocus = this.pauseOnLostFocus;
+		gs.enableVsync = this.vSync;
+	}
+
 }

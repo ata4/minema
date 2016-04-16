@@ -14,26 +14,26 @@ import net.minecraft.util.Timer;
 
 /**
  * Extension of Minecraft's default timer for fixed framerate rendering.
- * 
+ *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class FixedTimer extends Timer {
-    
-    private final float ticksPerSecond;
-    private final float framesPerSecond;
 
-    public FixedTimer(float tps, float fps, float speed) {
-        super(tps);
-        ticksPerSecond = tps;
-        framesPerSecond = fps;
-        timerSpeed = speed;
-    }
+	private final float ticksPerSecond;
+	private final float framesPerSecond;
 
-    @Override
-    public void updateTimer() {
-        elapsedPartialTicks += timerSpeed * (ticksPerSecond / framesPerSecond);
-        elapsedTicks = (int) elapsedPartialTicks;
-        elapsedPartialTicks -= elapsedTicks;
-        renderPartialTicks = elapsedPartialTicks;
-    }
+	public FixedTimer(final float tps, final float fps, final float speed) {
+		super(tps);
+		this.ticksPerSecond = tps;
+		this.framesPerSecond = fps;
+		this.timerSpeed = speed;
+	}
+
+	@Override
+	public void updateTimer() {
+		this.elapsedPartialTicks += this.timerSpeed * (this.ticksPerSecond / this.framesPerSecond);
+		this.elapsedTicks = (int) this.elapsedPartialTicks;
+		this.elapsedPartialTicks -= this.elapsedTicks;
+		this.renderPartialTicks = this.elapsedPartialTicks;
+	}
 }

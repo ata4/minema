@@ -1,17 +1,25 @@
-# Gradle
-/.gradle/
-
-# Eclipse
-/.settings/
+# eclipse
+bin
+*.launch
+.settings
+.metadata
 .classpath
 .project
 
-# NetBeans
-/.nb-gradle/
-/.nb-gradle-properties
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
 
-# Other
-/build/
-/bin/
-/private/
-/minecraft/
+# gradle
+build
+.gradle
+gradle
+
+# other
+eclipse
+run
+gradlew
+gradlew.bat
