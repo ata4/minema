@@ -93,8 +93,7 @@ public class PipeFrameExporter extends FrameExporter {
 
 	@Override
 	public void configureCapturer(final FramebufferCapturer fbc) {
-		fbc.setFlipColors(false);
-		fbc.setFlipLines(true);
+		fbc.setFlipLines();
 	}
 
 	@Override

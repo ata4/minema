@@ -34,102 +34,91 @@ import net.minecraft.client.shader.Framebuffer;
  */
 public class FramebufferCapturer {
 
-	private static final int BPP = 3; // bytes per pixel
+	private static final int bytesPerPixel = 3;
 	private static final int TYPE = GL_UNSIGNED_BYTE;
 	private static final Minecraft MC = Minecraft.getMinecraft();
 
 	private final ByteBuffer bb;
-	private final Dimension dim;
-	private final byte[] line1;
-	private final byte[] line2;
-	private boolean flipColors = false;
-	private boolean flipLines = false;
+	private final Dimension start;
+
+	private byte[] flipLine1 = null;
+	private byte[] flipLine2 = null;
+	private int colorFormat = GL_RGB;
 
 	public FramebufferCapturer() {
-		this.dim = getCurrentDimension();
-		this.bb = ByteBuffer.allocateDirect(this.dim.getWidth() * this.dim.getHeight() * BPP);
-		this.line1 = new byte[MC.displayWidth * BPP];
-		this.line2 = new byte[MC.displayWidth * BPP];
+		this.start = new Dimension(MC.displayWidth, MC.displayHeight);
+		this.bb = ByteBuffer.allocateDirect(this.start.getWidth() * this.start.getHeight() * bytesPerPixel);
 	}
 
-	public void setFlipColors(final boolean flipColors) {
-		this.flipColors = flipColors;
+	public void setFlipColors() {
+		colorFormat = GL_BGR;
 	}
 
-	public boolean isFlipColors() {
-		return this.flipColors;
-	}
-
-	public void setFlipLines(final boolean flipLines) {
-		this.flipLines = flipLines;
-	}
-
-	public boolean isFlipLines() {
-		return this.flipLines;
-	}
-
-	public int getBytesPerPixel() {
-		return BPP;
+	public void setFlipLines() {
+		flipLine1 = new byte[start.getWidth() * bytesPerPixel];
+		flipLine2 = new byte[start.getWidth() * bytesPerPixel];
 	}
 
 	public ByteBuffer getByteBuffer() {
+		// Rewinding to pos 0 (after capture)
 		this.bb.rewind();
-		return this.bb.duplicate();
+		// ByteBuffer was once duplicated right here -> resulting in heavy
+		// memory allocation (eg. 1280*720*3 bytes, which is about 2.8 MB per
+		// frame and about 1.7 GB for 10 seconds in 60fps)
+		// I know that this is not good practice, but it does not matter and
+		// optimizes a lot
+		return this.bb;
 	}
 
 	public Dimension getCaptureDimension() {
-		return this.dim;
-	}
-
-	private Dimension getCurrentDimension() {
-		return new Dimension(MC.displayWidth, MC.displayHeight);
+		return this.start;
 	}
 
 	public void capture() {
 		// check if the dimensions are still the same
-		final Dimension dim1 = getCurrentDimension();
-		final Dimension dim2 = getCaptureDimension();
-		if (!dim1.equals(dim2)) {
-			throw new IllegalStateException(String.format("Display size changed! %dx%d != %dx%d", dim1.getWidth(),
-					dim1.getHeight(), dim2.getWidth(), dim2.getHeight()));
+		if (MC.displayWidth != start.getWidth() || MC.displayHeight != start.getHeight()) {
+			throw new IllegalStateException(
+					String.format("Display size changed! %dx%d not equals the start dimension of %dx%d",
+							MC.displayWidth, MC.displayHeight, start.getWidth(), start.getHeight()));
 		}
 
 		// set alignment flags
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		final int format = this.flipColors ? GL_BGR : GL_RGB;
+		// Rewinding to pos 0 (after writting bytebuffer via FrameExporter)
+		this.bb.rewind();
 
 		// read texture from framebuffer if enabled, otherwise use slower
 		// glReadPixels
 		if (OpenGlHelper.isFramebufferEnabled()) {
 			final Framebuffer fb = MC.getFramebuffer();
 			glBindTexture(GL_TEXTURE_2D, fb.framebufferTexture);
-			glGetTexImage(GL_TEXTURE_2D, 0, format, TYPE, this.bb);
+			glGetTexImage(GL_TEXTURE_2D, 0, colorFormat, TYPE, this.bb);
 		} else {
-			glReadPixels(0, 0, MC.displayWidth, MC.displayHeight, format, TYPE, this.bb);
+			glReadPixels(0, 0, MC.displayWidth, MC.displayHeight, colorFormat, TYPE, this.bb);
 		}
 
-		if (!this.flipLines) {
+		if (flipLine1 == null || flipLine2 == null) {
 			return;
 		}
 
 		// flip buffer vertically
 		for (int i = 0; i < MC.displayHeight / 2; i++) {
-			final int ofs1 = i * MC.displayWidth * BPP;
-			final int ofs2 = (MC.displayHeight - i - 1) * MC.displayWidth * BPP;
+			final int ofs1 = i * MC.displayWidth * bytesPerPixel;
+			final int ofs2 = (MC.displayHeight - i - 1) * MC.displayWidth * bytesPerPixel;
 
 			// read lines
 			this.bb.position(ofs1);
-			this.bb.get(this.line1);
+			this.bb.get(this.flipLine1);
 			this.bb.position(ofs2);
-			this.bb.get(this.line2);
+			this.bb.get(this.flipLine2);
 
 			// write lines at swapped positions
 			this.bb.position(ofs2);
-			this.bb.put(this.line1);
+			this.bb.put(this.flipLine1);
 			this.bb.position(ofs1);
-			this.bb.put(this.line2);
+			this.bb.put(this.flipLine2);
 		}
 	}
 }
