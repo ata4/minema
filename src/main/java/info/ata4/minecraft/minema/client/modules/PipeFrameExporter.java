@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
+import info.ata4.minecraft.minema.client.capture.ACapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.io.StreamPipe;
@@ -92,7 +92,7 @@ public class PipeFrameExporter extends FrameExporter {
 	}
 
 	@Override
-	public void configureCapturer(final FramebufferCapturer fbc) {
+	public void configureCapturer(final ACapturer fbc) {
 		fbc.setFlipLines();
 	}
 
