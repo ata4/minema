@@ -17,7 +17,6 @@ import static org.lwjgl.opengl.GL11.glGetTexImage;
 import static org.lwjgl.opengl.GL11.glPixelStorei;
 import static org.lwjgl.opengl.GL11.glReadPixels;
 
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 
 /**
@@ -34,7 +33,7 @@ public class FramebufferCapturer extends ACapturer {
 
 		// read texture from framebuffer if enabled, otherwise use slower
 		// glReadPixels
-		if (OpenGlHelper.isFramebufferEnabled()) {
+		if (isFramebufferEnabled) {
 			final Framebuffer fb = MC.getFramebuffer();
 			glBindTexture(GL_TEXTURE_2D, fb.framebufferTexture);
 			glGetTexImage(GL_TEXTURE_2D, 0, colorFormat, TYPE, this.buffer);

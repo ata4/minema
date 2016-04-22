@@ -18,7 +18,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.Util;
 
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 
 public class PBOCapturer extends ACapturer {
@@ -60,12 +59,12 @@ public class PBOCapturer extends ACapturer {
 
 		// Calling into event queue
 
-		// set alignment flags
+		// set alignment flags (has to be inside event queue)
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		// use faster framebuffer access if enabled
-		if (OpenGlHelper.isFramebufferEnabled()) {
+		if (isFramebufferEnabled) {
 			Framebuffer buffer = MC.getFramebuffer();
 			buffer.bindFramebufferTexture();
 			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, colorFormat, GL_UNSIGNED_BYTE, 0L);

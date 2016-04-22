@@ -9,10 +9,12 @@ import java.nio.ByteBuffer;
 import org.lwjgl.util.Dimension;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.OpenGlHelper;
 
 public abstract class ACapturer {
 
 	protected static final Minecraft MC = Minecraft.getMinecraft();
+	protected static final boolean isFramebufferEnabled = OpenGlHelper.isFramebufferEnabled();
 	protected static final int bytesPerPixel = 3;
 	protected static final int TYPE = GL_UNSIGNED_BYTE;
 
