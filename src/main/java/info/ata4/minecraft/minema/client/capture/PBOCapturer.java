@@ -16,13 +16,18 @@ import java.nio.ByteBuffer;
 import org.lwjgl.opengl.ARBPixelBufferObject;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
+import org.lwjgl.opengl.Util;
+
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.shader.Framebuffer;
 
 public class PBOCapturer extends ACapturer {
 
 	public static final boolean isSupported = GLContext.getCapabilities().GL_ARB_pixel_buffer_object;
 
-	private static final int pixelPackBuffer = ARBPixelBufferObject.GL_PIXEL_PACK_BUFFER_ARB;
-	private final static int STREAM_READ = ARBPixelBufferObject.GL_STREAM_READ_ARB;
+	private static final int PACK_MODE = ARBPixelBufferObject.GL_PIXEL_PACK_BUFFER_ARB;
+	private static final int STREAM_READ = ARBPixelBufferObject.GL_STREAM_READ_ARB;
+	private static final int READ_ONLY_ACCESS = ARBPixelBufferObject.GL_READ_ONLY_ARB;
 
 	private int frontAddress;
 	private int backAddress;
@@ -31,14 +36,14 @@ public class PBOCapturer extends ACapturer {
 
 	public PBOCapturer() {
 		this.frontAddress = glGenBuffersARB();
-		glBindBufferARB(pixelPackBuffer, frontAddress);
-		glBufferDataARB(pixelPackBuffer, bufferSize, STREAM_READ);
+		glBindBufferARB(PACK_MODE, frontAddress);
+		glBufferDataARB(PACK_MODE, bufferSize, STREAM_READ);
 
 		this.backAddress = glGenBuffersARB();
-		glBindBufferARB(pixelPackBuffer, backAddress);
-		glBufferDataARB(pixelPackBuffer, bufferSize, STREAM_READ);
+		glBindBufferARB(PACK_MODE, backAddress);
+		glBufferDataARB(PACK_MODE, bufferSize, STREAM_READ);
 
-		glBindBufferARB(pixelPackBuffer, 0);
+		glBindBufferARB(PACK_MODE, 0);
 	}
 
 	private void swapPBOs() {
@@ -51,26 +56,43 @@ public class PBOCapturer extends ACapturer {
 	}
 
 	public void capture() {
+		glBindBufferARB(PACK_MODE, frontAddress);
+
+		// Calling into event queue
+
 		// set alignment flags
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		glBindBufferARB(pixelPackBuffer, frontAddress);
+		// use faster framebuffer access if enabled
+		if (OpenGlHelper.isFramebufferEnabled()) {
+			Framebuffer buffer = MC.getFramebuffer();
+			buffer.bindFramebufferTexture();
+			GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, colorFormat, GL_UNSIGNED_BYTE, 0L);
+			buffer.unbindFramebufferTexture();
+		} else {
+			GL11.glReadPixels(0, 0, start.getWidth(), start.getHeight(), colorFormat, GL_UNSIGNED_BYTE, 0);
+		}
 
-		GL11.glReadPixels(0, 0, start.getWidth(), start.getHeight(), colorFormat, GL_UNSIGNED_BYTE, 0);
+		// Not calling into event queue
 
-		glBindBufferARB(pixelPackBuffer, 0);
+		glBindBufferARB(PACK_MODE, 0);
 
 		swapPBOs();
 
-		glBindBufferARB(pixelPackBuffer, frontAddress);
+		glBindBufferARB(PACK_MODE, frontAddress);
 
-		frontCache = glMapBufferARB(pixelPackBuffer, STREAM_READ, bufferSize, frontCache);
-		if (frontCache != null) // Is null for the first frame
-			this.buffer.put(frontCache);
-		glUnmapBufferARB(pixelPackBuffer);
+		frontCache = glMapBufferARB(PACK_MODE, READ_ONLY_ACCESS, bufferSize, frontCache);
+		// If mapping threw an error -> crash immediatly please
+		Util.checkGLError();
+		this.buffer.put(frontCache);
+		// Recycling native buffers also needs rewinding! Not doing so would
+		// result in fast line flipping of the first frame (or not if you do not
+		// use PipeExporter) -> a symptom of not writing due to not rewinding
+		frontCache.rewind();
+		glUnmapBufferARB(PACK_MODE);
 
-		glBindBufferARB(pixelPackBuffer, 0);
+		glBindBufferARB(PACK_MODE, 0);
 	}
 
 	@Override
