@@ -104,7 +104,7 @@ public class CaptureSession extends ACaptureModule {
 			System.out.println("Using PBO: true");
 		} else {
 			capturer = new FramebufferCapturer();
-			System.out.println("Using PBO: true");
+			System.out.println("Using PBO: false");
 		}
 		exporter.configureCapturer(this.capturer);
 	}

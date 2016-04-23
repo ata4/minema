@@ -54,6 +54,7 @@ public class PBOCapturer extends ACapturer {
 		backCache = swapGlBuffer;
 	}
 
+	@Override
 	public void capture() {
 		glBindBufferARB(PACK_MODE, frontAddress);
 
