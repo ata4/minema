@@ -37,10 +37,10 @@ public class ImageFrameExporter extends FrameExporter {
 	@Override
 	public void configureCapturer(final ACapturer fbc) {
 		if (this.cfg.imageFormat.get().equals("tga")) {
-			fbc.setFlipColors();
-		} else {
-			fbc.setFlipLines();
+			return;
 		}
+		fbc.setFlipLines();
+		fbc.setToRGBMode();
 	}
 
 	@Override

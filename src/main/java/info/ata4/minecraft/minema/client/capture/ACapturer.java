@@ -24,7 +24,9 @@ public abstract class ACapturer {
 
 	private byte[] flipLine1 = null;
 	private byte[] flipLine2 = null;
-	protected int colorFormat = GL_RGB;
+	// BGR is the internal OpenGL format -> try to use that as
+	// frequently as possible
+	protected int colorFormat = GL_BGR;
 
 	public ACapturer() {
 		this.start = new Dimension(MC.displayWidth, MC.displayHeight);
@@ -59,15 +61,6 @@ public abstract class ACapturer {
 		}
 	}
 
-	public final void setFlipColors() {
-		colorFormat = GL_BGR;
-	}
-
-	public final void setFlipLines() {
-		flipLine1 = new byte[start.getWidth() * bytesPerPixel];
-		flipLine2 = new byte[start.getWidth() * bytesPerPixel];
-	}
-
 	public final ByteBuffer getByteBuffer() {
 		prepareByteBuffer();
 		// Rewinding to pos 0 (after capture)
@@ -97,6 +90,15 @@ public abstract class ACapturer {
 
 	public final Dimension getCaptureDimension() {
 		return this.start;
+	}
+
+	public final void setFlipLines() {
+		flipLine1 = new byte[start.getWidth() * bytesPerPixel];
+		flipLine2 = new byte[start.getWidth() * bytesPerPixel];
+	}
+
+	public final void setToRGBMode() {
+		colorFormat = GL_RGB;
 	}
 
 	protected abstract void capture();
