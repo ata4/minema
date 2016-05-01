@@ -19,7 +19,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import info.ata4.minecraft.minema.client.capture.ACapturer;
 import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
+import info.ata4.minecraft.minema.client.capture.PBOCapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
@@ -43,7 +45,7 @@ public class CaptureSession extends ACaptureModule {
 	private final EventBus eventBus = new EventBus();
 
 	private CaptureTime time;
-	private FramebufferCapturer fbc;
+	private ACapturer capturer;
 
 	private File movieDir;
 
@@ -97,12 +99,19 @@ public class CaptureSession extends ACaptureModule {
 		this.time = new CaptureTime(this.cfg);
 
 		// configure framebuffer capturer
-		this.fbc = new FramebufferCapturer();
-		exporter.configureCapturer(this.fbc);
+		if (PBOCapturer.isSupported) {
+			capturer = new PBOCapturer();
+			System.out.println("Using PBO: true");
+		} else {
+			capturer = new FramebufferCapturer();
+			System.out.println("Using PBO: false");
+		}
+		exporter.configureCapturer(this.capturer);
 	}
 
 	@Override
 	protected void doDisable() {
+		capturer.close();
 		// disable and unregister modules
 		for (final ACaptureModule module : this.modules) {
 			try {
@@ -177,14 +186,14 @@ public class CaptureSession extends ACaptureModule {
 
 		try {
 			if (this.eventBus
-					.post(new FramePreCaptureEvent(this.time.getNumFrames(), this.fbc.getCaptureDimension()))) {
+					.post(new FramePreCaptureEvent(this.time.getNumFrames(), this.capturer.getCaptureDimension()))) {
 				throw new RuntimeException("Frame capturing cancelled at frame " + this.time.getNumFrames());
 			}
 
-			this.fbc.capture();
+			this.capturer.doCapture();
 
-			if (this.eventBus.post(new FrameCaptureEvent(this.time.getNumFrames(), this.fbc.getCaptureDimension(),
-					this.fbc.getByteBuffer()))) {
+			if (this.eventBus.post(new FrameCaptureEvent(this.time.getNumFrames(), this.capturer.getCaptureDimension(),
+					this.capturer.getByteBuffer()))) {
 				throw new RuntimeException("Frame capturing cancelled at frame " + this.time.getNumFrames());
 			}
 

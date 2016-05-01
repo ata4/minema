@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
+import info.ata4.minecraft.minema.client.capture.ACapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
@@ -103,5 +103,5 @@ public abstract class FrameExporter extends ACaptureModule {
 
 	protected abstract void doExportFrame(FrameCaptureEvent evt) throws Exception;
 
-	public abstract void configureCapturer(FramebufferCapturer fbc);
+	public abstract void configureCapturer(ACapturer fbc);
 }

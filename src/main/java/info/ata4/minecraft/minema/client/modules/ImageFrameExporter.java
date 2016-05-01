@@ -20,7 +20,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 
-import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
+import info.ata4.minecraft.minema.client.capture.ACapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 
@@ -35,14 +35,12 @@ public class ImageFrameExporter extends FrameExporter {
 	}
 
 	@Override
-	public void configureCapturer(final FramebufferCapturer fbc) {
+	public void configureCapturer(final ACapturer fbc) {
 		if (this.cfg.imageFormat.get().equals("tga")) {
-			fbc.setFlipColors(true);
-			fbc.setFlipLines(false);
-		} else {
-			fbc.setFlipColors(false);
-			fbc.setFlipLines(true);
+			return;
 		}
+		fbc.setFlipLines();
+		fbc.setToRGBMode();
 	}
 
 	@Override
