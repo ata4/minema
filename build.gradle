@@ -31,19 +31,9 @@ def getGitTag = { ->
     }
 }
 
-/*
-// for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
-plugins {
-id "net.minecraftforge.gradle.forge" version "2.0.2"
-}
- */
-version =  "${getGitTag()}-${minecraft.version}"
-group = "info.ata4.minecraft.minema"
-archivesBaseName = "Minema"
-
 minecraft {
     version = "1.9-12.16.0.1868-1.9"
-    runDir = "run"
+    runDir = "minecraft"
     
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
@@ -54,8 +44,17 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
-processResources
-{
+version =  "${getGitTag()}-${minecraft.version}"
+group = "info.ata4.minecraft.minema"
+archivesBaseName = "Minema"
+
+// replace version placeholder in the main mod class
+minecraft {
+    replaceIn project.group.replace(".", "/") + "/${project.archivesBaseName}.java"
+    replace "@VERSION@", project.version
+}
+
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
