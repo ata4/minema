@@ -31,6 +31,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 
 /**
@@ -174,6 +175,11 @@ public class CaptureSession extends ACaptureModule {
 	@SubscribeEvent
 	public void captureFrame(final RenderTickEvent e) {
 		if (!isEnabled()) {
+			return;
+		}
+		if (e.phase == Phase.START) {
+			// Only record at the end of the frame (fixes recording two images
+			// per frame)
 			return;
 		}
 
