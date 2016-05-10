@@ -83,7 +83,7 @@ public class PBOCapturer extends ACapturer {
 		glBindBufferARB(PACK_MODE, frontAddress);
 
 		frontCache = glMapBufferARB(PACK_MODE, READ_ONLY_ACCESS, bufferSize, frontCache);
-		// If mapping threw an error -> crash immediatly please
+		// If mapping threw an error -> crash immediately please
 		Util.checkGLError();
 		this.buffer.put(frontCache);
 		// Recycling native buffers also needs rewinding! Not doing so would
