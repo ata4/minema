@@ -27,6 +27,9 @@ import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import info.ata4.minecraft.minema.client.util.ChatUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
@@ -40,7 +43,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
  */
 public class CaptureSession extends ACaptureModule {
 
-	private static final Logger L = LogManager.getLogger();
+	public static final Logger L = LogManager.getLogger();
+	public static final Minecraft MC = Minecraft.getMinecraft();
 
 	private final ArrayList<ACaptureModule> modules = new ArrayList<ACaptureModule>();
 	private final EventBus eventBus = new EventBus();
@@ -108,6 +112,8 @@ public class CaptureSession extends ACaptureModule {
 			System.out.println("Using PBO: false");
 		}
 		exporter.configureCapturer(this.capturer);
+
+		playChickenPlop();
 	}
 
 	@Override
@@ -212,6 +218,15 @@ public class CaptureSession extends ACaptureModule {
 			L.error("Frame capturing error", t);
 			handleError(t);
 			disable();
+		}
+	}
+
+	private void playChickenPlop() {
+		try {
+			MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.playerLocation, SoundEvents.entity_chicken_egg,
+					SoundCategory.NEUTRAL, 1, 1);
+		} catch (final Exception e) {
+			L.error("cannot play chicken plop", e);
 		}
 	}
 
