@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -56,7 +55,8 @@ public class PipeFrameExporter extends FrameExporter {
 
 		final List<String> cmds = new ArrayList<String>();
 		cmds.add(this.cfg.videoEncoderPath.get());
-		cmds.addAll(Arrays.asList(StringUtils.split(params, ' ')));
+		for (String s : StringUtils.split(params, ' '))
+			cmds.add(s);
 
 		// build encoder process
 		final ProcessBuilder pb = new ProcessBuilder(cmds);
