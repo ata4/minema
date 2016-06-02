@@ -25,72 +25,72 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
  */
 public class TimerModifier extends ACaptureModule {
 
-	private static final Logger L = LogManager.getLogger();
-	private static final Minecraft MC = Minecraft.getMinecraft();
+    private static final Logger L = LogManager.getLogger();
+    private static final Minecraft MC = Minecraft.getMinecraft();
 
-	private float defaultTps;
+    private float defaultTps;
 
-	public TimerModifier(final MinemaConfig cfg) {
-		super(cfg);
-	}
+    public TimerModifier(MinemaConfig cfg) {
+        super(cfg);
+    }
 
-	@Override
-	protected void doEnable() {
-		final Timer defaultTimer = getTimer();
+    @Override
+    protected void doEnable() {
+        Timer defaultTimer = getTimer();
 
-		// check if it's modified already
-		if (defaultTimer instanceof FixedTimer) {
-			L.warn("Timer is already modified!");
-			return;
-		}
+        // check if it's modified already
+        if (defaultTimer instanceof FixedTimer) {
+            L.warn("Timer is already modified!");
+            return;
+        }
 
-		// get default ticks per second if possible
-		if (defaultTimer != null) {
-			this.defaultTps = getTicksPerSecond(defaultTimer);
-		}
+        // get default ticks per second if possible
+        if (defaultTimer != null) {
+            defaultTps = getTicksPerSecond(defaultTimer);
+        }
 
-		final float fps = this.cfg.frameRate.get().floatValue();
-		final float speed = this.cfg.engineSpeed.get().floatValue();
+        float fps = cfg.frameRate.get().floatValue();
+        float speed = cfg.engineSpeed.get().floatValue();
 
-		// set fixed delay timer
-		setTimer(new FixedTimer(this.defaultTps, fps, speed));
-	}
+        // set fixed delay timer
+        setTimer(new FixedTimer(defaultTps, fps, speed));
+    }
 
-	@Override
-	protected void doDisable() {
-		// check if it's still modified
-		if (!(getTimer() instanceof FixedTimer)) {
-			L.warn("Timer is already restored!");
-			return;
-		}
+    @Override
+    protected void doDisable() {
+        // check if it's still modified
+        if (!(getTimer() instanceof FixedTimer)) {
+            L.warn("Timer is already restored!");
+            return;
+        }
 
-		// restore default timer
-		setTimer(new Timer(this.defaultTps));
-	}
+        // restore default timer
+        setTimer(new Timer(defaultTps));
+    }
 
-	private Timer getTimer() {
-		try {
-			return ReflectionHelper.getPrivateValue(Minecraft.class, MC, PrivateFields.MINECRAFT_TIMER);
-		} catch (final Exception ex) {
-			throw new RuntimeException("Can't get timer", ex);
-		}
-	}
+    private Timer getTimer() {
+        try {
+            return ReflectionHelper.getPrivateValue(Minecraft.class, MC, PrivateFields.MINECRAFT_TIMER);
+        } catch (Exception ex) {
+            throw new RuntimeException("Can't get timer", ex);
+        }
+    }
 
-	private void setTimer(final Timer timer) {
-		try {
-			ReflectionHelper.setPrivateValue(Minecraft.class, MC, timer, PrivateFields.MINECRAFT_TIMER);
-		} catch (final Exception ex) {
-			throw new RuntimeException("Can't set timer", ex);
-		}
-	}
+    private void setTimer(Timer timer) {
+        try {
+            ReflectionHelper.setPrivateValue(Minecraft.class, MC, timer, PrivateFields.MINECRAFT_TIMER);
+        } catch (Exception ex) {
+            throw new RuntimeException("Can't set timer", ex);
+        }
+    }
 
-	private float getTicksPerSecond(final Timer timer) {
-		try {
-			return ReflectionHelper.getPrivateValue(Timer.class, timer, PrivateFields.TIMER_TICKSPERSECOND);
-		} catch (final Exception ex) {
-			L.warn("Can't get default ticks per second", ex);
-			// hard-coded default
-			return 20;
-		}
-	}
+    private float getTicksPerSecond(Timer timer) {
+        try {
+            return ReflectionHelper.getPrivateValue(Timer.class, timer, PrivateFields.TIMER_TICKSPERSECOND);
+        } catch (Exception ex) {
+            L.warn("Can't get default ticks per second", ex);
+            // hard-coded default
+            return 20;
+        }
+    }
 }

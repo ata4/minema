@@ -20,63 +20,63 @@ import info.ata4.minecraft.minema.client.config.MinemaConfig;
  */
 public abstract class ACaptureModule {
 
-	private static final Logger L = LogManager.getLogger();
+    private static final Logger L = LogManager.getLogger();
 
-	protected final MinemaConfig cfg;
-	private boolean enabled;
+    protected MinemaConfig cfg;
+    private boolean enabled;
 
-	public ACaptureModule(final MinemaConfig cfg) {
-		this.cfg = cfg;
-	}
+    public ACaptureModule(MinemaConfig cfg) {
+        this.cfg = cfg;
+    }
 
-	public String getName() {
-		return getClass().getSimpleName();
-	}
+    public String getName() {
+        return getClass().getSimpleName();
+    }
 
-	public boolean isEnabled() {
-		return this.enabled;
-	}
+    public boolean isEnabled() {
+        return enabled;
+    }
 
-	public synchronized final void enable() {
-		if (this.enabled) {
-			return;
-		}
+    public synchronized void enable() {
+        if (enabled) {
+            return;
+        }
 
-		this.enabled = true;
+        enabled = true;
 
-		L.info("Enabling " + getName());
+        L.info("Enabling " + getName());
 
-		try {
-			doEnable();
-		} catch (final Throwable t) {
-			L.error("Can't enable " + getName(), t);
-			handleError(t);
-			disable();
-		}
-	}
+        try {
+            doEnable();
+        } catch (Throwable t) {
+            L.error("Can't enable " + getName(), t);
+            handleError(t);
+            disable();
+        }
+    }
 
-	public synchronized final void disable() {
-		if (!this.enabled) {
-			return;
-		}
+    public synchronized void disable() {
+        if (!enabled) {
+            return;
+        }
 
-		this.enabled = false;
+        enabled = false;
 
-		L.info("Disabling " + getName());
+        L.info("Disabling " + getName());
 
-		try {
-			doDisable();
-		} catch (final Throwable t) {
-			L.error("Can't disable " + getName(), t);
-			handleError(t);
-		}
-	}
+        try {
+            doDisable();
+        } catch (Throwable t) {
+            L.error("Can't disable " + getName(), t);
+            handleError(t);
+        }
+    }
 
-	protected void handleError(final Throwable t) {
-		throw new RuntimeException(t);
-	}
+    protected void handleError(Throwable t) {
+        throw new RuntimeException(t);
+    }
 
-	protected abstract void doEnable() throws Exception;
+    protected abstract void doEnable() throws Exception;
 
-	protected abstract void doDisable() throws Exception;
+    protected abstract void doDisable() throws Exception;
 }

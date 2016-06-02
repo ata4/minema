@@ -17,48 +17,48 @@ import net.minecraftforge.common.config.Property;
  */
 public class ConfigEnum<T extends Enum> extends ConfigValue<T> {
 
-	private final Class<T> type;
-	private final String[] validValues;
+    private final Class<T> type;
+    private final String[] validValues;
 
-	public ConfigEnum(final T value) {
-		super(value);
+    public ConfigEnum(T value) {
+        super(value);
 
-		this.type = (Class<T>) value.getClass();
+        type = (Class<T>) value.getClass();
 
-		final T[] values = this.type.getEnumConstants();
-		this.validValues = new String[values.length];
-		for (int i = 0; i < values.length; i++) {
-			this.validValues[i] = enumToString(values[i]);
-		}
-	}
+        T[] values = type.getEnumConstants();
+        validValues = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            validValues[i] = enumToString(values[i]);
+        }
+    }
 
-	private String enumToString(final T e) {
-		return e.name().toLowerCase();
-	}
+    private String enumToString(T e) {
+        return e.name().toLowerCase();
+    }
 
-	private T stringToEnum(final String name) {
-		return (T) Enum.valueOf(this.type, name.toUpperCase());
-	}
+    private T stringToEnum(String name) {
+        return (T) Enum.valueOf(type, name.toUpperCase());
+    }
 
-	@Override
-	public Property.Type getPropType() {
-		return Property.Type.STRING;
-	}
+    @Override
+    public Property.Type getPropType() {
+        return Property.Type.STRING;
+    }
 
-	@Override
-	public void importProp(final Property prop) {
-		try {
-			set(stringToEnum(prop.getString()));
-		} catch (final IllegalArgumentException ex) {
-			set(getDefault());
-		}
-	}
+    @Override
+    public void importProp(Property prop) {
+        try {
+            set(stringToEnum(prop.getString()));
+        } catch (IllegalArgumentException ex) {
+            set(getDefault());
+        }
+    }
 
-	@Override
-	public void exportProp(final Property prop) {
-		prop.set(enumToString(get()));
-		prop.setDefaultValue(enumToString(getDefault()));
-		prop.setValidValues(this.validValues);
-	}
+    @Override
+    public void exportProp(Property prop) {
+        prop.set(enumToString(get()));
+        prop.setDefaultValue(enumToString(getDefault()));
+        prop.setValidValues(validValues);
+    }
 
 }

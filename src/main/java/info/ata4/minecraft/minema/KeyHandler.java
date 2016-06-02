@@ -7,7 +7,6 @@
  **    May you find forgiveness for yourself and forgive others.
  **    May you share freely, never taking more than you give.
  */
-
 package info.ata4.minecraft.minema;
 
 import org.lwjgl.input.Keyboard;
@@ -21,27 +20,27 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public final class KeyHandler {
+public class KeyHandler {
 
-	public static final String KEY_CATEGORY = "key.categories.minema";
-	public static final KeyBinding KEY_CAPTURE = new KeyBinding("key.minema.capture", Keyboard.KEY_F4, KEY_CATEGORY);
+    public static final String KEY_CATEGORY = "key.categories.minema";
+    public static final KeyBinding KEY_CAPTURE = new KeyBinding("key.minema.capture", Keyboard.KEY_F4, KEY_CATEGORY);
 
-	private final Minema minema;
+    private final Minema minema;
 
-	public KeyHandler(final Minema minema) {
-		this.minema = minema;
+    public KeyHandler(Minema minema) {
+        this.minema = minema;
 
-		ClientRegistry.registerKeyBinding(KEY_CAPTURE);
-	}
+        ClientRegistry.registerKeyBinding(KEY_CAPTURE);
+    }
 
-	@SubscribeEvent
-	public void onKeyInput(final KeyInputEvent event) {
-		if (KEY_CAPTURE.isPressed()) {
-			if (this.minema.isEnabled()) {
-				this.minema.disable();
-			} else {
-				this.minema.enable();
-			}
-		}
-	}
+    @SubscribeEvent
+    public void onKeyInput(KeyInputEvent event) {
+        if (KEY_CAPTURE.isPressed()) {
+            if (minema.isEnabled()) {
+                minema.disable();
+            } else {
+                minema.enable();
+            }
+        }
+    }
 }

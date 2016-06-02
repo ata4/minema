@@ -25,49 +25,50 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 public class CaptureOverlay extends ACaptureModule {
 
-	private static final Minecraft MC = Minecraft.getMinecraft();
+    private static final Minecraft MC = Minecraft.getMinecraft();
 
-	private final CaptureSession session;
+    private final CaptureSession session;
 
-	public CaptureOverlay(final MinemaConfig cfg, final CaptureSession session) {
-		super(cfg);
-		this.session = session;
-	}
+    public CaptureOverlay(MinemaConfig cfg, CaptureSession session) {
+        super(cfg);
+        
+        this.session = session;
+    }
 
-	@SubscribeEvent
-	public void onRenderGameOverlay(final RenderGameOverlayEvent.Text evt) {
-		final ArrayList<String> left = evt.getLeft();
+    @SubscribeEvent
+    public void onRenderGameOverlay(RenderGameOverlayEvent.Text evt) {
+        ArrayList<String> left = evt.getLeft();
 
-		if (MC.gameSettings.showDebugInfo) {
-			// F3 menu is open -> add spacer
-			left.add("");
-		}
+        if (MC.gameSettings.showDebugInfo) {
+            // F3 menu is open -> add spacer
+            left.add("");
+        }
 
-		final CaptureTime time = this.session.getCaptureTime();
+        CaptureTime time = session.getCaptureTime();
 
-		final String frame = String.valueOf(time.getNumFrames());
-		left.add("Frame: " + frame);
+        String frame = String.valueOf(time.getNumFrames());
+        left.add("Frame: " + frame);
 
-		final String fps = Minecraft.getDebugFPS() + " fps";
-		left.add("Rate: " + fps);
+        String fps = Minecraft.getDebugFPS() + " fps";
+        left.add("Rate: " + fps);
 
-		final String avg = (int) time.getAverageFPS() + " fps";
-		left.add("Avg.: " + avg);
+        String avg = (int) time.getAverageFPS() + " fps";
+        left.add("Avg.: " + avg);
 
-		final String delay = CaptureTime.getTimeUnit(time.getPreviousCaptureTime());
-		left.add("Delay: " + delay);
+        String delay = CaptureTime.getTimeUnit(time.getPreviousCaptureTime());
+        left.add("Delay: " + delay);
 
-		left.add("Time R: " + time.getRealTimeString());
-		left.add("Time V: " + time.getVideoTimeString());
-	}
+        left.add("Time R: " + time.getRealTimeString());
+        left.add("Time V: " + time.getVideoTimeString());
+    }
 
-	@Override
-	protected void doEnable() throws Exception {
-		MinecraftForge.EVENT_BUS.register(this);
-	}
+    @Override
+    protected void doEnable() throws Exception {
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	@Override
-	protected void doDisable() throws Exception {
-		MinecraftForge.EVENT_BUS.unregister(this);
-	}
+    @Override
+    protected void doDisable() throws Exception {
+        MinecraftForge.EVENT_BUS.unregister(this);
+    }
 }

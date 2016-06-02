@@ -20,18 +20,18 @@ import net.minecraft.util.text.TextFormatting;
  */
 public class ChatUtils {
 
-	private static final Minecraft MC = Minecraft.getMinecraft();
+    private static final Minecraft MC = Minecraft.getMinecraft();
 
-	public static void print(final String msg, final TextFormatting format, final Object... args) {
-		if (MC.ingameGUI == null) {
-			return;
-		}
+    public static void print(String msg, TextFormatting format, Object... args) {
+        if (MC.ingameGUI == null) {
+            return;
+        }
 
-		final GuiNewChat chat = MC.ingameGUI.getChatGUI();
-		final TextComponentTranslation ret = new TextComponentTranslation(msg, args);
-		ret.getChatStyle().setColor(format);
+        GuiNewChat chat = MC.ingameGUI.getChatGUI();
+        TextComponentTranslation ret = new TextComponentTranslation(msg, args);
+        ret.getChatStyle().setColor(format);
 
-		chat.printChatMessage(ret);
-	}
+        chat.printChatMessage(ret);
+    }
 
 }

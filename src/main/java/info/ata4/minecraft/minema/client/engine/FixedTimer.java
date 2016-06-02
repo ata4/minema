@@ -7,7 +7,6 @@
  **    May you find forgiveness for yourself and forgive others.
  **    May you share freely, never taking more than you give.
  */
-
 package info.ata4.minecraft.minema.client.engine;
 
 import net.minecraft.util.Timer;
@@ -19,21 +18,21 @@ import net.minecraft.util.Timer;
  */
 public class FixedTimer extends Timer {
 
-	private final float ticksPerSecond;
-	private final float framesPerSecond;
+    private final float ticksPerSecond;
+    private final float framesPerSecond;
 
-	public FixedTimer(final float tps, final float fps, final float speed) {
-		super(tps);
-		this.ticksPerSecond = tps;
-		this.framesPerSecond = fps;
-		this.timerSpeed = speed;
-	}
+    public FixedTimer(float tps, float fps, float speed) {
+        super(tps);
+        ticksPerSecond = tps;
+        framesPerSecond = fps;
+        timerSpeed = speed;
+    }
 
-	@Override
-	public void updateTimer() {
-		this.elapsedPartialTicks += this.timerSpeed * (this.ticksPerSecond / this.framesPerSecond);
-		this.elapsedTicks = (int) this.elapsedPartialTicks;
-		this.elapsedPartialTicks -= this.elapsedTicks;
-		this.renderPartialTicks = this.elapsedPartialTicks;
-	}
+    @Override
+    public void updateTimer() {
+        elapsedPartialTicks += timerSpeed * (ticksPerSecond / framesPerSecond);
+        elapsedTicks = (int) elapsedPartialTicks;
+        elapsedPartialTicks -= elapsedTicks;
+        renderPartialTicks = elapsedPartialTicks;
+    }
 }

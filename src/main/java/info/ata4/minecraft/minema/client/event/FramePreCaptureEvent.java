@@ -21,13 +21,14 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 @Cancelable
 public class FramePreCaptureEvent extends Event {
 
-	public final int frameNum;
-	public final Dimension frameDim;
+    public final int frameNum;
+    public final Dimension frameDim;
 
-	public FramePreCaptureEvent(final int frameNum, final Dimension frameDim) {
-		super();
-		this.frameNum = frameNum;
-		this.frameDim = frameDim;
-	}
+    public FramePreCaptureEvent(int frameNum, Dimension frameDim) {
+        super();
+        
+        this.frameNum = frameNum;
+        this.frameDim = frameDim;
+    }
 
 }

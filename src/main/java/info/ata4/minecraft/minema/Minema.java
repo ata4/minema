@@ -32,64 +32,64 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 @Mod(modid = Minema.ID, name = Minema.NAME, version = Minema.VERSION, guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory")
-public final class Minema {
+public class Minema {
 
-	public static final String NAME = "Minema";
-	public static final String ID = NAME;
-	public static final String VERSION = "1.9";
+    public static final String NAME = "Minema";
+    public static final String ID = NAME;
+    public static final String VERSION = "1.9";
 
-	@Instance(ID)
-	public static Minema instance;
+    @Instance(ID)
+    public static Minema instance;
 
-	private ModMetadata metadata;
-	private MinemaConfig config;
-	private CaptureSession session;
+    private ModMetadata metadata;
+    private MinemaConfig config;
+    private CaptureSession session;
 
-	@EventHandler
-	public void onPreInit(final FMLPreInitializationEvent evt) {
-		final File file = evt.getSuggestedConfigurationFile();
-		this.config = new MinemaConfig(new Configuration(file));
-		this.metadata = evt.getModMetadata();
-	}
+    @EventHandler
+    public void onPreInit(FMLPreInitializationEvent evt) {
+        File file = evt.getSuggestedConfigurationFile();
+        config = new MinemaConfig(new Configuration(file));
+        metadata = evt.getModMetadata();
+    }
 
-	@EventHandler
-	public void onInit(final FMLInitializationEvent evt) {
-		ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
-		MinecraftForge.EVENT_BUS.register(new KeyHandler(this));
-		MinecraftForge.EVENT_BUS.register(this);
-	}
+    @EventHandler
+    public void onInit(FMLInitializationEvent evt) {
+        ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
+        MinecraftForge.EVENT_BUS.register(new KeyHandler(this));
+        MinecraftForge.EVENT_BUS.register(this);
+    }
 
-	public MinemaConfig getConfig() {
-		return this.config;
-	}
+    public MinemaConfig getConfig() {
+        return config;
+    }
 
-	public ModMetadata getMetadata() {
-		return this.metadata;
-	}
+    public ModMetadata getMetadata() {
+        return metadata;
+    }
 
-	public void enable() {
-		this.config.load();
+    public void enable() {
+        config.load();
 
-		this.session = new CaptureSession(this.config);
-		this.session.enable();
-	}
+        session = new CaptureSession(config);
+        session.enable();
+    }
 
-	public void disable() {
-		if (isEnabled()) {
-			this.session.disable();
-		}
-		this.session = null;
-	}
+    public void disable() {
+        if (isEnabled()) {
+            session.disable();
+        }
+        session = null;
+    }
 
-	public boolean isEnabled() {
-		return this.session != null && this.session.isEnabled();
-	}
+    public boolean isEnabled() {
+        return session != null && session.isEnabled();
+    }
 
-	@SubscribeEvent
-	public void onConfigChanged(final ConfigChangedEvent eventArgs) {
-		if (ID.equals(eventArgs.getModID())) {
-			this.config.update(false);
-		}
-	}
+    @SubscribeEvent
+    public void onConfigChanged(ConfigChangedEvent eventArgs) {
+        if (ID.equals(eventArgs.getModID())) {
+            config.update(false);
+        }
+    }
 
 }

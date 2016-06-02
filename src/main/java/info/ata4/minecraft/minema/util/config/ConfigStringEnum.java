@@ -22,40 +22,40 @@ import net.minecraftforge.common.config.Property;
  */
 public class ConfigStringEnum extends ConfigString {
 
-	private final Set<String> choices;
-	private final String[] validValues;
+    private final Set<String> choices;
+    private final String[] validValues;
 
-	public ConfigStringEnum(final String value, final Set<String> choices) {
-		super(value);
+    public ConfigStringEnum(String value, Set<String> choices) {
+        super(value);
 
-		Validate.notEmpty(choices);
+        Validate.notEmpty(choices);
 
-		if (!choices.contains(value)) {
-			throw new IllegalArgumentException();
-		}
+        if (!choices.contains(value)) {
+            throw new IllegalArgumentException();
+        }
 
-		this.choices = Collections.unmodifiableSet(choices);
+        this.choices = Collections.unmodifiableSet(choices);
 
-		this.validValues = choices.toArray(new String[] {});
-	}
+        validValues = choices.toArray(new String[]{});
+    }
 
-	@Override
-	public Property.Type getPropType() {
-		return Property.Type.STRING;
-	}
+    @Override
+    public Property.Type getPropType() {
+        return Property.Type.STRING;
+    }
 
-	@Override
-	public void set(final String value) {
-		if (this.choices.contains(value)) {
-			super.set(value);
-		} else {
-			super.set(getDefault());
-		}
-	}
+    @Override
+    public void set(String value) {
+        if (choices.contains(value)) {
+            super.set(value);
+        } else {
+            super.set(getDefault());
+        }
+    }
 
-	@Override
-	public void exportProp(final Property prop) {
-		super.exportProp(prop);
-		prop.setValidValues(this.validValues);
-	}
+    @Override
+    public void exportProp(Property prop) {
+        super.exportProp(prop);
+        prop.setValidValues(validValues);
+    }
 }

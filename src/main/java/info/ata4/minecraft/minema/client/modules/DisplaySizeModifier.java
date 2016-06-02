@@ -9,40 +9,40 @@ import net.minecraft.client.shader.Framebuffer;
 
 public class DisplaySizeModifier extends ACaptureModule {
 
-	private static final Minecraft MC = Minecraft.getMinecraft();
+    private static final Minecraft MC = Minecraft.getMinecraft();
 
-	private int originalWidth;
-	private int originalHeight;
+    private int originalWidth;
+    private int originalHeight;
 
-	public DisplaySizeModifier(final MinemaConfig cfg) {
-		super(cfg);
-	}
+    public DisplaySizeModifier(MinemaConfig cfg) {
+        super(cfg);
+    }
 
-	@Override
-	protected void doEnable() {
-		this.originalWidth = Display.getWidth();
-		this.originalHeight = Display.getHeight();
+    @Override
+    protected void doEnable() {
+        originalWidth = Display.getWidth();
+        originalHeight = Display.getHeight();
 
-		resize(this.cfg.getFrameWidth(), this.cfg.getFrameHeight());
+        resize(cfg.getFrameWidth(), cfg.getFrameHeight());
 
-		// render framebuffer texture in original size
-		if (OpenGlHelper.isFramebufferEnabled()) {
-			setFramebufferTextureSize(this.originalWidth, this.originalHeight);
-		}
-	}
+        // render framebuffer texture in original size
+        if (OpenGlHelper.isFramebufferEnabled()) {
+            setFramebufferTextureSize(originalWidth, originalHeight);
+        }
+    }
 
-	@Override
-	protected void doDisable() {
-		resize(this.originalWidth, this.originalHeight);
-	}
+    @Override
+    protected void doDisable() {
+        resize(originalWidth, originalHeight);
+    }
 
-	public void resize(final int width, final int height) {
-		MC.resize(width, height);
-	}
+    public void resize(int width, int height) {
+        MC.resize(width, height);
+    }
 
-	public void setFramebufferTextureSize(final int width, final int height) {
-		final Framebuffer fb = MC.getFramebuffer();
-		fb.framebufferTextureWidth = width;
-		fb.framebufferTextureHeight = height;
-	}
+    public void setFramebufferTextureSize(int width, int height) {
+        Framebuffer fb = MC.getFramebuffer();
+        fb.framebufferTextureWidth = width;
+        fb.framebufferTextureHeight = height;
+    }
 }

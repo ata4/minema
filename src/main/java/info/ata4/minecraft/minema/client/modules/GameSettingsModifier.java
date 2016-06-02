@@ -19,41 +19,41 @@ import net.minecraft.client.settings.GameSettings;
  */
 public class GameSettingsModifier extends ACaptureModule {
 
-	private static final Minecraft MC = Minecraft.getMinecraft();
+    private static final Minecraft MC = Minecraft.getMinecraft();
 
-	private int framerateLimit;
-	private boolean vSync;
-	private boolean pauseOnLostFocus;
+    private int framerateLimit;
+    private boolean vSync;
+    private boolean pauseOnLostFocus;
 
-	public GameSettingsModifier(final MinemaConfig cfg) {
-		super(cfg);
-	}
+    public GameSettingsModifier(MinemaConfig cfg) {
+        super(cfg);
+    }
 
-	@Override
-	protected void doEnable() throws Exception {
-		final GameSettings gs = MC.gameSettings;
+    @Override
+    protected void doEnable() throws Exception {
+        GameSettings gs = MC.gameSettings;
 
-		// disable build-in framerate limit
-		this.framerateLimit = gs.limitFramerate;
-		gs.limitFramerate = Integer.MAX_VALUE;
+        // disable build-in framerate limit
+        framerateLimit = gs.limitFramerate;
+        gs.limitFramerate = Integer.MAX_VALUE;
 
-		// disable vSync
-		this.vSync = gs.enableVsync;
-		gs.enableVsync = false;
+        // disable vSync
+        vSync = gs.enableVsync;
+        gs.enableVsync = false;
 
-		// don't pause when losing focus
-		this.pauseOnLostFocus = gs.pauseOnLostFocus;
-		gs.pauseOnLostFocus = false;
+        // don't pause when losing focus
+        pauseOnLostFocus = gs.pauseOnLostFocus;
+        gs.pauseOnLostFocus = false;
 
-	}
+    }
 
-	@Override
-	protected void doDisable() throws Exception {
-		// restore everything
-		final GameSettings gs = MC.gameSettings;
-		gs.limitFramerate = this.framerateLimit;
-		gs.pauseOnLostFocus = this.pauseOnLostFocus;
-		gs.enableVsync = this.vSync;
-	}
+    @Override
+    protected void doDisable() throws Exception {
+        // restore everything
+        GameSettings gs = MC.gameSettings;
+        gs.limitFramerate = framerateLimit;
+        gs.pauseOnLostFocus = pauseOnLostFocus;
+        gs.enableVsync = vSync;
+    }
 
 }

@@ -17,24 +17,24 @@ import net.minecraftforge.common.config.Property;
  */
 public class ConfigString extends ConfigValue<String> {
 
-	public ConfigString(final String value) {
-		super(value);
-	}
+    public ConfigString(String value) {
+        super(value);
+    }
 
-	@Override
-	public Property.Type getPropType() {
-		return Property.Type.STRING;
-	}
+    @Override
+    public Property.Type getPropType() {
+        return Property.Type.STRING;
+    }
 
-	@Override
-	public void importProp(final Property prop) {
-		set(prop.getString());
-	}
+    @Override
+    public void importProp(Property prop) {
+        set(prop.getString());
+    }
 
-	@Override
-	public void exportProp(final Property prop) {
-		prop.set(get());
-		prop.setDefaultValue(getDefault());
-	}
+    @Override
+    public void exportProp(Property prop) {
+        prop.set(get());
+        prop.setDefaultValue(getDefault());
+    }
 
 }

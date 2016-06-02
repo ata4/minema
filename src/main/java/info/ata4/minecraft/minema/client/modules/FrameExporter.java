@@ -30,78 +30,78 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 public abstract class FrameExporter extends ACaptureModule {
 
-	private static final Logger L = LogManager.getLogger();
+    private static final Logger L = LogManager.getLogger();
 
-	protected ExecutorService exportService;
-	protected Future<?> exportFuture;
+    protected ExecutorService exportService;
+    protected Future<?> exportFuture;
 
-	public FrameExporter(final MinemaConfig cfg) {
-		super(cfg);
-	}
+    public FrameExporter(MinemaConfig cfg) {
+        super(cfg);
+    }
 
-	@Override
-	protected void doEnable() throws Exception {
-		this.exportService = Executors.newSingleThreadExecutor();
-	}
+    @Override
+    protected void doEnable() throws Exception {
+        exportService = Executors.newSingleThreadExecutor();
+    }
 
-	@Override
-	protected void doDisable() throws Exception {
-		this.exportService.shutdown();
+    @Override
+    protected void doDisable() throws Exception {
+        exportService.shutdown();
 
-		try {
-			if (!this.exportService.awaitTermination(3, TimeUnit.SECONDS)) {
-				L.warn("Frame export service termination timeout");
-				this.exportService.shutdownNow();
-			}
-		} catch (final InterruptedException ex) {
-			L.warn("Frame export service termination interrupted", ex);
-		}
-	}
+        try {
+            if (!exportService.awaitTermination(3, TimeUnit.SECONDS)) {
+                L.warn("Frame export service termination timeout");
+                exportService.shutdownNow();
+            }
+        } catch (InterruptedException ex) {
+            L.warn("Frame export service termination interrupted", ex);
+        }
+    }
 
-	@SubscribeEvent
-	public void onFramePreCapture(final FramePreCaptureEvent evt) throws ExecutionException {
-		if (!isEnabled()) {
-			return;
-		}
+    @SubscribeEvent
+    public void onFramePreCapture(FramePreCaptureEvent evt) throws ExecutionException {
+        if (!isEnabled()) {
+            return;
+        }
 
-		if (this.exportFuture != null) {
-			// wait for the previous task to complete before sending the next
-			// one
-			try {
-				this.exportFuture.get();
-			} catch (final InterruptedException ex) {
-				// catch uncritical interruption exception
-				L.warn("Frame export task interrupted", ex);
-			}
-		}
-	}
+        if (exportFuture != null) {
+            // wait for the previous task to complete before sending the next
+            // one
+            try {
+                exportFuture.get();
+            } catch (InterruptedException ex) {
+                // catch uncritical interruption exception
+                L.warn("Frame export task interrupted", ex);
+            }
+        }
+    }
 
-	@SubscribeEvent
-	public void onFrameCapture(final FrameCaptureEvent evt) {
-		if (!isEnabled()) {
-			return;
-		}
+    @SubscribeEvent
+    public void onFrameCapture(final FrameCaptureEvent evt) {
+        if (!isEnabled()) {
+            return;
+        }
 
-		// export frame in the background so that the next frame can be
-		// rendered
-		// in the meantime
-		this.exportFuture = this.exportService.submit(new Runnable() {
-			@Override
-			public void run() {
-				exportFrame(evt);
-			}
-		});
-	}
+        // export frame in the background so that the next frame can be
+        // rendered
+        // in the meantime
+        exportFuture = exportService.submit(new Runnable() {
+            @Override
+            public void run() {
+                exportFrame(evt);
+            }
+        });
+    }
 
-	private void exportFrame(final FrameCaptureEvent evt) {
-		try {
-			doExportFrame(evt);
-		} catch (final Exception ex) {
-			throw new RuntimeException("Can't export frame " + evt.frameNum, ex);
-		}
-	}
+    private void exportFrame(FrameCaptureEvent evt) {
+        try {
+            doExportFrame(evt);
+        } catch (Exception ex) {
+            throw new RuntimeException("Can't export frame " + evt.frameNum, ex);
+        }
+    }
 
-	protected abstract void doExportFrame(FrameCaptureEvent evt) throws Exception;
+    protected abstract void doExportFrame(FrameCaptureEvent evt) throws Exception;
 
-	public abstract void configureCapturer(ACapturer fbc);
+    public abstract void configureCapturer(ACapturer fbc);
 }

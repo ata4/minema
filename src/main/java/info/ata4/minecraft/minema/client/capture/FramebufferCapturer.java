@@ -25,24 +25,24 @@ import net.minecraft.client.shader.Framebuffer;
  */
 public class FramebufferCapturer extends ACapturer {
 
-	@Override
-	protected void capture() {
-		// set alignment flags
-		glPixelStorei(GL_PACK_ALIGNMENT, 1);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    @Override
+    protected void capture() {
+        // set alignment flags
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		// read texture from framebuffer if enabled, otherwise use slower
-		// glReadPixels
-		if (isFramebufferEnabled) {
-			final Framebuffer fb = MC.getFramebuffer();
-			glBindTexture(GL_TEXTURE_2D, fb.framebufferTexture);
-			glGetTexImage(GL_TEXTURE_2D, 0, colorFormat, TYPE, this.buffer);
-		} else {
-			glReadPixels(0, 0, start.getWidth(), start.getHeight(), colorFormat, TYPE, this.buffer);
-		}
-	}
+        // read texture from framebuffer if enabled, otherwise use slower
+        // glReadPixels
+        if (isFramebufferEnabled) {
+            Framebuffer fb = MC.getFramebuffer();
+            glBindTexture(GL_TEXTURE_2D, fb.framebufferTexture);
+            glGetTexImage(GL_TEXTURE_2D, 0, colorFormat, TYPE, buffer);
+        } else {
+            glReadPixels(0, 0, start.getWidth(), start.getHeight(), colorFormat, TYPE, buffer);
+        }
+    }
 
-	@Override
-	public void close() {
-	}
+    @Override
+    public void close() {
+    }
 }

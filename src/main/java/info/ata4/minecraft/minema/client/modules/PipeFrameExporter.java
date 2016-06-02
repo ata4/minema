@@ -33,73 +33,74 @@ import info.ata4.minecraft.minema.io.StreamPipe;
  */
 public class PipeFrameExporter extends FrameExporter {
 
-	private static final Logger L = LogManager.getLogger();
+    private static final Logger L = LogManager.getLogger();
 
-	private Process proc;
-	private WritableByteChannel pipe;
+    private Process proc;
+    private WritableByteChannel pipe;
 
-	private OutputStream log;
+    private OutputStream log;
 
-	public PipeFrameExporter(final MinemaConfig cfg) {
-		super(cfg);
-	}
+    public PipeFrameExporter(MinemaConfig cfg) {
+        super(cfg);
+    }
 
-	@Override
-	protected void doEnable() throws Exception {
-		super.doEnable();
+    @Override
+    protected void doEnable() throws Exception {
+        super.doEnable();
 
-		String params = this.cfg.videoEncoderParams.get();
-		params = params.replace("%WIDTH%", String.valueOf(this.cfg.getFrameWidth()));
-		params = params.replace("%HEIGHT%", String.valueOf(this.cfg.getFrameHeight()));
-		params = params.replace("%FPS%", String.valueOf(this.cfg.frameRate.get()));
+        String params = cfg.videoEncoderParams.get();
+        params = params.replace("%WIDTH%", String.valueOf(cfg.getFrameWidth()));
+        params = params.replace("%HEIGHT%", String.valueOf(cfg.getFrameHeight()));
+        params = params.replace("%FPS%", String.valueOf(cfg.frameRate.get()));
 
-		final List<String> cmds = new ArrayList<String>();
-		cmds.add(this.cfg.videoEncoderPath.get());
-		for (String s : StringUtils.split(params, ' '))
-			cmds.add(s);
+        List<String> cmds = new ArrayList<String>();
+        cmds.add(cfg.videoEncoderPath.get());
+        for (String s : StringUtils.split(params, ' ')) {
+            cmds.add(s);
+        }
 
-		// build encoder process
-		final ProcessBuilder pb = new ProcessBuilder(cmds);
-		pb.directory(this.cfg.getMovieDir());
-		this.proc = pb.start();
+        // build encoder process
+        ProcessBuilder pb = new ProcessBuilder(cmds);
+        pb.directory(cfg.getMovieDir());
+        proc = pb.start();
 
-		// Java 1.6 doesn't know redirectOutput/redirectError and these
-		// streams need to be emptied to avoid blocking
-		this.log = FileUtils.openOutputStream(new File(this.cfg.getMovieDir(), "encoder.log"));
-		new StreamPipe(this.proc.getInputStream(), this.log).start();
-		new StreamPipe(this.proc.getErrorStream(), this.log).start();
+        // Java 1.6 doesn't know redirectOutput/redirectError and these
+        // streams need to be emptied to avoid blocking
+        log = FileUtils.openOutputStream(new File(cfg.getMovieDir(), "encoder.log"));
+        new StreamPipe(proc.getInputStream(), log).start();
+        new StreamPipe(proc.getErrorStream(), log).start();
 
-		// create channel from output stream
-		this.pipe = Channels.newChannel(this.proc.getOutputStream());
-	}
+        // create channel from output stream
+        pipe = Channels.newChannel(proc.getOutputStream());
+    }
 
-	@Override
-	protected void doDisable() throws Exception {
-		super.doDisable();
+    @Override
+    protected void doDisable() throws Exception {
+        super.doDisable();
 
-		IOUtils.closeQuietly(this.pipe);
-		IOUtils.closeQuietly(this.log);
+        IOUtils.closeQuietly(pipe);
+        IOUtils.closeQuietly(log);
 
-		if (this.proc != null) {
-			try {
-				this.proc.waitFor();
-			} catch (final InterruptedException ex) {
-				L.warn("Pipe program termination interrupted", ex);
-			}
+        if (proc != null) {
+            try {
+                proc.waitFor();
+            } catch (InterruptedException ex) {
+                L.warn("Pipe program termination interrupted", ex);
+            }
 
-			this.proc.destroy();
-		}
-	}
+            proc.destroy();
+        }
+    }
 
-	@Override
-	public void configureCapturer(final ACapturer fbc) {
-		fbc.setFlipLines();
-	}
+    @Override
+    public void configureCapturer(ACapturer fbc) {
+        fbc.setFlipLines();
+    }
 
-	@Override
-	protected void doExportFrame(final FrameCaptureEvent evt) throws Exception {
-		if (this.pipe.isOpen()) {
-			this.pipe.write(evt.frameBuffer);
-		}
-	}
+    @Override
+    protected void doExportFrame(FrameCaptureEvent evt) throws Exception {
+        if (pipe.isOpen()) {
+            pipe.write(evt.frameBuffer);
+        }
+    }
 }

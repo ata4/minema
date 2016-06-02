@@ -17,33 +17,33 @@ import net.minecraftforge.common.config.Property;
  */
 public abstract class ConfigValue<T> {
 
-	private T value;
-	private final T valueDefault;
+    private T value;
+    private final T valueDefault;
 
-	public ConfigValue(final T value) {
-		this.value = value;
-		this.valueDefault = value;
-	}
+    public ConfigValue(T value) {
+        this.value = value;
+        valueDefault = value;
+    }
 
-	public void set(final T value) {
-		this.value = value;
-	}
+    public void set(T value) {
+        this.value = value;
+    }
 
-	public T get() {
-		return this.value;
-	}
+    public T get() {
+        return value;
+    }
 
-	public T getDefault() {
-		return this.valueDefault;
-	}
+    public T getDefault() {
+        return valueDefault;
+    }
 
-	public void reset() {
-		set(getDefault());
-	}
+    public void reset() {
+        set(getDefault());
+    }
 
-	public abstract Property.Type getPropType();
+    public abstract Property.Type getPropType();
 
-	public abstract void importProp(Property prop);
+    public abstract void importProp(Property prop);
 
-	public abstract void exportProp(Property prop);
+    public abstract void exportProp(Property prop);
 }

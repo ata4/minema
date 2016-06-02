@@ -20,15 +20,15 @@ import net.minecraftforge.fml.client.config.GuiConfig;
  */
 public class MinemaConfigGui extends GuiConfig {
 
-	private static String getTitle() {
-		final Configuration cfg = Minema.instance.getConfig().getConfiguration();
-		return GuiConfig.getAbridgedConfigPath(cfg.toString());
-	}
+    private static String getTitle() {
+        Configuration cfg = Minema.instance.getConfig().getConfiguration();
+        return GuiConfig.getAbridgedConfigPath(cfg.toString());
+    }
 
-	public MinemaConfigGui(final GuiScreen parentScreen) {
-		// telescoping into space while static methods prevent worse.
-		// thanks for nothing, IModGui"Factory"...
-		super(parentScreen, Minema.instance.getConfig().getConfigElements(), Minema.ID, false, false, getTitle());
-	}
+    public MinemaConfigGui(GuiScreen parentScreen) {
+        // telescoping into space while static methods prevent worse.
+        // thanks for nothing, IModGui"Factory"...
+        super(parentScreen, Minema.instance.getConfig().getConfigElements(), Minema.ID, false, false, getTitle());
+    }
 
 }
