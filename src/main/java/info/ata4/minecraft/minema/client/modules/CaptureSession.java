@@ -40,12 +40,12 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class CaptureSession extends ACaptureModule {
+public class CaptureSession extends CaptureModule {
 
     public static Logger L = LogManager.getLogger();
     public static Minecraft MC = Minecraft.getMinecraft();
 
-    private final ArrayList<ACaptureModule> modules = new ArrayList<>();
+    private final ArrayList<CaptureModule> modules = new ArrayList<>();
     private final EventBus eventBus = new EventBus();
 
     private CaptureTime time;

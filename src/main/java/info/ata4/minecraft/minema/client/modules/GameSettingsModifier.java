@@ -17,7 +17,7 @@ import net.minecraft.client.settings.GameSettings;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class GameSettingsModifier extends ACaptureModule {
+public class GameSettingsModifier extends CaptureModule {
 
     private static final Minecraft MC = Minecraft.getMinecraft();
 

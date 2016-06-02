@@ -37,7 +37,7 @@ import net.minecraftforge.fml.relauncher.Side;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class TickSynchronizer extends ACaptureModule {
+public class TickSynchronizer extends CaptureModule {
 
     private static final Logger L = LogManager.getLogger();
     private static final Minecraft MC = Minecraft.getMinecraft();

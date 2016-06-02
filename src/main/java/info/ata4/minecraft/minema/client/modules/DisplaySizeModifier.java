@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
 
-public class DisplaySizeModifier extends ACaptureModule {
+public class DisplaySizeModifier extends CaptureModule {
 
     private static final Minecraft MC = Minecraft.getMinecraft();
 

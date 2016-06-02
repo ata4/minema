@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class CaptureOverlay extends ACaptureModule {
+public class CaptureOverlay extends CaptureModule {
 
     private static final Minecraft MC = Minecraft.getMinecraft();
 

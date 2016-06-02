@@ -22,7 +22,7 @@ import net.minecraft.util.Timer;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class TimerModifier extends ACaptureModule implements PrivateAccessor {
+public class TimerModifier extends CaptureModule implements PrivateAccessor {
 
     private static final Logger L = LogManager.getLogger();
     private static final Minecraft MC = Minecraft.getMinecraft();
