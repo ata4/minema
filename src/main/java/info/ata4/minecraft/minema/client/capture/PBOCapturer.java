@@ -1,36 +1,22 @@
 package info.ata4.minecraft.minema.client.capture;
 
-import static org.lwjgl.opengl.ARBBufferObject.glBindBufferARB;
-import static org.lwjgl.opengl.ARBBufferObject.glBufferDataARB;
-import static org.lwjgl.opengl.ARBBufferObject.glDeleteBuffersARB;
-import static org.lwjgl.opengl.ARBBufferObject.glGenBuffersARB;
-import static org.lwjgl.opengl.ARBBufferObject.glMapBufferARB;
-import static org.lwjgl.opengl.ARBBufferObject.glUnmapBufferARB;
-import static org.lwjgl.opengl.GL11.GL_PACK_ALIGNMENT;
-import static org.lwjgl.opengl.GL11.GL_UNPACK_ALIGNMENT;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glPixelStorei;
-
 import java.nio.ByteBuffer;
-
-import org.lwjgl.opengl.ARBPixelBufferObject;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.shader.Framebuffer;
 import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.Util;
 
-import net.minecraft.client.shader.Framebuffer;
-import static org.lwjgl.opengl.ARBBufferObject.glBufferDataARB;
-import static org.lwjgl.opengl.ARBBufferObject.glDeleteBuffersARB;
-import static org.lwjgl.opengl.ARBBufferObject.glGenBuffersARB;
-import static org.lwjgl.opengl.ARBBufferObject.glMapBufferARB;
+import static org.lwjgl.opengl.ARBBufferObject.*;
+import static org.lwjgl.opengl.ARBPixelBufferObject.*;
+import static org.lwjgl.opengl.GL11.*;
 
 public class PBOCapturer extends Capturer {
 
     public static final boolean isSupported = GLContext.getCapabilities().GL_ARB_pixel_buffer_object;
 
-    private static final int PACK_MODE = ARBPixelBufferObject.GL_PIXEL_PACK_BUFFER_ARB;
-    private static final int STREAM_READ = ARBPixelBufferObject.GL_STREAM_READ_ARB;
-    private static final int READ_ONLY_ACCESS = ARBPixelBufferObject.GL_READ_ONLY_ARB;
+    private static final int PACK_MODE = GL_PIXEL_PACK_BUFFER_ARB;
+    private static final int STREAM_READ = GL_STREAM_READ_ARB;
+    private static final int READ_ONLY_ACCESS = GL_READ_ONLY_ARB;
 
     private int frontAddress;
     private int backAddress;
@@ -68,13 +54,13 @@ public class PBOCapturer extends Capturer {
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
         // use faster framebuffer access if enabled
-        if (isFramebufferEnabled) {
-            Framebuffer buffer = MC.getFramebuffer();
-            buffer.bindFramebufferTexture();
-            GL11.glGetTexImage(GL11.GL_TEXTURE_2D, 0, colorFormat, GL_UNSIGNED_BYTE, 0L);
-            buffer.unbindFramebufferTexture();
+        if (OpenGlHelper.isFramebufferEnabled()) {
+            Framebuffer fb = MC.getFramebuffer();
+            fb.bindFramebufferTexture();
+            glGetTexImage(GL_TEXTURE_2D, 0, FORMAT, GL_UNSIGNED_BYTE, 0);
+            fb.unbindFramebufferTexture();
         } else {
-            GL11.glReadPixels(0, 0, start.getWidth(), start.getHeight(), colorFormat, GL_UNSIGNED_BYTE, 0);
+            glReadPixels(0, 0, start.getWidth(), start.getHeight(), FORMAT, GL_UNSIGNED_BYTE, 0);
         }
 
         // Not calling into event queue

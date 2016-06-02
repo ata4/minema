@@ -16,7 +16,6 @@ import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +24,6 @@ import org.apache.logging.log4j.Logger;
 import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
-import info.ata4.minecraft.minema.io.StreamPipe;
 import java.util.Arrays;
 
 /**
@@ -58,16 +56,12 @@ public class PipeFrameExporter extends FrameExporter {
         cmds.add(cfg.videoEncoderPath.get());
         cmds.addAll(Arrays.asList(StringUtils.split(params, ' ')));
 
-        // build encoder process
+        // build encoder process and redirect output
         ProcessBuilder pb = new ProcessBuilder(cmds);
         pb.directory(cfg.getMovieDir());
+        pb.redirectOutput(new File(cfg.getMovieDir(), "encoder.log"));
+        pb.redirectError(new File(cfg.getMovieDir(), "encoder_error.log"));
         proc = pb.start();
-
-        // Java 1.6 doesn't know redirectOutput/redirectError and these
-        // streams need to be emptied to avoid blocking
-        log = FileUtils.openOutputStream(new File(cfg.getMovieDir(), "encoder.log"));
-        new StreamPipe(proc.getInputStream(), log).start();
-        new StreamPipe(proc.getErrorStream(), log).start();
 
         // create channel from output stream
         pipe = Channels.newChannel(proc.getOutputStream());
@@ -93,7 +87,6 @@ public class PipeFrameExporter extends FrameExporter {
 
     @Override
     public void configureCapturer(Capturer fbc) {
-        fbc.setFlipLines();
     }
 
     @Override

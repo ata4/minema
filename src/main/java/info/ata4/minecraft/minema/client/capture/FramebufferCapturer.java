@@ -9,17 +9,10 @@
  */
 package info.ata4.minecraft.minema.client.capture;
 
-import static org.lwjgl.opengl.GL11.GL_PACK_ALIGNMENT;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_UNPACK_ALIGNMENT;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glGetTexImage;
-import static org.lwjgl.opengl.GL11.glPixelStorei;
-import static org.lwjgl.opengl.GL11.glReadPixels;
-
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.shader.Framebuffer;
-import static org.lwjgl.opengl.GL11.glGetTexImage;
-import static org.lwjgl.opengl.GL11.glReadPixels;
+
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
@@ -35,12 +28,12 @@ public class FramebufferCapturer extends Capturer {
 
         // read texture from framebuffer if enabled, otherwise use slower
         // glReadPixels
-        if (isFramebufferEnabled) {
+        if (OpenGlHelper.isFramebufferEnabled()) {
             Framebuffer fb = MC.getFramebuffer();
             glBindTexture(GL_TEXTURE_2D, fb.framebufferTexture);
-            glGetTexImage(GL_TEXTURE_2D, 0, colorFormat, TYPE, buffer);
+            glGetTexImage(GL_TEXTURE_2D, 0, FORMAT, TYPE, buffer);
         } else {
-            glReadPixels(0, 0, start.getWidth(), start.getHeight(), colorFormat, TYPE, buffer);
+            glReadPixels(0, 0, start.getWidth(), start.getHeight(), FORMAT, TYPE, buffer);
         }
     }
 
