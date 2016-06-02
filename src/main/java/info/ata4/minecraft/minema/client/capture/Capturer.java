@@ -11,7 +11,7 @@ import org.lwjgl.util.Dimension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 
-public abstract class ACapturer {
+public abstract class Capturer {
 
     protected static Minecraft MC = Minecraft.getMinecraft();
     protected static boolean isFramebufferEnabled = OpenGlHelper.isFramebufferEnabled();
@@ -28,7 +28,7 @@ public abstract class ACapturer {
     // frequently as possible
     protected int colorFormat = GL_BGR;
 
-    public ACapturer() {
+    public Capturer() {
         start = new Dimension(MC.displayWidth, MC.displayHeight);
         bufferSize = start.getWidth() * start.getHeight() * bytesPerPixel;
         buffer = ByteBuffer.allocateDirect(bufferSize);

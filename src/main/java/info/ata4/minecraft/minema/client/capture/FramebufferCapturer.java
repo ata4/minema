@@ -18,12 +18,14 @@ import static org.lwjgl.opengl.GL11.glPixelStorei;
 import static org.lwjgl.opengl.GL11.glReadPixels;
 
 import net.minecraft.client.shader.Framebuffer;
+import static org.lwjgl.opengl.GL11.glGetTexImage;
+import static org.lwjgl.opengl.GL11.glReadPixels;
 
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class FramebufferCapturer extends ACapturer {
+public class FramebufferCapturer extends Capturer {
 
     @Override
     protected void capture() {

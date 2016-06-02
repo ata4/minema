@@ -18,7 +18,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import info.ata4.minecraft.minema.client.capture.ACapturer;
+import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
 import info.ata4.minecraft.minema.client.capture.PBOCapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
@@ -49,7 +49,7 @@ public class CaptureSession extends CaptureModule {
     private final EventBus eventBus = new EventBus();
 
     private CaptureTime time;
-    private ACapturer capturer;
+    private Capturer capturer;
 
     private File movieDir;
 

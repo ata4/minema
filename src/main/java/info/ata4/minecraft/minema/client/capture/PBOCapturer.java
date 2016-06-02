@@ -19,8 +19,12 @@ import org.lwjgl.opengl.GLContext;
 import org.lwjgl.opengl.Util;
 
 import net.minecraft.client.shader.Framebuffer;
+import static org.lwjgl.opengl.ARBBufferObject.glBufferDataARB;
+import static org.lwjgl.opengl.ARBBufferObject.glDeleteBuffersARB;
+import static org.lwjgl.opengl.ARBBufferObject.glGenBuffersARB;
+import static org.lwjgl.opengl.ARBBufferObject.glMapBufferARB;
 
-public class PBOCapturer extends ACapturer {
+public class PBOCapturer extends Capturer {
 
     public static final boolean isSupported = GLContext.getCapabilities().GL_ARB_pixel_buffer_object;
 

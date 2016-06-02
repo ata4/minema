@@ -20,7 +20,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.commons.io.IOUtils;
 
-import info.ata4.minecraft.minema.client.capture.ACapturer;
+import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 
@@ -35,7 +35,7 @@ public class ImageFrameExporter extends FrameExporter {
     }
 
     @Override
-    public void configureCapturer(ACapturer fbc) {
+    public void configureCapturer(Capturer fbc) {
         if (cfg.imageFormat.get().equals("tga")) {
             return;
         }
