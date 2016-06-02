@@ -7,7 +7,7 @@
  **    May you find forgiveness for yourself and forgive others.
  **    May you share freely, never taking more than you give.
  */
-package info.ata4.minecraft.minema.client.modules;
+package info.ata4.minecraft.minema.client.modules.exporters;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -22,6 +22,7 @@ import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
+import info.ata4.minecraft.minema.client.modules.CaptureModule;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**

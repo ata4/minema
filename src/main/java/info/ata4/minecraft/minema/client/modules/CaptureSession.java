@@ -9,6 +9,11 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
+import info.ata4.minecraft.minema.client.modules.modifiers.DisplaySizeModifier;
+import info.ata4.minecraft.minema.client.modules.modifiers.GameSettingsModifier;
+import info.ata4.minecraft.minema.client.modules.exporters.FrameExporter;
+import info.ata4.minecraft.minema.client.modules.exporters.ImageFrameExporter;
+import info.ata4.minecraft.minema.client.modules.exporters.PipeFrameExporter;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -7,9 +7,10 @@
  **    May you find forgiveness for yourself and forgive others.
  **    May you share freely, never taking more than you give.
  */
-package info.ata4.minecraft.minema.client.modules;
+package info.ata4.minecraft.minema.client.modules.modifiers;
 
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
+import info.ata4.minecraft.minema.client.modules.CaptureModule;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.GameSettings;
 
