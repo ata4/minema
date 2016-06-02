@@ -45,7 +45,7 @@ public class CaptureSession extends ACaptureModule {
     public static Logger L = LogManager.getLogger();
     public static Minecraft MC = Minecraft.getMinecraft();
 
-    private final ArrayList<ACaptureModule> modules = new ArrayList<ACaptureModule>();
+    private final ArrayList<ACaptureModule> modules = new ArrayList<>();
     private final EventBus eventBus = new EventBus();
 
     private CaptureTime time;
@@ -93,10 +93,10 @@ public class CaptureSession extends ACaptureModule {
         }
 
         // enable and register modules
-        for (ACaptureModule module : modules) {
-            module.enable();
+        modules.forEach(module -> {
             eventBus.register(module);
-        }
+            module.enable();
+        });
         MinecraftForge.EVENT_BUS.register(this);
 
         // reset capturing stats
@@ -119,7 +119,7 @@ public class CaptureSession extends ACaptureModule {
     protected void doDisable() {
         capturer.close();
         // disable and unregister modules
-        for (ACaptureModule module : modules) {
+        modules.forEach(module -> {
             try {
                 if (module.isEnabled()) {
                     module.disable();
@@ -135,7 +135,7 @@ public class CaptureSession extends ACaptureModule {
                 // unfortunately, the unregister method isn't smart enough to
                 // notice that and throws NPEs...
             }
-        }
+        });
         MinecraftForge.EVENT_BUS.unregister(this);
 
         modules.clear();
@@ -149,32 +149,28 @@ public class CaptureSession extends ACaptureModule {
     }
 
     @Override
-    protected void handleError(Throwable t) {
+    protected void handleError(Throwable throwable) {
         ChatUtils.print("minema.error.label", TextFormatting.RED);
 
         // get list of throwables and their causes
-        List<Throwable> throwables = new ArrayList<Throwable>();
+        List<Throwable> throwables = new ArrayList<>();
         do {
-            throwables.add(t);
-            t = t.getCause();
-        } while (t != null);
-
-        for (Throwable throwable : throwables) {
-            String message = throwable.getMessage();
+            throwables.add(throwable);
+            throwable = throwable.getCause();
+        } while (throwable != null);
+        
+        throwables.stream().filter(t -> {
+            String message = t.getMessage();
 
             // skip wrapped exceptions
             if (message == null) {
-                continue;
+                return false;
             }
-
+            
             // skip wrapped exceptions with generated messages
-            Throwable cause = throwable.getCause();
-            if (cause != null && message.equals(cause.toString())) {
-                continue;
-            }
-
-            ChatUtils.print(message, TextFormatting.RED);
-        }
+            Throwable cause = t.getCause();
+            return cause != null && message.equals(cause.toString());
+        }).forEach(t -> ChatUtils.print(t.getMessage(), TextFormatting.RED));
     }
 
     @SubscribeEvent

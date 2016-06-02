@@ -26,6 +26,7 @@ import info.ata4.minecraft.minema.client.capture.ACapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.io.StreamPipe;
+import java.util.Arrays;
 
 /**
  *
@@ -53,11 +54,9 @@ public class PipeFrameExporter extends FrameExporter {
         params = params.replace("%HEIGHT%", String.valueOf(cfg.getFrameHeight()));
         params = params.replace("%FPS%", String.valueOf(cfg.frameRate.get()));
 
-        List<String> cmds = new ArrayList<String>();
+        List<String> cmds = new ArrayList<>();
         cmds.add(cfg.videoEncoderPath.get());
-        for (String s : StringUtils.split(params, ' ')) {
-            cmds.add(s);
-        }
+        cmds.addAll(Arrays.asList(StringUtils.split(params, ' ')));
 
         // build encoder process
         ProcessBuilder pb = new ProcessBuilder(cmds);

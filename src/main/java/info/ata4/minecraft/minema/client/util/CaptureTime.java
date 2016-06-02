@@ -27,7 +27,7 @@ public class CaptureTime {
     private static final Map<TimeUnit, String> TU_SUFFIX;
 
     static {
-        Map<TimeUnit, String> tuSuffix = new EnumMap<TimeUnit, String>(TimeUnit.class);
+        Map<TimeUnit, String> tuSuffix = new EnumMap<>(TimeUnit.class);
         tuSuffix.put(TimeUnit.DAYS, "d");
         tuSuffix.put(TimeUnit.HOURS, "h");
         tuSuffix.put(TimeUnit.MINUTES, "m");

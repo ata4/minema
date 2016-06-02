@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.text.WordUtils;
@@ -40,7 +41,7 @@ public class ConfigContainer {
     private static final Logger L = LogManager.getLogger();
 
     private final Configuration config;
-    private final Map<Pair<String, String>, Pair<ConfigValue, Property>> propMap = new LinkedHashMap<Pair<String, String>, Pair<ConfigValue, Property>>();
+    private final Map<Pair<String, String>, Pair<ConfigValue, Property>> propMap = new LinkedHashMap<>();
     private String langKeyPrefix = "";
 
     public ConfigContainer(Configuration config) {
@@ -61,23 +62,20 @@ public class ConfigContainer {
     }
 
     public List<IConfigElement> getConfigElements() {
-        List<IConfigElement> list = new ArrayList<IConfigElement>();
-        Set<String> names = config.getCategoryNames();
-        for (String catName : names) {
-            if (catName.equals(Configuration.CATEGORY_GENERAL)) {
-                continue;
-            }
-            list.add(new ConfigElement(config.getCategory(catName)));
-        }
+        List<IConfigElement> list = config.getCategoryNames().stream()
+            .filter(catName -> !catName.equals(Configuration.CATEGORY_GENERAL))
+            .map(catName -> new ConfigElement(config.getCategory(catName)))
+            .collect(Collectors.toList());
 
         // add props in category CATEGORY_GENERAL directly to the root of the
         // list
         if (config.hasCategory(Configuration.CATEGORY_GENERAL)) {
             ConfigCategory catGeneral = config.getCategory(Configuration.CATEGORY_GENERAL);
-            List<Property> props = catGeneral.getOrderedValues();
-            for (Property prop : props) {
-                list.add(new ConfigElement(prop));
-            }
+            List<Property> props = catGeneral.getOrderedValues();            
+            list.addAll((props.stream()
+                .map(prop -> new ConfigElement(prop))
+                .collect(Collectors.toList()))
+            );
         }
 
         return list;
@@ -95,8 +93,7 @@ public class ConfigContainer {
         // after
         // using Configuration.load(), so re-register all ConfigValues to fix
         // that
-        Map<Pair<String, String>, Pair<ConfigValue, Property>> propMapCopy = new LinkedHashMap<Pair<String, String>, Pair<ConfigValue, Property>>(
-                propMap);
+        Map<Pair<String, String>, Pair<ConfigValue, Property>> propMapCopy = new LinkedHashMap<>(propMap);
         propMap.clear();
 
         for (Map.Entry<Pair<String, String>, Pair<ConfigValue, Property>> propEntry : propMapCopy.entrySet()) {
@@ -121,7 +118,7 @@ public class ConfigContainer {
 
     public void update(boolean export) {
         L.debug("Syncing config");
-        for (Pair<ConfigValue, Property> propEntry : propMap.values()) {
+        propMap.values().forEach(propEntry -> {
             ConfigValue configValue = propEntry.getLeft();
             Property prop = propEntry.getRight();
 
@@ -130,7 +127,7 @@ public class ConfigContainer {
             } else {
                 configValue.importProp(prop);
             }
-        }
+        });
 
         save();
     }
@@ -160,17 +157,15 @@ public class ConfigContainer {
         configValue.exportProp(prop);
 
         // add to internal category map
-        Pair<String, String> mapKey = new ImmutablePair<String, String>(catName, propName);
-        Pair<ConfigValue, Property> mapValue = new ImmutablePair<ConfigValue, Property>(configValue, prop);
+        Pair<String, String> mapKey = new ImmutablePair<>(catName, propName);
+        Pair<ConfigValue, Property> mapValue = new ImmutablePair<>(configValue, prop);
         propMap.put(mapKey, mapValue);
 
         // using insertion order for properties
-        List<String> propertyOrder = new ArrayList<String>();
-        for (Pair<String, String> propEntry : propMap.keySet()) {
-            if (propEntry.getLeft().equals(catName)) {
-                propertyOrder.add(propEntry.getRight());
-            }
-        }
+        List<String> propertyOrder = new ArrayList<>();
+        propMap.keySet().stream()
+            .filter(e -> e.getLeft().equals(catName))
+            .forEach(e -> propertyOrder.add(e.getRight()));
         cat.setPropertyOrder(propertyOrder);
 
         L.debug("Registered prop {}.{} of type {}", catName, propName, propType);

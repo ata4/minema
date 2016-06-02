@@ -40,7 +40,7 @@ public class MinemaConfig extends ConfigContainer {
     public static final String CATEGORY_ENGINE = "engine";
 
     private static Set<String> getImageFormats() {
-        Set<String> formats = new HashSet<String>();
+        Set<String> formats = new HashSet<>();
 
         // add all writer format names and convert them to lower case
         for (String formatName : ImageIO.getWriterFormatNames()) {
@@ -60,7 +60,7 @@ public class MinemaConfig extends ConfigContainer {
     public final ConfigBoolean useVideoEncoder = new ConfigBoolean(false);
     public final ConfigString videoEncoderPath = new ConfigString("");
     public final ConfigString videoEncoderParams = new ConfigString("");
-    public final ConfigEnum<SnapResolution> snapResolution = new ConfigEnum<SnapResolution>(SnapResolution.MOD2);
+    public final ConfigEnum<SnapResolution> snapResolution = new ConfigEnum<>(SnapResolution.MOD2);
 
     public final ConfigInteger frameWidth = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);
     public final ConfigInteger frameHeight = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);

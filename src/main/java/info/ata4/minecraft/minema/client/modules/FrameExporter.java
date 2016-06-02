@@ -77,7 +77,7 @@ public abstract class FrameExporter extends ACaptureModule {
     }
 
     @SubscribeEvent
-    public void onFrameCapture(final FrameCaptureEvent evt) {
+    public void onFrameCapture(FrameCaptureEvent evt) {
         if (!isEnabled()) {
             return;
         }
@@ -85,12 +85,7 @@ public abstract class FrameExporter extends ACaptureModule {
         // export frame in the background so that the next frame can be
         // rendered
         // in the meantime
-        exportFuture = exportService.submit(new Runnable() {
-            @Override
-            public void run() {
-                exportFrame(evt);
-            }
-        });
+        exportFuture = exportService.submit(() -> exportFrame(evt));
     }
 
     private void exportFrame(FrameCaptureEvent evt) {

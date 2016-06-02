@@ -47,12 +47,15 @@ public class CommandMinema extends CommandBase {
 
         String cmd = args[0];
 
-        if (cmd.equals("enable")) {
-            minema.enable();
-        } else if (cmd.equals("disable")) {
-            minema.disable();
-        } else {
-            throw new WrongUsageException(getCommandUsage(sender));
+        switch (cmd) {
+            case "enable":
+                minema.enable();
+                break;
+            case "disable":
+                minema.disable();
+                break;
+            default:
+                throw new WrongUsageException(getCommandUsage(sender));
         }
     }
 
