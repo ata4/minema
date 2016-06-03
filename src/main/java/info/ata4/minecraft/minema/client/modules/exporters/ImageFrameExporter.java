@@ -12,10 +12,10 @@ package info.ata4.minecraft.minema.client.modules.exporters;
 import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
-import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 
 import static java.nio.file.StandardOpenOption.*;
 
@@ -37,12 +37,11 @@ public class ImageFrameExporter extends FrameExporter {
     protected void doExportFrame(FrameCaptureEvent evt) throws IOException {
         String format = cfg.imageFormat.get();
         String fileName = String.format("%06d.%s", evt.frameNum, format);
-        File file = new File(cfg.getMovieDir(), fileName);
-        writeImage(file, evt.frameBuffer, evt.frameDim.getWidth(), evt.frameDim.getHeight(), format);
+        Path path = cfg.getMovieDir().resolve(fileName);
+        writeImage(path, evt.frameBuffer, evt.frameDim.getWidth(), evt.frameDim.getHeight());
     }
 
-    private void writeImage(File file, ByteBuffer bb, int width, int height,
-            String format) throws IOException {
+    private void writeImage(Path path, ByteBuffer bb, int width, int height) throws IOException {
         ByteBuffer tgah = ByteBuffer.allocate(18);
         
         // image type - uncompressed true-color image
@@ -60,7 +59,7 @@ public class ImageFrameExporter extends FrameExporter {
         
         tgah.rewind();
 
-        try (FileChannel fc = FileChannel.open(file.toPath(), CREATE, WRITE)) {
+        try (FileChannel fc = FileChannel.open(path, CREATE, WRITE)) {
             fc.write(tgah);
             fc.write(bb);
         }

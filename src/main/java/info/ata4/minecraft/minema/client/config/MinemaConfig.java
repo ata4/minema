@@ -9,14 +9,6 @@
  */
 package info.ata4.minecraft.minema.client.config;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.imageio.ImageIO;
-
-import org.lwjgl.opengl.Display;
-
 import info.ata4.minecraft.minema.util.config.ConfigBoolean;
 import info.ata4.minecraft.minema.util.config.ConfigContainer;
 import info.ata4.minecraft.minema.util.config.ConfigDouble;
@@ -24,8 +16,13 @@ import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import info.ata4.minecraft.minema.util.config.ConfigInteger;
 import info.ata4.minecraft.minema.util.config.ConfigString;
 import info.ata4.minecraft.minema.util.config.ConfigStringEnum;
+import java.nio.file.Path;
+import java.util.HashSet;
+import java.util.Set;
+import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
+import org.lwjgl.opengl.Display;
 
 /**
  *
@@ -74,7 +71,7 @@ public class MinemaConfig extends ConfigContainer {
     public final ConfigBoolean syncEngine = new ConfigBoolean(true);
     // public final ConfigBoolean preloadChunks = new ConfigBoolean(false);
 
-    private File movieDir;
+    private Path movieDir;
 
     public MinemaConfig(Configuration config) {
         super(config);
@@ -137,11 +134,11 @@ public class MinemaConfig extends ConfigContainer {
         return Minecraft.getMinecraft().isSingleplayer() && syncEngine.get();
     }
 
-    public File getMovieDir() {
+    public Path getMovieDir() {
         return movieDir;
     }
 
-    public void setMovieDir(File movieDir) {
+    public void setMovieDir(Path movieDir) {
         this.movieDir = movieDir;
     }
 }

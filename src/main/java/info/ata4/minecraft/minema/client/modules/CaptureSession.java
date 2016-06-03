@@ -9,26 +9,24 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
-import info.ata4.minecraft.minema.client.modules.modifiers.DisplaySizeModifier;
-import info.ata4.minecraft.minema.client.modules.modifiers.GameSettingsModifier;
-import info.ata4.minecraft.minema.client.modules.exporters.FrameExporter;
-import info.ata4.minecraft.minema.client.modules.exporters.ImageFrameExporter;
-import info.ata4.minecraft.minema.client.modules.exporters.PipeFrameExporter;
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
+import info.ata4.minecraft.minema.client.modules.exporters.FrameExporter;
+import info.ata4.minecraft.minema.client.modules.exporters.ImageFrameExporter;
+import info.ata4.minecraft.minema.client.modules.exporters.PipeFrameExporter;
+import info.ata4.minecraft.minema.client.modules.modifiers.DisplaySizeModifier;
+import info.ata4.minecraft.minema.client.modules.modifiers.GameSettingsModifier;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import info.ata4.minecraft.minema.client.util.ChatUtils;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.SoundCategory;
@@ -38,6 +36,8 @@ import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -54,21 +54,23 @@ public class CaptureSession extends CaptureModule {
     private CaptureTime time;
     private Capturer capturer;
 
-    private File movieDir;
+    private Path movieDir;
 
     public CaptureSession(MinemaConfig cfg) {
         super(cfg);
     }
 
     @Override
-    protected void doEnable() {
+    protected void doEnable() throws Exception {
         // create and set movie dir
-        File captureDir = new File(cfg.capturePath.get());
+        Path captureDir = Paths.get(cfg.capturePath.get());
         String movieName = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date());
-        movieDir = new File(captureDir, movieName);
-        if (!movieDir.exists()) {
-            movieDir.mkdirs();
+        movieDir = captureDir.resolve(movieName);
+        
+        if (!Files.exists(movieDir)) {
+            Files.createDirectories(movieDir);
         }
+        
         cfg.setMovieDir(movieDir);
 
         // init modules
@@ -139,10 +141,6 @@ public class CaptureSession extends CaptureModule {
 
         modules.clear();
 
-        // delete empty movie dir
-        if (movieDir != null && movieDir.exists() && movieDir.list().length == 0) {
-            movieDir.delete();
-        }
         cfg.setMovieDir(null);
     }
 
