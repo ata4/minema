@@ -24,8 +24,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import info.ata4.minecraft.minema.client.capture.Capturer;
-import info.ata4.minecraft.minema.client.capture.FramebufferCapturer;
-import info.ata4.minecraft.minema.client.capture.PBOCapturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
@@ -108,13 +106,7 @@ public class CaptureSession extends CaptureModule {
         time = new CaptureTime(cfg);
 
         // configure framebuffer capturer
-        if (PBOCapturer.isSupported) {
-            capturer = new PBOCapturer();
-            System.out.println("Using PBO: true");
-        } else {
-            capturer = new FramebufferCapturer();
-            System.out.println("Using PBO: false");
-        }
+        capturer = new Capturer();
         exporter.configureCapturer(capturer);
 
         playChickenPlop();
@@ -123,6 +115,7 @@ public class CaptureSession extends CaptureModule {
     @Override
     protected void doDisable() {
         capturer.close();
+
         // disable and unregister modules
         modules.forEach(module -> {
             try {
@@ -141,6 +134,7 @@ public class CaptureSession extends CaptureModule {
                 // notice that and throws NPEs...
             }
         });
+
         MinecraftForge.EVENT_BUS.unregister(this);
 
         modules.clear();
@@ -150,7 +144,6 @@ public class CaptureSession extends CaptureModule {
             movieDir.delete();
         }
         cfg.setMovieDir(null);
-
     }
 
     @Override
@@ -174,7 +167,7 @@ public class CaptureSession extends CaptureModule {
             
             // skip wrapped exceptions with generated messages
             Throwable cause = t.getCause();
-            return cause != null && message.equals(cause.toString());
+            return cause == null || !message.equals(cause.toString());
         }).forEach(t -> ChatUtils.print(t.getMessage(), TextFormatting.RED));
     }
 
@@ -197,15 +190,13 @@ public class CaptureSession extends CaptureModule {
         }
 
         try {
-            if (eventBus
-                    .post(new FramePreCaptureEvent(time.getNumFrames(), capturer.getCaptureDimension()))) {
+            if (eventBus.post(new FramePreCaptureEvent(time.getNumFrames(),
+                    capturer.getCaptureDimension()))) {
                 throw new RuntimeException("Frame capturing cancelled at frame " + time.getNumFrames());
             }
 
-            capturer.doCapture();
-
-            if (eventBus.post(new FrameCaptureEvent(time.getNumFrames(), capturer.getCaptureDimension(),
-                    capturer.getByteBuffer()))) {
+            if (eventBus.post(new FrameCaptureEvent(time.getNumFrames(),
+                    capturer.getCaptureDimension(), capturer.capture()))) {
                 throw new RuntimeException("Frame capturing cancelled at frame " + time.getNumFrames());
             }
 
