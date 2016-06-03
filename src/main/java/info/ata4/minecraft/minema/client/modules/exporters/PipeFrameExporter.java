@@ -25,6 +25,7 @@ import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -73,7 +74,7 @@ public class PipeFrameExporter extends FrameExporter {
 
         if (proc != null) {
             try {
-                proc.waitFor();
+                proc.waitFor(1, TimeUnit.MINUTES);
             } catch (InterruptedException ex) {
                 L.warn("Pipe program termination interrupted", ex);
             }
