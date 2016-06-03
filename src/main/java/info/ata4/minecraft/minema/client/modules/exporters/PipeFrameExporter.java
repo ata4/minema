@@ -9,23 +9,24 @@
  */
 package info.ata4.minecraft.minema.client.modules.exporters;
 
+import info.ata4.minecraft.minema.client.capture.Capturer;
+import info.ata4.minecraft.minema.client.config.MinemaConfig;
+import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FilterOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import info.ata4.minecraft.minema.client.capture.Capturer;
-import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
-import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -50,7 +51,7 @@ public class PipeFrameExporter extends FrameExporter {
         params = params.replace("%WIDTH%", String.valueOf(cfg.getFrameWidth()));
         params = params.replace("%HEIGHT%", String.valueOf(cfg.getFrameHeight()));
         params = params.replace("%FPS%", String.valueOf(cfg.frameRate.get()));
-
+        
         List<String> cmds = new ArrayList<>();
         cmds.add(cfg.videoEncoderPath.get());
         cmds.addAll(Arrays.asList(StringUtils.split(params, ' ')));
@@ -62,8 +63,17 @@ public class PipeFrameExporter extends FrameExporter {
         pb.redirectOutput(new File(cfg.getMovieDir(), "encoder.log"));
         proc = pb.start();
 
-        // create channel from output stream
-        pipe = Channels.newChannel(proc.getOutputStream());
+        // Java wraps the process output stream into a BufferedOutputStream,
+        // but its little buffer is just slowing everything down with the huge
+        // amount of data we're dealing here, so unwrap it with this little hack.
+        OutputStream os = proc.getOutputStream();
+        if (os instanceof BufferedOutputStream) {
+            Field outField = FilterOutputStream.class.getDeclaredField("out");
+            outField.setAccessible(true);
+            os = (OutputStream) outField.get(os);
+        }
+        
+        pipe = Channels.newChannel(os);
     }
 
     @Override
