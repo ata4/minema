@@ -84,17 +84,14 @@ public abstract class FrameExporter extends CaptureModule {
         }
 
         // export frame in the background so that the next frame can be
-        // rendered
-        // in the meantime
-        exportFuture = exportService.submit(() -> exportFrame(evt));
-    }
-
-    private void exportFrame(FrameCaptureEvent evt) {
-        try {
-            doExportFrame(evt);
-        } catch (Exception ex) {
-            throw new RuntimeException("Can't export frame " + evt.frameNum, ex);
-        }
+        // rendered in the meantime
+        exportFuture = exportService.submit(() -> {
+            try {
+                doExportFrame(evt);
+            } catch (Exception ex) {
+                throw new RuntimeException("Can't export frame " + evt.frameNum, ex);
+            }
+        });
     }
 
     protected abstract void doExportFrame(FrameCaptureEvent evt) throws Exception;
