@@ -15,7 +15,7 @@ package info.ata4.minecraft.minema.client.config;
  */
 public enum SnapResolution {
 
-    MOD2(2), MOD4(4), MOD8(8), MOD16(16);
+    DISABLE(0), MOD2(2), MOD4(4), MOD8(8), MOD16(16);
 
     private final int mod;
 
@@ -24,6 +24,6 @@ public enum SnapResolution {
     }
 
     public int snap(int value) {
-        return value - (value % mod);
+        return mod == 0 ? value : value - (value % mod);
     }
 }
