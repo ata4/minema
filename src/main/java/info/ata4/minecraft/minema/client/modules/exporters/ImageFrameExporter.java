@@ -9,20 +9,15 @@
  */
 package info.ata4.minecraft.minema.client.modules.exporters;
 
-import java.awt.image.BufferedImage;
+import info.ata4.minecraft.minema.client.capture.Capturer;
+import info.ata4.minecraft.minema.client.config.MinemaConfig;
+import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import javax.imageio.ImageIO;
-
-import org.apache.commons.io.IOUtils;
-
-import info.ata4.minecraft.minema.client.capture.Capturer;
-import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
+import static java.nio.file.StandardOpenOption.*;
 
 /**
  *
@@ -48,43 +43,26 @@ public class ImageFrameExporter extends FrameExporter {
 
     private void writeImage(File file, ByteBuffer bb, int width, int height,
             String format) throws IOException {
-        // use direct frame writer for Targa
-        if (format.equals("tga")) {
-            byte[] tgaHeader = new byte[18];
-            tgaHeader[2] = 2; // image type - uncompressed true-color image
-            tgaHeader[12] = (byte) (width % 256);
-            tgaHeader[13] = (byte) (width / 256);
-            tgaHeader[14] = (byte) (height % 256);
-            tgaHeader[15] = (byte) (height / 256);
-            tgaHeader[16] = 24; // bits per pixel
+        ByteBuffer tgah = ByteBuffer.allocate(18);
+        
+        // image type - uncompressed true-color image
+        tgah.position(2);
+        tgah.put((byte) 2);
+        
+        // width and height
+        tgah.position(12);
+        tgah.putShort((short) (width & 0xffff));
+        tgah.putShort((short) (height & 0xffff));
+        
+        // bits per pixel
+        tgah.position(16);
+        tgah.put((byte) 24);
+        
+        tgah.rewind();
 
-            FileOutputStream os = null;
-
-            try {
-                os = new FileOutputStream(file);
-                FileChannel channel = os.getChannel();
-                channel.write(ByteBuffer.wrap(tgaHeader));
-                channel.write(bb);
-            } finally {
-                IOUtils.closeQuietly(os);
-            }
-        } else {
-            int[] imageData = new int[width * height];
-            byte[] pixel = new byte[3];
-            int pixels = bb.capacity() / pixel.length;
-
-            // convert RGB byte array to integer array
-            for (int i = 0; i < pixels; i++) {
-                bb.get(pixel);
-                imageData[i] = (pixel[0] << 16) + (pixel[1] << 8) + pixel[2];
-            }
-
-            BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            image.setRGB(0, 0, width, height, imageData, 0, width);
-
-            if (!ImageIO.write(image, format, file)) {
-                throw new RuntimeException("No appropriate image writer found for format " + format);
-            }
+        try (FileChannel fc = FileChannel.open(file.toPath(), CREATE, WRITE)) {
+            fc.write(tgah);
+            fc.write(bb);
         }
     }
 }
