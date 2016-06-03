@@ -37,8 +37,6 @@ public class PipeFrameExporter extends FrameExporter {
     private Process proc;
     private WritableByteChannel pipe;
 
-    private OutputStream log;
-
     public PipeFrameExporter(MinemaConfig cfg) {
         super(cfg);
     }
@@ -59,8 +57,8 @@ public class PipeFrameExporter extends FrameExporter {
         // build encoder process and redirect output
         ProcessBuilder pb = new ProcessBuilder(cmds);
         pb.directory(cfg.getMovieDir());
+        pb.redirectErrorStream(true);
         pb.redirectOutput(new File(cfg.getMovieDir(), "encoder.log"));
-        pb.redirectError(new File(cfg.getMovieDir(), "encoder_error.log"));
         proc = pb.start();
 
         // create channel from output stream
@@ -72,7 +70,6 @@ public class PipeFrameExporter extends FrameExporter {
         super.doDisable();
 
         IOUtils.closeQuietly(pipe);
-        IOUtils.closeQuietly(log);
 
         if (proc != null) {
             try {
