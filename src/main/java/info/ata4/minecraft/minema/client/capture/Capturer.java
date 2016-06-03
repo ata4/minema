@@ -78,8 +78,9 @@ public class Capturer {
         if (usePBO) {
             glBindBufferARB(PBO_TARGET, frontName);
         }
-
+        
         // read pixels
+        buffer.rewind();
         readPixels();
 
         if (usePBO) {
