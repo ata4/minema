@@ -10,9 +10,13 @@
 package info.ata4.minecraft.minema.client.modules;
 
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
+import info.ata4.minecraft.minema.client.event.FrameImportEvent;
+import static info.ata4.minecraft.minema.client.modules.CaptureSession.L;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -26,24 +30,29 @@ public class CaptureOverlay extends CaptureModule {
 
     private static final Minecraft MC = Minecraft.getMinecraft();
 
-    private final CaptureSession session;
+    private CaptureTime time;
 
-    public CaptureOverlay(MinemaConfig cfg, CaptureSession session) {
+    public CaptureOverlay(MinemaConfig cfg) {
         super(cfg);
-        
-        this.session = session;
+    }
+    
+    @SubscribeEvent
+    public void onFrameImport(FrameImportEvent evt) {
+        time = evt.time;
     }
 
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Text evt) {
+        if (time == null) {
+            return;
+        }
+        
         ArrayList<String> left = evt.getLeft();
 
         if (MC.gameSettings.showDebugInfo) {
             // F3 menu is open -> add spacer
             left.add("");
         }
-
-        CaptureTime time = session.getCaptureTime();
 
         String frame = String.valueOf(time.getNumFrames());
         left.add("Frame: " + frame);
@@ -64,10 +73,21 @@ public class CaptureOverlay extends CaptureModule {
     @Override
     protected void doEnable() throws Exception {
         MinecraftForge.EVENT_BUS.register(this);
+        
+        playChickenPlop();
     }
 
     @Override
     protected void doDisable() throws Exception {
         MinecraftForge.EVENT_BUS.unregister(this);
+    }
+    
+    private void playChickenPlop() {
+        try {
+            MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.playerLocation,
+                    SoundEvents.entity_chicken_egg, SoundCategory.NEUTRAL, 1, 1);
+        } catch (Exception e) {
+            L.error("cannot play chicken plop", e);
+        }
     }
 }

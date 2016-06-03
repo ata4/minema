@@ -9,10 +9,9 @@
  */
 package info.ata4.minecraft.minema.client.modules.exporters;
 
-import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
-import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
+import info.ata4.minecraft.minema.client.event.FrameExportEvent;
+import info.ata4.minecraft.minema.client.event.FrameImportEvent;
 import info.ata4.minecraft.minema.client.modules.CaptureModule;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -58,25 +57,24 @@ public abstract class FrameExporter extends CaptureModule {
     }
 
     @SubscribeEvent
-    public void onFramePreCapture(FramePreCaptureEvent evt) throws ExecutionException {
+    public void onFrameImport(FrameImportEvent evt) throws ExecutionException {
         if (!isEnabled()) {
             return;
         }
 
-        if (exportFuture != null) {
-            // wait for the previous task to complete before sending the next
-            // one
-            try {
+        // wait for the previous task to complete before sending the next one
+        try {
+            if (exportFuture != null) {
                 exportFuture.get();
-            } catch (InterruptedException ex) {
-                // catch uncritical interruption exception
-                L.warn("Frame export task interrupted", ex);
             }
+        } catch (InterruptedException ex) {
+            // catch uncritical interruption exception
+            L.warn("Frame export task interrupted", ex);
         }
     }
 
     @SubscribeEvent
-    public void onFrameCapture(FrameCaptureEvent evt) {
+    public void onFrameExport(FrameExportEvent evt) {
         if (!isEnabled()) {
             return;
         }
@@ -87,12 +85,10 @@ public abstract class FrameExporter extends CaptureModule {
             try {
                 doExportFrame(evt);
             } catch (Exception ex) {
-                throw new RuntimeException("Can't export frame " + evt.frameNum, ex);
+                throw new RuntimeException("Can't export frame " + evt.time.getNumFrames(), ex);
             }
         });
     }
 
-    protected abstract void doExportFrame(FrameCaptureEvent evt) throws Exception;
-
-    public abstract void configureCapturer(Capturer fbc);
+    protected abstract void doExportFrame(FrameExportEvent evt) throws Exception;
 }

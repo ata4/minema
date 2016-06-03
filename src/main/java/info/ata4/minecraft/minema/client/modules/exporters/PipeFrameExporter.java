@@ -9,9 +9,9 @@
  */
 package info.ata4.minecraft.minema.client.modules.exporters;
 
-import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
+import info.ata4.minecraft.minema.client.event.FrameExportEvent;
+import info.ata4.minecraft.minema.client.event.FrameInitEvent;
 import java.io.BufferedOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,38 +42,41 @@ public class PipeFrameExporter extends FrameExporter {
     public PipeFrameExporter(MinemaConfig cfg) {
         super(cfg);
     }
+    
+    @SubscribeEvent
+    public void onFrameInit(FrameInitEvent e) {
+        try {
+            String params = cfg.videoEncoderParams.get();
+            params = params.replace("%WIDTH%", String.valueOf(e.frame.width));
+            params = params.replace("%HEIGHT%", String.valueOf(e.frame.height));
+            params = params.replace("%FPS%", String.valueOf(cfg.frameRate.get()));
 
-    @Override
-    protected void doEnable() throws Exception {
-        super.doEnable();
+            List<String> cmds = new ArrayList<>();
+            cmds.add(cfg.videoEncoderPath.get());
+            cmds.addAll(Arrays.asList(StringUtils.split(params, ' ')));
 
-        String params = cfg.videoEncoderParams.get();
-        params = params.replace("%WIDTH%", String.valueOf(cfg.getFrameWidth()));
-        params = params.replace("%HEIGHT%", String.valueOf(cfg.getFrameHeight()));
-        params = params.replace("%FPS%", String.valueOf(cfg.frameRate.get()));
-        
-        List<String> cmds = new ArrayList<>();
-        cmds.add(cfg.videoEncoderPath.get());
-        cmds.addAll(Arrays.asList(StringUtils.split(params, ' ')));
+            // build encoder process and redirect output
+            ProcessBuilder pb = new ProcessBuilder(cmds);
+            pb.directory(cfg.getMovieDir().toFile());
+            pb.redirectErrorStream(true);
+            pb.redirectOutput(cfg.getMovieDir().resolve("encoder.log").toFile());
+            proc = pb.start();
 
-        // build encoder process and redirect output
-        ProcessBuilder pb = new ProcessBuilder(cmds);
-        pb.directory(cfg.getMovieDir().toFile());
-        pb.redirectErrorStream(true);
-        pb.redirectOutput(cfg.getMovieDir().resolve("encoder.log").toFile());
-        proc = pb.start();
+            // Java wraps the process output stream into a BufferedOutputStream,
+            // but its little buffer is just slowing everything down with the huge
+            // amount of data we're dealing here, so unwrap it with this little hack.
+            OutputStream os = proc.getOutputStream();
+            if (os instanceof BufferedOutputStream) {
+                Field outField = FilterOutputStream.class.getDeclaredField("out");
+                outField.setAccessible(true);
+                os = (OutputStream) outField.get(os);
+            }
 
-        // Java wraps the process output stream into a BufferedOutputStream,
-        // but its little buffer is just slowing everything down with the huge
-        // amount of data we're dealing here, so unwrap it with this little hack.
-        OutputStream os = proc.getOutputStream();
-        if (os instanceof BufferedOutputStream) {
-            Field outField = FilterOutputStream.class.getDeclaredField("out");
-            outField.setAccessible(true);
-            os = (OutputStream) outField.get(os);
+            pipe = Channels.newChannel(os);
+        } catch (Exception ex) {
+            L.error("Can't start encoder ", ex);
+            handleError(ex);
         }
-        
-        pipe = Channels.newChannel(os);
     }
 
     @Override
@@ -96,15 +100,11 @@ public class PipeFrameExporter extends FrameExporter {
             L.warn("Pipe program termination interrupted", ex);
         }
     }
-
+    
     @Override
-    public void configureCapturer(Capturer fbc) {
-    }
-
-    @Override
-    protected void doExportFrame(FrameCaptureEvent evt) throws Exception {
+    protected void doExportFrame(FrameExportEvent evt) throws Exception {
         if (pipe.isOpen()) {
-            pipe.write(evt.frameBuffer);
+            pipe.write(evt.frame.buffer);
         }
     }
 }

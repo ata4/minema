@@ -9,7 +9,6 @@
  */
 package info.ata4.minecraft.minema.client.util;
 
-import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -73,17 +72,14 @@ public class CaptureTime {
         return String.format("%dh %dm %ds", hours, minutes, seconds);
     }
 
-    private final MinemaConfig cfg;
     private final long startTime;
     private final long nanosPerFrame;
     private long currentFrameTime;
     private long prevFrameTime;
     private int frames;
 
-    public CaptureTime(MinemaConfig cfg) {
-        this.cfg = cfg;
-        
-        nanosPerFrame = (long) (TimeUnit.SECONDS.toNanos(1) / cfg.frameRate.get());
+    public CaptureTime(double frameRate) {
+        nanosPerFrame = (long) (TimeUnit.SECONDS.toNanos(1) / frameRate);
         startTime = currentFrameTime = prevFrameTime = System.nanoTime();
     }
 
@@ -95,11 +91,6 @@ public class CaptureTime {
 
     public int getNumFrames() {
         return frames;
-    }
-
-    public boolean isAtFrameLimit() {
-        int frameLimit = cfg.frameLimit.get();
-        return frameLimit > 0 && frames > frameLimit;
     }
 
     public boolean isNextFrame() {

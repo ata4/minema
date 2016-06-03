@@ -9,15 +9,13 @@
  */
 package info.ata4.minecraft.minema.client.modules.exporters;
 
-import info.ata4.minecraft.minema.client.capture.Capturer;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
+import info.ata4.minecraft.minema.client.event.FrameExportEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
-
 import static java.nio.file.StandardOpenOption.*;
 
 /**
@@ -31,14 +29,10 @@ public class ImageFrameExporter extends FrameExporter {
     }
 
     @Override
-    public void configureCapturer(Capturer fbc) {
-    }
-
-    @Override
-    protected void doExportFrame(FrameCaptureEvent evt) throws IOException {
-        String fileName = String.format("%06d.tga", evt.frameNum);
+    protected void doExportFrame(FrameExportEvent evt) throws IOException {
+        String fileName = String.format("%06d.tga", evt.time.getNumFrames());
         Path path = cfg.getMovieDir().resolve(fileName);
-        writeImage(path, evt.frameBuffer, evt.frameDim.getWidth(), evt.frameDim.getHeight());
+        writeImage(path, evt.frame.buffer, evt.frame.width, evt.frame.height);
     }
 
     private void writeImage(Path path, ByteBuffer bb, int width, int height) throws IOException {

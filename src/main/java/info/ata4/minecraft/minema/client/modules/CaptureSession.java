@@ -9,15 +9,18 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
-import info.ata4.minecraft.minema.client.capture.Capturer;
+import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
-import info.ata4.minecraft.minema.client.event.FramePreCaptureEvent;
+import info.ata4.minecraft.minema.client.event.FrameEvent;
+import info.ata4.minecraft.minema.client.event.FrameImportEvent;
+import info.ata4.minecraft.minema.client.event.FrameInitEvent;
 import info.ata4.minecraft.minema.client.modules.exporters.FrameExporter;
 import info.ata4.minecraft.minema.client.modules.exporters.ImageFrameExporter;
 import info.ata4.minecraft.minema.client.modules.exporters.PipeFrameExporter;
+import info.ata4.minecraft.minema.client.modules.importers.FrameImporter;
 import info.ata4.minecraft.minema.client.modules.modifiers.DisplaySizeModifier;
 import info.ata4.minecraft.minema.client.modules.modifiers.GameSettingsModifier;
+import info.ata4.minecraft.minema.client.util.CaptureFrame;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import info.ata4.minecraft.minema.client.util.ChatUtils;
 import java.nio.file.Files;
@@ -28,11 +31,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
@@ -49,12 +49,10 @@ public class CaptureSession extends CaptureModule {
     public static Minecraft MC = Minecraft.getMinecraft();
 
     private final ArrayList<CaptureModule> modules = new ArrayList<>();
-    private final EventBus eventBus = new EventBus();
-
-    private CaptureTime time;
-    private Capturer capturer;
 
     private Path movieDir;
+    private CaptureTime time;
+    private CaptureFrame frame;
 
     public CaptureSession(MinemaConfig cfg) {
         super(cfg);
@@ -84,6 +82,8 @@ public class CaptureSession extends CaptureModule {
         if (cfg.useFrameSize()) {
             modules.add(new DisplaySizeModifier(cfg));
         }
+        
+        modules.add(new FrameImporter(cfg));
 
         FrameExporter exporter;
         if (cfg.useVideoEncoder.get()) {
@@ -94,49 +94,40 @@ public class CaptureSession extends CaptureModule {
         modules.add(exporter);
 
         if (cfg.showOverlay.get()) {
-            modules.add(new CaptureOverlay(cfg, this));
+            modules.add(new CaptureOverlay(cfg));
         }
 
         // enable and register modules
         modules.forEach(module -> {
-            eventBus.register(module);
+            Minema.EVENT_BUS.register(module);
             module.enable();
         });
         MinecraftForge.EVENT_BUS.register(this);
+        Minema.EVENT_BUS.register(this);
 
-        // reset capturing stats
-        time = new CaptureTime(cfg);
-
-        // configure framebuffer capturer
-        capturer = new Capturer();
-        exporter.configureCapturer(capturer);
-
-        playChickenPlop();
+        // reset capturing state
+        time = new CaptureTime(cfg.frameRate.get());
+        frame = new CaptureFrame();
+        
+        postFrameEvent(new FrameInitEvent(frame, time));
     }
 
     @Override
     protected void doDisable() {
-        capturer.close();
-
         // disable and unregister modules
         modules.forEach(module -> {
             try {
                 if (module.isEnabled()) {
                     module.disable();
                 }
-            } catch (Throwable t) {
-                L.error("Can't disable module {}", module.getName(), t);
+            } catch (Exception ex) {
+                L.error("Can't disable module {}", module.getName(), ex);
             }
 
-            try {
-                eventBus.unregister(module);
-            } catch (NullPointerException ex) {
-                // module doesn't have any event methods or wasn't registered.
-                // unfortunately, the unregister method isn't smart enough to
-                // notice that and throws NPEs...
-            }
+            Minema.EVENT_BUS.unregister(module);
         });
 
+        Minema.EVENT_BUS.unregister(this);
         MinecraftForge.EVENT_BUS.unregister(this);
 
         modules.clear();
@@ -170,14 +161,20 @@ public class CaptureSession extends CaptureModule {
     }
 
     @SubscribeEvent
-    public void captureFrame(RenderTickEvent e) {
+    public void onRenderTick(RenderTickEvent e) {
         if (!isEnabled()) {
             return;
         }
+        
+        // only record at the end of the frame
         if (e.phase == Phase.START) {
-            // Only record at the end of the frame (fixes recording two images
-            // per frame)
             return;
+        }
+        
+        // stop at frame limit
+        int frameLimit = cfg.frameLimit.get();
+        if (frameLimit > 0 && time.getNumFrames() >= frameLimit) {
+            disable();
         }
 
         // skip frames if the capturing framerate is not synchronized with the
@@ -186,40 +183,19 @@ public class CaptureSession extends CaptureModule {
             // Game renders faster than necessary for recording?
             return;
         }
-
+        
+        postFrameEvent(new FrameImportEvent(frame, time));
+    }
+    
+    private <T extends FrameEvent> void postFrameEvent(T evt) {
         try {
-            if (eventBus.post(new FramePreCaptureEvent(time.getNumFrames(),
-                    capturer.getCaptureDimension()))) {
+            if (Minema.EVENT_BUS.post(evt)) {
                 throw new RuntimeException("Frame capturing cancelled at frame " + time.getNumFrames());
             }
-
-            if (eventBus.post(new FrameCaptureEvent(time.getNumFrames(),
-                    capturer.getCaptureDimension(), capturer.capture()))) {
-                throw new RuntimeException("Frame capturing cancelled at frame " + time.getNumFrames());
-            }
-
-            time.nextFrame();
-
-            if (time.isAtFrameLimit()) {
-                disable();
-            }
-        } catch (Throwable t) {
-            L.error("Frame capturing error", t);
-            handleError(t);
+        } catch (Exception ex) {
+            L.error("Frame capturing error", ex);
+            handleError(ex);
             disable();
         }
-    }
-
-    private void playChickenPlop() {
-        try {
-            MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.playerLocation, SoundEvents.entity_chicken_egg,
-                    SoundCategory.NEUTRAL, 1, 1);
-        } catch (Exception e) {
-            L.error("cannot play chicken plop", e);
-        }
-    }
-
-    public CaptureTime getCaptureTime() {
-        return time;
     }
 }

@@ -23,6 +23,7 @@ import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
@@ -44,6 +45,7 @@ public class Minema {
 
     @Instance(ID)
     public static Minema instance;
+    public static final EventBus EVENT_BUS = new EventBus();
 
     private ModMetadata metadata;
     private MinemaConfig config;

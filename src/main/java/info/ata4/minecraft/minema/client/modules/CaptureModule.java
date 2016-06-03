@@ -47,9 +47,9 @@ public abstract class CaptureModule {
 
         try {
             doEnable();
-        } catch (Throwable t) {
-            L.error("Can't enable " + getName(), t);
-            handleError(t);
+        } catch (Exception ex) {
+            L.error("Can't enable " + getName(), ex);
+            handleError(ex);
             disable();
         }
     }
@@ -65,9 +65,9 @@ public abstract class CaptureModule {
 
         try {
             doDisable();
-        } catch (Throwable t) {
-            L.error("Can't disable " + getName(), t);
-            handleError(t);
+        } catch (Exception ex) {
+            L.error("Can't disable " + getName(), ex);
+            handleError(ex);
         }
     }
 
