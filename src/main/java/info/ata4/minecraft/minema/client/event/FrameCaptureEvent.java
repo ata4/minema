@@ -10,10 +10,8 @@
 package info.ata4.minecraft.minema.client.event;
 
 import java.nio.ByteBuffer;
-
-import org.lwjgl.util.Dimension;
-
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
+import org.lwjgl.util.Dimension;
 
 /**
  *

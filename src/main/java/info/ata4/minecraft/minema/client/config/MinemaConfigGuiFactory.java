@@ -10,7 +10,6 @@
 package info.ata4.minecraft.minema.client.config;
 
 import java.util.Set;
-
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.IModGuiFactory;
 

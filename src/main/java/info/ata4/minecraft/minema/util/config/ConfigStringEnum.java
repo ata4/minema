@@ -11,10 +11,8 @@ package info.ata4.minecraft.minema.util.config;
 
 import java.util.Collections;
 import java.util.Set;
-
-import org.apache.commons.lang3.Validate;
-
 import net.minecraftforge.common.config.Property;
+import org.apache.commons.lang3.Validate;
 
 /**
  *

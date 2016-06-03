@@ -9,12 +9,11 @@
  */
 package info.ata4.minecraft.minema.client.util;
 
+import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import info.ata4.minecraft.minema.client.config.MinemaConfig;
 
 /**
  * Utility class to keep track of various time-related information during a

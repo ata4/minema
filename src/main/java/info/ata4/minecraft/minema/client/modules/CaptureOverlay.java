@@ -9,10 +9,9 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
-import java.util.ArrayList;
-
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
+import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;

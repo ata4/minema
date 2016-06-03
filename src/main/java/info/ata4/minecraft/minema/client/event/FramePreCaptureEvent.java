@@ -9,10 +9,9 @@
  */
 package info.ata4.minecraft.minema.client.event;
 
-import org.lwjgl.util.Dimension;
-
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import org.lwjgl.util.Dimension;
 
 /**
  *

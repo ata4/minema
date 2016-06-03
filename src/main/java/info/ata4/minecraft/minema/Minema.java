@@ -9,11 +9,10 @@
  */
 package info.ata4.minecraft.minema;
 
-import java.io.File;
-
 import info.ata4.minecraft.minema.client.cmd.CommandMinema;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.modules.CaptureSession;
+import java.io.File;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
