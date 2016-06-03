@@ -14,6 +14,7 @@ import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 
@@ -42,6 +43,7 @@ public class ImageFrameExporter extends FrameExporter {
 
     private void writeImage(Path path, ByteBuffer bb, int width, int height) throws IOException {
         ByteBuffer tgah = ByteBuffer.allocate(18);
+        tgah.order(ByteOrder.LITTLE_ENDIAN);
         
         // image type - uncompressed true-color image
         tgah.position(2);
