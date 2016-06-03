@@ -15,6 +15,7 @@ import info.ata4.minecraft.minema.client.event.FrameCaptureEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FilterOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.channels.Channels;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -80,16 +80,21 @@ public class PipeFrameExporter extends FrameExporter {
     protected void doDisable() throws Exception {
         super.doDisable();
 
-        IOUtils.closeQuietly(pipe);
-
-        if (proc != null) {
-            try {
-                proc.waitFor(1, TimeUnit.MINUTES);
-            } catch (InterruptedException ex) {
-                L.warn("Pipe program termination interrupted", ex);
+        try {
+            if (pipe.isOpen()) {
+                pipe.close();
             }
+        } catch (IOException ex) {
+            L.warn("Pipe not closed properly", ex);
+        }
 
-            proc.destroy();
+        try {
+            if (proc != null) {
+                proc.waitFor(1, TimeUnit.MINUTES);
+                proc.destroy();
+            }
+        } catch (InterruptedException ex) {
+            L.warn("Pipe program termination interrupted", ex);
         }
     }
 
