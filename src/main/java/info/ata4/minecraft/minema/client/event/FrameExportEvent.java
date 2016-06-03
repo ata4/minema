@@ -17,9 +17,9 @@ import info.ata4.minecraft.minema.client.util.CaptureTime;
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class FrameExportEvent extends FrameEvent {
-    
+
     public FrameExportEvent(CaptureFrame frame, CaptureTime time) {
         super(frame, time);
     }
-    
+
 }

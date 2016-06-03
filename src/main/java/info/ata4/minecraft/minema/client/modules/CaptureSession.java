@@ -64,11 +64,11 @@ public class CaptureSession extends CaptureModule {
         Path captureDir = Paths.get(cfg.capturePath.get());
         String movieName = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss").format(new Date());
         movieDir = captureDir.resolve(movieName);
-        
+
         if (!Files.exists(movieDir)) {
             Files.createDirectories(movieDir);
         }
-        
+
         cfg.setMovieDir(movieDir);
 
         // init modules
@@ -82,7 +82,7 @@ public class CaptureSession extends CaptureModule {
         if (cfg.useFrameSize()) {
             modules.add(new DisplaySizeModifier(cfg));
         }
-        
+
         modules.add(new FrameImporter(cfg));
 
         FrameExporter exporter;
@@ -108,7 +108,7 @@ public class CaptureSession extends CaptureModule {
         // reset capturing state
         time = new CaptureTime(cfg.frameRate.get());
         frame = new CaptureFrame();
-        
+
         postFrameEvent(new FrameInitEvent(frame, time));
     }
 
@@ -145,7 +145,7 @@ public class CaptureSession extends CaptureModule {
             throwables.add(throwable);
             throwable = throwable.getCause();
         } while (throwable != null);
-        
+
         throwables.stream().filter(t -> {
             String message = t.getMessage();
 
@@ -153,7 +153,7 @@ public class CaptureSession extends CaptureModule {
             if (message == null) {
                 return false;
             }
-            
+
             // skip wrapped exceptions with generated messages
             Throwable cause = t.getCause();
             return cause == null || !message.equals(cause.toString());
@@ -165,12 +165,12 @@ public class CaptureSession extends CaptureModule {
         if (!isEnabled()) {
             return;
         }
-        
+
         // only record at the end of the frame
         if (e.phase == Phase.START) {
             return;
         }
-        
+
         // stop at frame limit
         int frameLimit = cfg.frameLimit.get();
         if (frameLimit > 0 && time.getNumFrames() >= frameLimit) {
@@ -183,10 +183,10 @@ public class CaptureSession extends CaptureModule {
             // Game renders faster than necessary for recording?
             return;
         }
-        
+
         postFrameEvent(new FrameImportEvent(frame, time));
     }
-    
+
     private <T extends FrameEvent> void postFrameEvent(T evt) {
         try {
             if (Minema.EVENT_BUS.post(evt)) {

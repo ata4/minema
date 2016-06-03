@@ -24,7 +24,7 @@ public class FrameImporter extends CaptureModule {
 
     private final boolean usePBO;
     private final boolean useFBO;
-    
+
     // PBO state variables
     private int frontName;
     private int backName;
@@ -33,11 +33,11 @@ public class FrameImporter extends CaptureModule {
 
     public FrameImporter(MinemaConfig cfg) {
         super(cfg);
-        
+
         usePBO = GLContext.getCapabilities().GL_ARB_pixel_buffer_object;
         useFBO = OpenGlHelper.isFramebufferEnabled();
     }
-    
+
     @SubscribeEvent
     public void onFrameInit(FrameInitEvent e) {
         int bufferSize = e.frame.buffer.capacity();
@@ -52,7 +52,7 @@ public class FrameImporter extends CaptureModule {
             glBufferDataARB(PBO_TARGET, bufferSize, PBO_USAGE);
 
             glBindBufferARB(PBO_TARGET, 0);
-            
+
             firstFrame = true;
         }
     }
@@ -60,23 +60,23 @@ public class FrameImporter extends CaptureModule {
     @SubscribeEvent
     public void onFrameImport(FrameImportEvent e) {
         CaptureFrame frame = e.frame;
-        
+
         // check if the dimensions are still the same
         frame.checkWindowSize();
 
         if (usePBO) {
             glBindBufferARB(PBO_TARGET, frontName);
         }
-        
+
         // read pixels
         frame.readPixels(useFBO, usePBO);
-        
+
         // first frame is empty in PBO mode, don't export it
         if (usePBO && firstFrame) {
             firstFrame = false;
             return;
         }
-        
+
         ByteBuffer buffer = e.frame.buffer;
 
         if (usePBO) {
@@ -88,18 +88,18 @@ public class FrameImporter extends CaptureModule {
             buffer.put(bufferPBO);
             glUnmapBufferARB(PBO_TARGET);
             glBindBufferARB(PBO_TARGET, 0);
-            
+
             // If mapping threw an error -> crash immediately please
             Util.checkGLError();
-            
+
             // swap PBOs
             int swapName = frontName;
             frontName = backName;
             backName = swapName;
         }
-        
+
         buffer.rewind();
-        
+
         // send frame export event
         Minema.EVENT_BUS.post(new FrameExportEvent(e.frame, e.time));
         e.time.nextFrame();

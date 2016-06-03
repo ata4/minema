@@ -42,7 +42,7 @@ public class PipeFrameExporter extends FrameExporter {
     public PipeFrameExporter(MinemaConfig cfg) {
         super(cfg);
     }
-    
+
     @SubscribeEvent
     public void onFrameInit(FrameInitEvent e) {
         try {
@@ -100,7 +100,7 @@ public class PipeFrameExporter extends FrameExporter {
             L.warn("Pipe program termination interrupted", ex);
         }
     }
-    
+
     @Override
     protected void doExportFrame(FrameExportEvent evt) throws Exception {
         if (pipe.isOpen()) {

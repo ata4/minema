@@ -38,20 +38,20 @@ public class ImageFrameExporter extends FrameExporter {
     private void writeImage(Path path, ByteBuffer bb, int width, int height) throws IOException {
         ByteBuffer tgah = ByteBuffer.allocate(18);
         tgah.order(ByteOrder.LITTLE_ENDIAN);
-        
+
         // image type - uncompressed true-color image
         tgah.position(2);
         tgah.put((byte) 2);
-        
+
         // width and height
         tgah.position(12);
         tgah.putShort((short) (width & 0xffff));
         tgah.putShort((short) (height & 0xffff));
-        
+
         // bits per pixel
         tgah.position(16);
         tgah.put((byte) 24);
-        
+
         tgah.rewind();
 
         try (FileChannel fc = FileChannel.open(path, CREATE, WRITE)) {

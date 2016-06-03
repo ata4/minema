@@ -23,7 +23,7 @@ public abstract class FrameEvent extends Event  {
 
     public final CaptureFrame frame;
     public final CaptureTime time;
-    
+
     public FrameEvent(CaptureFrame frame, CaptureTime time) {
         this.frame = frame;
         this.time = time;

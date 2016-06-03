@@ -35,7 +35,7 @@ public class CaptureOverlay extends CaptureModule {
     public CaptureOverlay(MinemaConfig cfg) {
         super(cfg);
     }
-    
+
     @SubscribeEvent
     public void onFrameImport(FrameImportEvent evt) {
         time = evt.time;
@@ -46,7 +46,7 @@ public class CaptureOverlay extends CaptureModule {
         if (time == null) {
             return;
         }
-        
+
         ArrayList<String> left = evt.getLeft();
 
         if (MC.gameSettings.showDebugInfo) {
@@ -73,7 +73,7 @@ public class CaptureOverlay extends CaptureModule {
     @Override
     protected void doEnable() throws Exception {
         MinecraftForge.EVENT_BUS.register(this);
-        
+
         playChickenPlop();
     }
 
@@ -81,7 +81,7 @@ public class CaptureOverlay extends CaptureModule {
     protected void doDisable() throws Exception {
         MinecraftForge.EVENT_BUS.unregister(this);
     }
-    
+
     private void playChickenPlop() {
         try {
             MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.playerLocation,
