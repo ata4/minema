@@ -15,11 +15,7 @@ import info.ata4.minecraft.minema.util.config.ConfigDouble;
 import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import info.ata4.minecraft.minema.util.config.ConfigInteger;
 import info.ata4.minecraft.minema.util.config.ConfigString;
-import info.ata4.minecraft.minema.util.config.ConfigStringEnum;
 import java.nio.file.Path;
-import java.util.HashSet;
-import java.util.Set;
-import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
 import org.lwjgl.opengl.Display;
@@ -36,24 +32,6 @@ public class MinemaConfig extends ConfigContainer {
     public static final String CATEGORY_CAPTURING = "capturing";
     public static final String CATEGORY_ENGINE = "engine";
 
-    private static Set<String> getImageFormats() {
-        Set<String> formats = new HashSet<>();
-
-        // add all writer format names and convert them to lower case
-        for (String formatName : ImageIO.getWriterFormatNames()) {
-            formats.add(formatName.toLowerCase());
-        }
-
-        // "tga" is always supported
-        formats.add("tga");
-
-        // "jpeg" is added together with "jpg" for some reason
-        formats.remove("jpeg");
-
-        return formats;
-    }
-
-    public final ConfigStringEnum imageFormat = new ConfigStringEnum("tga", getImageFormats());
     public final ConfigBoolean useVideoEncoder = new ConfigBoolean(false);
     public final ConfigString videoEncoderPath = new ConfigString("");
     public final ConfigString videoEncoderParams = new ConfigString("");
@@ -78,7 +56,6 @@ public class MinemaConfig extends ConfigContainer {
 
         setLangKeyPrefix("minema.config");
 
-        register(imageFormat, "imageFormat", CATEGORY_ENCODING);
         register(useVideoEncoder, "useVideoEncoder", CATEGORY_ENCODING);
         register(videoEncoderPath, "videoEncoderPath", CATEGORY_ENCODING);
         register(videoEncoderParams, "videoEncoderParams", CATEGORY_ENCODING);

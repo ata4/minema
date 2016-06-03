@@ -35,8 +35,7 @@ public class ImageFrameExporter extends FrameExporter {
 
     @Override
     protected void doExportFrame(FrameCaptureEvent evt) throws IOException {
-        String format = cfg.imageFormat.get();
-        String fileName = String.format("%06d.%s", evt.frameNum, format);
+        String fileName = String.format("%06d.tga", evt.frameNum);
         Path path = cfg.getMovieDir().resolve(fileName);
         writeImage(path, evt.frameBuffer, evt.frameDim.getWidth(), evt.frameDim.getHeight());
     }
