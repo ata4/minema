@@ -21,7 +21,7 @@ public abstract class CaptureModule {
 
     private static final Logger L = LogManager.getLogger();
 
-    protected MinemaConfig cfg;
+    protected final MinemaConfig cfg;
     private boolean enabled;
 
     public CaptureModule(MinemaConfig cfg) {
