@@ -73,19 +73,20 @@ public class CaptureOverlay extends CaptureModule {
     @Override
     protected void doEnable() throws Exception {
         MinecraftForge.EVENT_BUS.register(this);
-
-        playChickenPlop();
+        playChickenPlop(true);
     }
 
     @Override
     protected void doDisable() throws Exception {
         MinecraftForge.EVENT_BUS.unregister(this);
+        playChickenPlop(false);
     }
 
-    private void playChickenPlop() {
+    private void playChickenPlop(boolean on) {
         try {
-            MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.playerLocation,
-                    SoundEvents.entity_chicken_egg, SoundCategory.NEUTRAL, 1, 1);
+            float pitch = on ? 1 : 0.5f;
+            MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.getPosition(),
+                SoundEvents.entity_chicken_egg, SoundCategory.NEUTRAL, 1, pitch);
         } catch (Exception e) {
             L.error("cannot play chicken plop", e);
         }
