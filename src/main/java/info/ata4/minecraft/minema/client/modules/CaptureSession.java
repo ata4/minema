@@ -96,6 +96,8 @@ public class CaptureSession extends CaptureModule {
         if (cfg.showOverlay.get()) {
             modules.add(new CaptureOverlay(cfg));
         }
+        
+        modules.add(new CaptureNotification(cfg));
 
         // enable and register modules
         modules.forEach(module -> {

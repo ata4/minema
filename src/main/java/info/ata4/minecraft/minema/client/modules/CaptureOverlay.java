@@ -11,12 +11,9 @@ package info.ata4.minecraft.minema.client.modules;
 
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameImportEvent;
-import static info.ata4.minecraft.minema.client.modules.CaptureSession.L;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import java.util.ArrayList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.SoundCategory;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -73,22 +70,11 @@ public class CaptureOverlay extends CaptureModule {
     @Override
     protected void doEnable() throws Exception {
         MinecraftForge.EVENT_BUS.register(this);
-        playChickenPlop(true);
     }
 
     @Override
     protected void doDisable() throws Exception {
         MinecraftForge.EVENT_BUS.unregister(this);
-        playChickenPlop(false);
     }
 
-    private void playChickenPlop(boolean on) {
-        try {
-            float pitch = on ? 1 : 0.5f;
-            MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.getPosition(),
-                SoundEvents.entity_chicken_egg, SoundCategory.NEUTRAL, 1, pitch);
-        } catch (Exception e) {
-            L.error("cannot play chicken plop", e);
-        }
-    }
 }
