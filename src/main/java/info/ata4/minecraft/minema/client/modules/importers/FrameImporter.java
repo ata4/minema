@@ -71,12 +71,6 @@ public class FrameImporter extends CaptureModule {
         // read pixels
         frame.readPixels(useFBO, usePBO);
 
-        // first frame is empty in PBO mode, don't export it
-        if (usePBO && firstFrame) {
-            firstFrame = false;
-            return;
-        }
-
         ByteBuffer buffer = e.frame.buffer;
 
         if (usePBO) {
@@ -99,6 +93,12 @@ public class FrameImporter extends CaptureModule {
         }
 
         buffer.rewind();
+        
+        // first frame is empty in PBO mode, don't export it
+        if (usePBO && firstFrame) {
+            firstFrame = false;
+            return;
+        }
 
         // send frame export event
         Minema.EVENT_BUS.post(new FrameExportEvent(e.frame, e.time));
