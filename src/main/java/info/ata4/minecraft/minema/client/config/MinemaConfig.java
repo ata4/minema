@@ -32,9 +32,11 @@ public class MinemaConfig extends ConfigContainer {
     public static final String CATEGORY_CAPTURING = "capturing";
     public static final String CATEGORY_ENGINE = "engine";
 
-    public final ConfigBoolean useVideoEncoder = new ConfigBoolean(false);
-    public final ConfigString videoEncoderPath = new ConfigString("");
-    public final ConfigString videoEncoderParams = new ConfigString("");
+    public final ConfigBoolean useVideoEncoder = new ConfigBoolean(true);
+    public final ConfigString videoEncoderPath = new ConfigString("ffmpeg");
+    public final ConfigString videoEncoderParams = new ConfigString(
+        "-f rawvideo -pix_fmt bgr24 -s %WIDTH%x%HEIGHT% -r %FPS% -i - -vf vflip " +
+        "-c:v libx264 -preset ultrafast -tune zerolatency -qp 20 video.mp4");
     public final ConfigEnum<SnapResolution> snapResolution = new ConfigEnum<>(SnapResolution.MOD2);
 
     public final ConfigInteger frameWidth = new ConfigInteger(0, 0, MAX_TEXTURE_SIZE);
