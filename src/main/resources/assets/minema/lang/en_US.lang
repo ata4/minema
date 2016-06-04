@@ -20,7 +20,7 @@ minema.config.engine.tooltip=Advanced engine override settings used during captu
 
 # config encoding
 minema.config.useVideoEncoder=Use Video Encoder
-minema.config.useVideoEncoder.tooltip=If set to true, a video encoding program is used that will receive uncompressed RGB frames from Minema via the standard input pipe.
+minema.config.useVideoEncoder.tooltip=If enabled, a video encoding program is used that will receive uncompressed RGB frames from Minema via the standard input pipe.
 
 minema.config.videoEncoderPath=Encoder Path
 minema.config.videoEncoderPath.tooltip=Path to the video encoding executable. The encoder's working directory is the generated movie folder. Ignored if the video encoder is disabled.
@@ -51,10 +51,10 @@ minema.config.capturePath=Capture Path
 minema.config.capturePath.tooltip=Path were the captured videos are stored. If no absolute path is used, it's relative to the Minecraft working directory.
 
 minema.config.showOverlay=Show Overlay
-minema.config.showOverlay.tooltip=If set to true, show additional capturing information on the overlay. Note that these information are visible in the video, too.
+minema.config.showOverlay.tooltip=If enabled, show additional capturing information on the overlay. Note that these information are visible in the video, too.
 
 minema.config.usePBO=Use PBOs
-minema.config.usePBO.tooltip=If set to true, pixel buffer objects are used for asynchronous pixel transfer, which may be faster than the normal synchronous method.
+minema.config.usePBO.tooltip=If enabled, pixel buffer objects are used for asynchronous pixel transfer, which may be faster than the normal synchronous method.
 
 # config engine
 minema.config.engineSpeed=Engine Speed
@@ -64,7 +64,7 @@ minema.config.particleLimit=Particle Limit
 minema.config.particleLimit.tooltip=Sets the maximum amount of visible particles for one texture before the oldest particles are removed. In vanilla, this limit is hard-coded to 4000. Some scenes, such as mass TNT explosions, generate enormous amounts of particles and may require higher limits to prevent disappearing particles. Set to -1 for no limit.
 
 minema.config.syncEngine=Synchronize
-minema.config.syncEngine.tooltip=If set to true, the local server and client runs synchronously to the video capturing frame rate. This effectively turns Minecraft into an offline renderer and allows rendering and capturing of extremely complex scenes. If set to false, the video capture is live and lags on the server or client may cause dropped frames. Is always false when capturing on a dedicated servers.
+minema.config.syncEngine.tooltip=If enabled, the local server and client runs synchronously to the video capturing frame rate. This effectively turns Minecraft into an offline renderer and allows rendering and capturing of extremely complex scenes. If set to false, the video capture is live and lags on the server or client may cause dropped frames. Is always false when capturing on a dedicated servers.
 
 minema.config.preloadChunks=Preload Chunks
-minema.config.preloadChunks.tooltip=If set to true, Minema will force the game to freeze until all visible chunks are fully loaded. Camera Studio or similar mods are highly recommended for this option, since smooth camera movements are almost impossible without.
+minema.config.preloadChunks.tooltip=If enabled, Minema will force the game to freeze until all visible chunks are fully loaded. Camera Studio or similar mods are highly recommended for this option, since smooth camera movements are almost impossible without.
