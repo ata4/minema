@@ -41,7 +41,7 @@ public class Minema {
 
     public static final String NAME = "Minema";
     public static final String ID = NAME;
-    public static final String VERSION = "1.9";
+    public static final String VERSION = "@VERSION@";
 
     @Instance(ID)
     public static Minema instance;
