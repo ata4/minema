@@ -12,7 +12,6 @@ package info.ata4.minecraft.minema.client.modules.exporters;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import info.ata4.minecraft.minema.client.event.FrameExportEvent;
 import info.ata4.minecraft.minema.client.event.FrameInitEvent;
-import java.io.BufferedOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -66,7 +65,7 @@ public class PipeFrameExporter extends FrameExporter {
             // but its little buffer is just slowing everything down with the huge
             // amount of data we're dealing here, so unwrap it with this little hack.
             OutputStream os = proc.getOutputStream();
-            if (os instanceof BufferedOutputStream) {
+            if (os instanceof FilterOutputStream) {
                 Field outField = FilterOutputStream.class.getDeclaredField("out");
                 outField.setAccessible(true);
                 os = (OutputStream) outField.get(os);
