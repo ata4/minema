@@ -43,6 +43,7 @@ public class MinemaConfig extends ConfigContainer {
     public final ConfigInteger frameLimit = new ConfigInteger(-1, -1);
     public final ConfigString capturePath = new ConfigString("movies");
     public final ConfigBoolean showOverlay = new ConfigBoolean(false);
+    public final ConfigBoolean usePBO = new ConfigBoolean(true);
 
     public final ConfigDouble engineSpeed = new ConfigDouble(1.0, 0.01);
     // public final ConfigInteger particleLimit = new ConfigInteger(64000, -1);
@@ -67,6 +68,7 @@ public class MinemaConfig extends ConfigContainer {
         register(frameLimit, "frameLimit", CATEGORY_CAPTURING);
         register(capturePath, "capturePath", CATEGORY_CAPTURING);
         register(showOverlay, "showOverlay", CATEGORY_CAPTURING);
+        register(usePBO, "usePBO", CATEGORY_CAPTURING);
 
         register(engineSpeed, "engineSpeed", CATEGORY_ENGINE);
         // register(particleLimit, "particleLimit", CATEGORY_ENGINE);

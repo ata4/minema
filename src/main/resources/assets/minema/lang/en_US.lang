@@ -53,6 +53,9 @@ minema.config.capturePath.tooltip=Path were the captured videos are stored. If n
 minema.config.showOverlay=Show Overlay
 minema.config.showOverlay.tooltip=If set to true, show additional capturing information on the overlay. Note that these information are visible in the video, too.
 
+minema.config.usePBO=Use PBOs
+minema.config.usePBO.tooltip=If set to true, pixel buffer objects are used for asynchronous pixel transfer, which may be faster than the normal synchronous method.
+
 # config engine
 minema.config.engineSpeed=Engine Speed
 minema.config.engineSpeed.tooltip=Speed modifier for the game clock. The default is 1.0, which equals 20 ticks per second. Lower or higher values will speed up or slow down the game time. 2.5, for example, results in two and a half of the normal speed. Useful for slow motion or time lapse effects. Ignored if the capturing is unsynchronized.

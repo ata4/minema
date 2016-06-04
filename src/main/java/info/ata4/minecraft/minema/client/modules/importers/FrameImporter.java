@@ -34,7 +34,7 @@ public class FrameImporter extends CaptureModule {
     public FrameImporter(MinemaConfig cfg) {
         super(cfg);
 
-        usePBO = GLContext.getCapabilities().GL_ARB_pixel_buffer_object;
+        usePBO = GLContext.getCapabilities().GL_ARB_pixel_buffer_object && cfg.usePBO.get();
         useFBO = OpenGlHelper.isFramebufferEnabled();
     }
 
