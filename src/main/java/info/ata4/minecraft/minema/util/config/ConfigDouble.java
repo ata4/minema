@@ -26,25 +26,30 @@ public class ConfigDouble extends ConfigNumber<Double> {
     }
 
     @Override
-    public Property.Type getPropType() {
+    protected Property.Type getPropType() {
         return Property.Type.DOUBLE;
     }
-
+   
     @Override
-    public void importProp(Property prop) {
-        set(prop.getDouble());
-    }
-
-    @Override
-    public void exportProp(Property prop) {
+    protected Property getProp() {
+        Property prop = super.getProp();
         if (getMin() != null) {
             prop.setMinValue(getMin());
         }
         if (getMax() != null) {
             prop.setMaxValue(getMax());
         }
-        prop.set(get());
-        prop.setDefaultValue(getDefault());
+        return prop;
+    }
+
+    @Override
+    public Double get() {
+        return getProp().getDouble();
+    }
+
+    @Override
+    public void set(Double value) {
+        getProp().set(value);
     }
 
 }

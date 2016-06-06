@@ -26,25 +26,29 @@ public class ConfigInteger extends ConfigNumber<Integer> {
     }
 
     @Override
-    public Property.Type getPropType() {
+    protected Property.Type getPropType() {
         return Property.Type.INTEGER;
     }
-
+    
     @Override
-    public void importProp(Property prop) {
-        set(prop.getInt());
-    }
-
-    @Override
-    public void exportProp(Property prop) {
+    protected Property getProp() {
+        Property prop = super.getProp();
         if (getMin() != null) {
             prop.setMinValue(getMin());
         }
         if (getMax() != null) {
             prop.setMaxValue(getMax());
         }
-        prop.set(get());
-        prop.setDefaultValue(getDefault());
+        return prop;
     }
 
+    @Override
+    public Integer get() {
+        return getProp().getInt();
+    }
+
+    @Override
+    public void set(Integer value) {
+        getProp().set(value);
+    }
 }

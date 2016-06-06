@@ -38,8 +38,15 @@ public class ConfigStringEnum extends ConfigString {
     }
 
     @Override
-    public Property.Type getPropType() {
+    protected Property.Type getPropType() {
         return Property.Type.STRING;
+    }
+    
+    @Override
+    protected Property getProp() {
+        Property prop = super.getProp();
+        prop.setValidValues(validValues);
+        return prop;
     }
 
     @Override
@@ -50,10 +57,5 @@ public class ConfigStringEnum extends ConfigString {
             super.set(getDefault());
         }
     }
-
-    @Override
-    public void exportProp(Property prop) {
-        super.exportProp(prop);
-        prop.setValidValues(validValues);
-    }
+    
 }

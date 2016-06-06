@@ -16,7 +16,6 @@ import java.io.File;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -24,7 +23,6 @@ import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**
  * Main control class for Forge.
@@ -35,7 +33,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
     modid = Minema.ID,
     name = Minema.NAME,
     version = Minema.VERSION,
-    guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory"
+    guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGui.Factory"
 )
 public class Minema {
 
@@ -48,13 +46,15 @@ public class Minema {
     public static final EventBus EVENT_BUS = new EventBus();
 
     private ModMetadata metadata;
+    private Configuration configForge;
     private MinemaConfig config;
     private CaptureSession session;
 
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent evt) {
         File file = evt.getSuggestedConfigurationFile();
-        config = new MinemaConfig(new Configuration(file));
+        configForge = new Configuration(file);
+        config = new MinemaConfig(configForge);
         metadata = evt.getModMetadata();
     }
 
@@ -62,7 +62,10 @@ public class Minema {
     public void onInit(FMLInitializationEvent evt) {
         ClientCommandHandler.instance.registerCommand(new CommandMinema(this));
         MinecraftForge.EVENT_BUS.register(new KeyHandler(this));
-        MinecraftForge.EVENT_BUS.register(this);
+    }
+    
+    public Configuration getConfigForge() {
+        return configForge;
     }
 
     public MinemaConfig getConfig() {
@@ -74,8 +77,6 @@ public class Minema {
     }
 
     public void enable() {
-        config.load();
-
         session = new CaptureSession(config);
         session.enable();
     }
@@ -90,12 +91,4 @@ public class Minema {
     public boolean isEnabled() {
         return session != null && session.isEnabled();
     }
-
-    @SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent eventArgs) {
-        if (ID.equals(eventArgs.getModID())) {
-            config.update(false);
-        }
-    }
-
 }

@@ -28,17 +28,6 @@ public abstract class ConfigNumber<T extends Number & Comparable<T>> extends Con
         this(value, min, null);
     }
 
-    @Override
-    public void set(T value) {
-        if (min != null && min.compareTo(value) > 0) {
-            super.set(min);
-        } else if (max != null && max.compareTo(value) < 0) {
-            super.set(max);
-        } else {
-            super.set(value);
-        }
-    }
-
     public T getMin() {
         return min;
     }
@@ -46,4 +35,5 @@ public abstract class ConfigNumber<T extends Number & Comparable<T>> extends Con
     public T getMax() {
         return max;
     }
+    
 }

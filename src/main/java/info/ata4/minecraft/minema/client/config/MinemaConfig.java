@@ -10,7 +10,6 @@
 package info.ata4.minecraft.minema.client.config;
 
 import info.ata4.minecraft.minema.util.config.ConfigBoolean;
-import info.ata4.minecraft.minema.util.config.ConfigContainer;
 import info.ata4.minecraft.minema.util.config.ConfigDouble;
 import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import info.ata4.minecraft.minema.util.config.ConfigInteger;
@@ -24,13 +23,11 @@ import org.lwjgl.opengl.Display;
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
-public class MinemaConfig extends ConfigContainer {
+public class MinemaConfig {
 
     private static final int MAX_TEXTURE_SIZE = Minecraft.getGLMaximumTextureSize();
 
-    public static final String CATEGORY_ENCODING = "encoding";
-    public static final String CATEGORY_CAPTURING = "capturing";
-    public static final String CATEGORY_ENGINE = "engine";
+    public static final String LANG_KEY = "minema.config";
 
     public final ConfigBoolean useVideoEncoder = new ConfigBoolean(true);
     public final ConfigString videoEncoderPath = new ConfigString("ffmpeg");
@@ -54,29 +51,23 @@ public class MinemaConfig extends ConfigContainer {
 
     private Path movieDir;
 
-    public MinemaConfig(Configuration config) {
-        super(config);
+    public MinemaConfig(Configuration cfg) {
+        useVideoEncoder.link(cfg, "encoding.useVideoEncoder", LANG_KEY);
+        videoEncoderPath.link(cfg, "encoding.videoEncoderPath", LANG_KEY);
+        videoEncoderParams.link(cfg, "encoding.videoEncoderParams", LANG_KEY);
+        snapResolution.link(cfg, "encoding.snapResolution", LANG_KEY);
 
-        setLangKeyPrefix("minema.config");
+        frameWidth.link(cfg, "capturing.frameWidth", LANG_KEY);
+        frameHeight.link(cfg, "capturing.frameHeight", LANG_KEY);
+        frameRate.link(cfg, "capturing.frameRate", LANG_KEY);
+        frameLimit.link(cfg, "capturing.frameLimit", LANG_KEY);
+        capturePath.link(cfg, "capturing.capturePath", LANG_KEY);
+        showOverlay.link(cfg, "capturing.showOverlay", LANG_KEY);
+        usePBO.link(cfg, "capturing.usePBO", LANG_KEY);
 
-        register(useVideoEncoder, "useVideoEncoder", CATEGORY_ENCODING);
-        register(videoEncoderPath, "videoEncoderPath", CATEGORY_ENCODING);
-        register(videoEncoderParams, "videoEncoderParams", CATEGORY_ENCODING);
-        register(snapResolution, "snapResolution", CATEGORY_ENCODING);
-
-        register(frameWidth, "frameWidth", CATEGORY_CAPTURING);
-        register(frameHeight, "frameHeight", CATEGORY_CAPTURING);
-        register(frameRate, "frameRate", CATEGORY_CAPTURING);
-        register(frameLimit, "frameLimit", CATEGORY_CAPTURING);
-        register(capturePath, "capturePath", CATEGORY_CAPTURING);
-        register(showOverlay, "showOverlay", CATEGORY_CAPTURING);
-        register(usePBO, "usePBO", CATEGORY_CAPTURING);
-
-        register(engineSpeed, "engineSpeed", CATEGORY_ENGINE);
-        // register(particleLimit, "particleLimit", CATEGORY_ENGINE);
-        register(syncEngine, "syncEngine", CATEGORY_ENGINE);
-
-        update(true);
+        engineSpeed.link(cfg, "engine.engineSpeed", LANG_KEY);
+        // particleLimit.link(config, "engine.particleLimit", LANG_KEY);
+        syncEngine.link(cfg, "engine.syncEngine", LANG_KEY);
     }
 
     public int getFrameWidth() {

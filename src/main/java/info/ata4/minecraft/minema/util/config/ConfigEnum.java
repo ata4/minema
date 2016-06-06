@@ -39,26 +39,36 @@ public class ConfigEnum<T extends Enum> extends ConfigValue<T> {
     private T stringToEnum(String name) {
         return (T) Enum.valueOf(type, name.toUpperCase());
     }
-
+    
     @Override
-    public Property.Type getPropType() {
+    protected Property.Type getPropType() {
         return Property.Type.STRING;
     }
-
+    
     @Override
-    public void importProp(Property prop) {
+    protected Property getProp() {
+        Property prop = super.getProp();
+        prop.setValidValues(validValues);
+        return prop;
+    }
+    
+    @Override
+    protected String getPropDefault() {
+        return enumToString(getDefault());
+    }
+   
+    @Override
+    public T get() {
         try {
-            set(stringToEnum(prop.getString()));
+            return stringToEnum(getProp().getString());
         } catch (IllegalArgumentException ex) {
-            set(getDefault());
+            reset();
+            return stringToEnum(getProp().getString());
         }
     }
 
     @Override
-    public void exportProp(Property prop) {
-        prop.set(enumToString(get()));
-        prop.setDefaultValue(enumToString(getDefault()));
-        prop.setValidValues(validValues);
+    public void set(T value) {
+        getProp().set(enumToString(get()));
     }
-
 }
