@@ -20,6 +20,7 @@ import info.ata4.minecraft.minema.client.modules.exporters.PipeFrameExporter;
 import info.ata4.minecraft.minema.client.modules.importers.FrameImporter;
 import info.ata4.minecraft.minema.client.modules.modifiers.DisplaySizeModifier;
 import info.ata4.minecraft.minema.client.modules.modifiers.GameSettingsModifier;
+import info.ata4.minecraft.minema.client.modules.modifiers.TimerModifier;
 import info.ata4.minecraft.minema.client.util.CaptureFrame;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
 import info.ata4.minecraft.minema.client.util.ChatUtils;
