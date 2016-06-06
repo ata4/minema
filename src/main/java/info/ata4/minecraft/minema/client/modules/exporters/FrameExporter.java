@@ -52,7 +52,7 @@ public abstract class FrameExporter extends CaptureModule {
                 exportService.shutdownNow();
             }
         } catch (InterruptedException ex) {
-            L.warn("Frame export service termination interrupted", ex);
+            handleWarning(ex, "Frame export service termination interrupted");
         }
     }
 
@@ -69,7 +69,7 @@ public abstract class FrameExporter extends CaptureModule {
             }
         } catch (InterruptedException ex) {
             // catch uncritical interruption exception
-            L.warn("Frame export task interrupted", ex);
+            handleWarning(ex, "Frame export task interrupted");
         }
     }
 

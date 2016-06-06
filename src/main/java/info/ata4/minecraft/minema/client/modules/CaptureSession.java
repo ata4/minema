@@ -36,8 +36,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
@@ -45,7 +43,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class CaptureSession extends CaptureModule {
 
-    public static Logger L = LogManager.getLogger();
     public static Minecraft MC = Minecraft.getMinecraft();
 
     private final ArrayList<CaptureModule> modules = new ArrayList<>();
@@ -123,7 +120,7 @@ public class CaptureSession extends CaptureModule {
                     module.disable();
                 }
             } catch (Exception ex) {
-                L.error("Can't disable module {}", module.getName(), ex);
+                handleWarning(ex, "Can't disable module %s", module.getName());
             }
 
             Minema.EVENT_BUS.unregister(module);
@@ -138,7 +135,7 @@ public class CaptureSession extends CaptureModule {
     }
 
     @Override
-    protected void handleError(Throwable throwable) {
+    protected void handleError(Throwable throwable, String message, Object... args) {
         ChatUtils.print("minema.error.label", TextFormatting.RED);
 
         // get list of throwables and their causes
@@ -149,16 +146,16 @@ public class CaptureSession extends CaptureModule {
         } while (throwable != null);
 
         throwables.stream().filter(t -> {
-            String message = t.getMessage();
+            String msg = t.getMessage();
 
             // skip wrapped exceptions
-            if (message == null) {
+            if (msg == null) {
                 return false;
             }
 
             // skip wrapped exceptions with generated messages
             Throwable cause = t.getCause();
-            return cause == null || !message.equals(cause.toString());
+            return cause == null || !msg.equals(cause.toString());
         }).forEach(t -> ChatUtils.print(t.getMessage(), TextFormatting.RED));
     }
 
@@ -195,8 +192,7 @@ public class CaptureSession extends CaptureModule {
                 throw new RuntimeException("Frame capturing cancelled at frame " + time.getNumFrames());
             }
         } catch (Exception ex) {
-            L.error("Frame capturing error", ex);
-            handleError(ex);
+            handleError(ex, "Frame capturing error");
             disable();
         }
     }

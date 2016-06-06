@@ -24,16 +24,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  *
  * @author Nico Bergemann <barracuda415 at yahoo.de>
  */
 public class PipeFrameExporter extends FrameExporter {
-
-    private static final Logger L = LogManager.getLogger();
 
     private Process proc;
     private WritableByteChannel pipe;
@@ -73,8 +69,7 @@ public class PipeFrameExporter extends FrameExporter {
 
             pipe = Channels.newChannel(os);
         } catch (Exception ex) {
-            L.error("Can't start encoder ", ex);
-            handleError(ex);
+            handleError(ex, "Can't start encoder");
         }
     }
 
@@ -87,7 +82,7 @@ public class PipeFrameExporter extends FrameExporter {
                 pipe.close();
             }
         } catch (IOException ex) {
-            L.warn("Pipe not closed properly", ex);
+            handleWarning(ex, "Pipe not closed properly");
         }
 
         try {
@@ -96,7 +91,7 @@ public class PipeFrameExporter extends FrameExporter {
                 proc.destroy();
             }
         } catch (InterruptedException ex) {
-            L.warn("Pipe program termination interrupted", ex);
+            handleWarning(ex, "Pipe program termination interrupted");
         }
     }
 

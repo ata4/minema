@@ -10,7 +10,6 @@
 package info.ata4.minecraft.minema.client.modules;
 
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
-import static info.ata4.minecraft.minema.client.modules.CaptureSession.L;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.SoundCategory;
@@ -42,8 +41,8 @@ public class CaptureNotification extends CaptureModule {
             float pitch = on ? 1 : 0.75f;
             MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.getPosition(),
                 SoundEvents.entity_chicken_egg, SoundCategory.NEUTRAL, 1, pitch);
-        } catch (Exception e) {
-            L.error("cannot play chicken plop", e);
+        } catch (Exception ex) {
+            handleWarning(ex, "Can't play chicken plop");
         }
     }
 }

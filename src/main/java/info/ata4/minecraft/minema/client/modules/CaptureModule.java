@@ -48,8 +48,7 @@ public abstract class CaptureModule {
         try {
             doEnable();
         } catch (Exception ex) {
-            L.error("Can't enable " + getName(), ex);
-            handleError(ex);
+            handleError(ex, "Can't enable %s", getName());
             disable();
         }
     }
@@ -66,13 +65,16 @@ public abstract class CaptureModule {
         try {
             doDisable();
         } catch (Exception ex) {
-            L.error("Can't disable " + getName(), ex);
-            handleError(ex);
+            handleError(ex, "Can't disable %s", getName());
         }
     }
+    
+    protected void handleWarning(Throwable t, String message, Object... args) {
+        L.warn(String.format(message, args), t);
+    }
 
-    protected void handleError(Throwable t) {
-        throw new RuntimeException(t);
+    protected void handleError(Throwable t, String message, Object... args) {
+        throw new RuntimeException(String.format(message, args), t);
     }
 
     protected abstract void doEnable() throws Exception;
