@@ -33,11 +33,11 @@ public abstract class CaptureModule {
         return getClass().getSimpleName();
     }
 
-    public boolean isEnabled() {
+    public synchronized final boolean isEnabled() {
         return enabled;
     }
 
-    public synchronized void enable() {
+    public synchronized final void enable() {
         if (enabled) {
             return;
         }
@@ -56,7 +56,7 @@ public abstract class CaptureModule {
         }
     }
 
-    public synchronized void disable() {
+    public synchronized final void disable() {
         if (!enabled) {
             return;
         }
