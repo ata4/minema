@@ -9,6 +9,7 @@
  */
 package info.ata4.minecraft.minema.client.modules;
 
+import info.ata4.minecraft.minema.Minema;
 import info.ata4.minecraft.minema.client.config.MinemaConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,6 +45,8 @@ public abstract class CaptureModule {
         enabled = true;
 
         L.info("Enabling " + getName());
+        
+        Minema.EVENT_BUS.register(this);
 
         try {
             doEnable();
@@ -61,6 +64,8 @@ public abstract class CaptureModule {
         enabled = false;
 
         L.info("Disabling " + getName());
+        
+        Minema.EVENT_BUS.unregister(this);
 
         try {
             doDisable();

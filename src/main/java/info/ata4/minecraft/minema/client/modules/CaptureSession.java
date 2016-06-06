@@ -98,13 +98,10 @@ public class CaptureSession extends CaptureModule {
         modules.add(new CaptureNotification(cfg));
 
         // enable and register modules
-        modules.forEach(module -> {
-            Minema.EVENT_BUS.register(module);
-            module.enable();
-        });
+        modules.forEach(CaptureModule::enable);
+        
         MinecraftForge.EVENT_BUS.register(this);
-        Minema.EVENT_BUS.register(this);
-
+        
         // reset capturing state
         time = new CaptureTime(cfg.frameRate.get());
         frame = new CaptureFrame();
@@ -115,22 +112,10 @@ public class CaptureSession extends CaptureModule {
     @Override
     protected void doDisable() {
         // disable and unregister modules
-        modules.forEach(module -> {
-            try {
-                if (module.isEnabled()) {
-                    module.disable();
-                }
-            } catch (Exception ex) {
-                handleWarning(ex, "Can't disable module %s", module.getName());
-            }
-
-            Minema.EVENT_BUS.unregister(module);
-        });
-
-        Minema.EVENT_BUS.unregister(this);
-        MinecraftForge.EVENT_BUS.unregister(this);
-
+        modules.forEach(CaptureModule::disable);
         modules.clear();
+        
+        MinecraftForge.EVENT_BUS.unregister(this);
 
         cfg.setMovieDir(null);
     }
