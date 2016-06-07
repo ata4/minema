@@ -101,7 +101,7 @@ public class FrameImporter extends CaptureModule {
         }
 
         // send frame export event
-        Minema.EVENT_BUS.post(new FrameExportEvent(e.frame, e.time));
+        Minema.EVENT_BUS.post(new FrameExportEvent(e.frame, e.time, e.movieDir));
         e.time.nextFrame();
     }
 

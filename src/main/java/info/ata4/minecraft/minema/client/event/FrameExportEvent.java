@@ -11,6 +11,7 @@ package info.ata4.minecraft.minema.client.event;
 
 import info.ata4.minecraft.minema.client.util.CaptureFrame;
 import info.ata4.minecraft.minema.client.util.CaptureTime;
+import java.nio.file.Path;
 
 /**
  *
@@ -18,8 +19,8 @@ import info.ata4.minecraft.minema.client.util.CaptureTime;
  */
 public class FrameExportEvent extends FrameEvent {
 
-    public FrameExportEvent(CaptureFrame frame, CaptureTime time) {
-        super(frame, time);
+    public FrameExportEvent(CaptureFrame frame, CaptureTime time, Path movieDir) {
+        super(frame, time, movieDir);
     }
 
 }

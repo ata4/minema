@@ -68,8 +68,6 @@ public class CaptureSession extends CaptureModule {
             Files.createDirectories(movieDir);
         }
 
-        cfg.setMovieDir(movieDir);
-        
         frameLimit = cfg.frameLimit.get();
 
         // init modules
@@ -109,7 +107,7 @@ public class CaptureSession extends CaptureModule {
         time = new CaptureTime(cfg.frameRate.get());
         frame = new CaptureFrame();
 
-        postFrameEvent(new FrameInitEvent(frame, time));
+        postFrameEvent(new FrameInitEvent(frame, time, movieDir));
     }
 
     @Override
@@ -119,8 +117,6 @@ public class CaptureSession extends CaptureModule {
         modules.clear();
         
         MinecraftForge.EVENT_BUS.unregister(this);
-
-        cfg.setMovieDir(null);
     }
 
     @Override
@@ -171,7 +167,7 @@ public class CaptureSession extends CaptureModule {
             return;
         }
 
-        postFrameEvent(new FrameImportEvent(frame, time));
+        postFrameEvent(new FrameImportEvent(frame, time, movieDir));
     }
 
     private <T extends FrameEvent> void postFrameEvent(T evt) {

@@ -14,7 +14,6 @@ import info.ata4.minecraft.minema.util.config.ConfigDouble;
 import info.ata4.minecraft.minema.util.config.ConfigEnum;
 import info.ata4.minecraft.minema.util.config.ConfigInteger;
 import info.ata4.minecraft.minema.util.config.ConfigString;
-import java.nio.file.Path;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.config.Configuration;
 import org.lwjgl.opengl.Display;
@@ -48,8 +47,6 @@ public class MinemaConfig {
     // public final ConfigInteger particleLimit = new ConfigInteger(64000, -1);
     public final ConfigBoolean syncEngine = new ConfigBoolean(true);
     // public final ConfigBoolean preloadChunks = new ConfigBoolean(false);
-
-    private Path movieDir;
 
     public MinemaConfig(Configuration cfg) {
         useVideoEncoder.link(cfg, "encoding.useVideoEncoder", LANG_KEY);
@@ -108,13 +105,5 @@ public class MinemaConfig {
 
     public boolean isSyncEngine() {
         return Minecraft.getMinecraft().isSingleplayer() && syncEngine.get();
-    }
-
-    public Path getMovieDir() {
-        return movieDir;
-    }
-
-    public void setMovieDir(Path movieDir) {
-        this.movieDir = movieDir;
     }
 }

@@ -52,9 +52,9 @@ public class PipeFrameExporter extends FrameExporter {
 
             // build encoder process and redirect output
             ProcessBuilder pb = new ProcessBuilder(cmds);
-            pb.directory(cfg.getMovieDir().toFile());
+            pb.directory(e.movieDir.toFile());
             pb.redirectErrorStream(true);
-            pb.redirectOutput(cfg.getMovieDir().resolve("encoder.log").toFile());
+            pb.redirectOutput(e.movieDir.resolve("encoder.log").toFile());
             proc = pb.start();
 
             // Java wraps the process output stream into a BufferedOutputStream,
