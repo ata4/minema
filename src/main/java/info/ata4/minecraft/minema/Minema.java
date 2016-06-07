@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.eventhandler.EventBus;
     modid = Minema.ID,
     name = Minema.NAME,
     version = Minema.VERSION,
-    guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGui.Factory"
+    guiFactory = "info.ata4.minecraft.minema.client.config.MinemaConfigGuiFactory"
 )
 public class Minema {
 
