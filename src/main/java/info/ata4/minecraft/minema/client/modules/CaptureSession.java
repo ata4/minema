@@ -51,6 +51,7 @@ public class CaptureSession extends CaptureModule {
     private Path movieDir;
     private CaptureTime time;
     private CaptureFrame frame;
+    private int frameLimit;
 
     public CaptureSession(MinemaConfig cfg) {
         super(cfg);
@@ -68,6 +69,8 @@ public class CaptureSession extends CaptureModule {
         }
 
         cfg.setMovieDir(movieDir);
+        
+        frameLimit = cfg.frameLimit.get();
 
         // init modules
         modules.add(new GameSettingsModifier(cfg));
@@ -157,7 +160,6 @@ public class CaptureSession extends CaptureModule {
         }
 
         // stop at frame limit
-        int frameLimit = cfg.frameLimit.get();
         if (frameLimit > 0 && time.getNumFrames() >= frameLimit) {
             disable();
         }
