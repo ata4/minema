@@ -40,7 +40,7 @@ public class CaptureNotification extends CaptureModule {
         try {
             float pitch = on ? 1 : 0.75f;
             MC.theWorld.playSound(MC.thePlayer, MC.thePlayer.getPosition(),
-                SoundEvents.entity_chicken_egg, SoundCategory.NEUTRAL, 1, pitch);
+                SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.NEUTRAL, 1, pitch);
         } catch (Exception ex) {
             handleWarning(ex, "Can't play chicken plop");
         }
